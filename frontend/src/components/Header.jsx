@@ -98,7 +98,7 @@ const Header = () => {
 
         {/* Top nav overlay */}
         <div className="relative z-20">
-          <div className="max-w-8xl bg-black/40 mx-auto px-4 sm:px-6 lg:px-8 shadow-black/40  shadow-lg">
+          <div className="max-w-8xl bg-black/40 mx-auto px-4 sm:px-6 lg:px-8 ">
             <div className="flex items-center justify-between h-16">
               {/* Logo + location */}
               <div className="flex items-center gap-4">
