@@ -5,6 +5,7 @@ import {
   Search,
   ChevronDown,
   ChevronRight,
+  ChevronLeft,
   Headphones,
   User,
   Menu,
@@ -39,9 +40,17 @@ const RECENT_SEARCHES = ['PG in Central Delhi', 'Buy in Central Delhi']
 
 const QUICK_REGIONS = ['All India', 'Dubai', 'For NRI']
 
+const HERO_IMAGES = [
+  assets.header, // Current image
+  assets.header2,
+  assets.header3,
+  assets.header4
+].filter(Boolean) // Remove empty strings
+
 const Header = () => {
   const [activeTab, setActiveTab] = useState('Buy')
   const [query, setQuery] = useState('')
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const [isLocationOpen,setIsLocationOpen] = useState(false)
   const [locationTab, setLocationTab] = useState('Buy')
@@ -77,6 +86,25 @@ const Header = () => {
     }
   }, [isLocationOpen])
 
+  // Image slideshow effect
+  useEffect(() => {
+    if (HERO_IMAGES.length <= 1) return
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length)
+    }, 5000) // Change image every 5 seconds
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const goToPreviousImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)
+  }
+
+  const goToNextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length)
+  }
+
   return (
     <div className="w-full">
       {/* Backdrop overlay when dropdown is open */}
@@ -89,12 +117,37 @@ const Header = () => {
 
       {/* Hero with overlaid nav + promo banner */}
       <div className="relative w-full h-[280px] sm:h-[400px] overflow-hidden">
-        <img
-          src={assets.header}
-          alt="Featured property"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        {HERO_IMAGES.map((image, index) => (
+          <img
+            key={index}
+            src={image}
+            alt="Featured property"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10" />
+
+        {/* Image navigation buttons */}
+        {HERO_IMAGES.length > 1 && (
+          <>
+            <button
+              onClick={goToPreviousImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm transition-all duration-200 hover:scale-110"
+              aria-label="Previous image"
+            >
+              <ChevronLeft size={20} className="text-white" />
+            </button>
+            <button
+              onClick={goToNextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm transition-all duration-200 hover:scale-110"
+              aria-label="Next image"
+            >
+              <ChevronRight size={20} className="text-white" />
+            </button>
+          </>
+        )}
 
         {/* Top nav overlay */}
         <div className="relative z-20">
