@@ -1,27 +1,172 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { createPortal } from 'react-dom'
 import {
-  Heart,
   Menu,
   X,
   ChevronRight,
   ChevronDown,
   User,
   Headphones,
+  CheckCircle2,
+  ArrowUpRight,
+  Sparkles,
+  Phone,
+  Mail,
+  Search,
+  LocateFixed,
+  Mic,
 } from 'lucide-react'
 
 const GREEN = '#193C06'
 const GREEN_DARK = '#0f2604'
 const GOLD = '#C9A24B'
+const BLUE = '#1E88E5'
 
 const NAV_LINKS = [
-  { to: '/projects', label: 'Projects' },
-  { to: '/properties', label: 'Properties' },
-  { to: '/agents', label: 'Agents' },
-  { to: '/news', label: 'News', badge: 'NEW' },
-  { to: '/careers', label: 'Careers' },
-  { to: '/contact', label: 'Contact' },
+  { label: 'For Buyers' },
+  { label: 'For Tenants' },
+  { label: 'For Owners' },
+  { label: 'For Dealers / Builders' },
+  { label: 'Insights', badge: 'NEW' },
 ]
+
+const AD_CARDS = {
+  'For Buyers': {
+    label: 'INTRODUCING',
+    title: 'Insights',
+    bullets: ['Understand localities', 'Read Resident Reviews', 'Check Price Trends', 'Tools, Utilities & more'],
+  },
+  'For Tenants': {
+    label: 'INTRODUCING',
+    title: 'Verified Listings',
+    bullets: ['Owner-verified only', 'Zero brokerage tags', 'Photo & video tours', 'Instant contact details'],
+  },
+  'For Owners': {
+    label: 'GROW FASTER',
+    title: 'List for Free',
+    bullets: ['Reach lakhs of buyers', 'Free property valuation', 'Dedicated relationship manager', 'Priority listing boost'],
+  },
+  'For Dealers / Builders': {
+    label: 'PARTNER WITH US',
+    title: 'Dealer Suite',
+    bullets: ['Bulk lead management', 'Project microsites', 'Performance dashboard', 'Verified dealer badge'],
+  },
+}
+
+const CONTACT_INFO = {
+  phone: '1800 41 99099',
+  hours: '9AM - 11PM IST',
+  email: 'services@nestnbest.com',
+}
+
+const POPULAR_CITIES = [
+  { name: 'Delhi', state: 'Delhi NCR' },
+  { name: 'Mumbai', state: 'Maharashtra' },
+  { name: 'Bangalore', state: 'Karnataka' },
+  { name: 'Chennai', state: 'Tamil Nadu' },
+  { name: 'Hyderabad', state: 'Telangana' },
+  { name: 'Pune', state: 'Maharashtra' },
+  { name: 'Kolkata', state: 'West Bengal' },
+  { name: 'Ahmedabad', state: 'Gujarat' },
+  { name: 'Jaipur', state: 'Rajasthan' },
+  { name: 'Lucknow', state: 'Uttar Pradesh' },
+  { name: 'Chandigarh', state: 'Punjab' },
+  { name: 'Noida', state: 'Delhi NCR' },
+  { name: 'Gurgaon', state: 'Delhi NCR' },
+  { name: 'Faridabad', state: 'Delhi NCR' },
+  { name: 'Ghaziabad', state: 'Delhi NCR' },
+]
+
+const MEGA_MENUS = {
+  'For Buyers': {
+    categories: [
+      {
+        label: 'Buy a Home',
+        col2: { heading: 'Properties in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Penthouses', 'Farmhouses'] },
+        col3: { heading: 'Popular Searches', items: ['Property in Delhi', 'Verified Property in Delhi', 'New Projects'] },
+      },
+      {
+        label: 'Land/Plot',
+        col2: { heading: 'Plot Types', items: ['Residential Plots', 'Commercial Plots', 'Agricultural Land', 'Farm House Land', 'Industrial Land', 'Corner Plots', 'Gated Community Plots'] },
+        col3: { heading: 'Popular Searches', items: ['Plots near me', 'Gated community plots'] },
+      },
+      {
+        label: 'Commercial',
+        col2: { heading: 'Commercial Spaces', items: ['Office Space', 'Retail Shops', 'Showroom', 'Warehouse', 'Industrial Building', 'Factory', 'Restaurant Space', 'Hotel', 'Co-working Space'] },
+        col3: null,
+      },
+      {
+        label: 'Popular Areas',
+        col2: { heading: 'Properties in Delhi', items: ['Property in Karol Bagh', 'Property in New Rajendra Nagar', 'Property in Malcha Marg', 'Property in Connaught Place', 'Property in DaryaGanj', 'Property in Old Rajinder Nagar', 'Property in Paharganj'] },
+        col3: { heading: 'Popular Searches', items: ['Property in Delhi', 'Verified Property in Delhi', 'New Projects'] },
+      },
+      { label: 'Insights', badge: 'NEW', col2: null, col3: null },
+    ],
+  },
+  'For Tenants': {
+    categories: [
+      {
+        label: 'Rent a Home',
+        col2: { heading: 'Rentals in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments', 'Penthouses', 'Farmhouses'] },
+        col3: { heading: 'Popular Searches', items: ['1 BHK for Rent', '2 BHK for Rent', 'Pet-Friendly Rentals'] },
+      },
+      {
+        label: 'PG / Co-living',
+        col2: { heading: 'PG Options', items: [' Boys PG', 'Girls PG', 'Co-living Spaces', 'Single Rooms', 'Shared Rooms', 'Private Rooms'] },
+        col3: { heading: 'Popular Searches', items: ['PG near me', 'PG with Food'] },
+      },
+      {
+        label: 'Commercial Rent',
+        col2: { heading: 'Rent for Business', items: ['Office Space', 'Shops', 'Showrooms', 'Retail Space', 'Warehouse', 'Factory', 'Industrial Space', 'Restaurant Space', 'Hotel Space', 'Co-working Space', 'Business Center'] },
+        col3: null,
+      },
+    ],
+  },
+  'For Owners': {
+    categories: [
+      {
+        label: 'List Your Property',
+        col2: { heading: 'Post Property', items: ['Post Property for Sale', 'Post Property for Rent', 'Post Commercial Property', 'Post Land / Plot', 'Post Property for Free'] },
+        col3: null,
+      },
+      {
+        label: 'Manage Your Property',
+        col2: { heading: 'Property Management', items: ['My Properties', 'Edit Property', 'Update Photos & Videos', 'Update Property Details', 'Property Status', 'Delete / Deactivate Listing'] },
+        col3: null,
+      },
+      {
+        label: 'Get Leads',
+        col2: { heading: 'Lead Management', items: ['Buyer Enquiries', 'Tenant Enquiries', 'Call Requests', 'Site Visit Requests', 'Messages', 'Lead Management'] },
+        col3: null,
+      },
+    ],
+  },
+  'For Dealers / Builders': {
+    categories: [
+      {
+        label: 'Manage Properties',
+        col2: { heading: 'Property Management', items: ['Post a Property', 'Manage Listings', 'Edit Property', 'Property Photos & Videos', 'Property Documents', 'Property Status'] },
+        col3: null,
+      },
+      {
+        label: 'For Builders',
+        col2: { heading: 'Builder Solutions', items: ['Post New Projects', 'Manage Projects', 'Project Inventory', 'Floor Plans', 'Project Brochure', 'Construction Updates', 'Builder Profile'] },
+        col3: null,
+      },
+      {
+        label: 'Lead Management',
+        col2: { heading: 'Lead Tracking', items: ['Buyer Leads', 'Tenant Leads', 'Enquiries', 'Contact Requests', 'Schedule Site Visits', 'Lead Dashboard'] },
+        col3: null,
+      },
+      {
+        label: 'Promote Properties',
+        col2: { heading: 'Advertising', items: ['Featured Listings', 'Premium Listings', 'Boost Property', 'Project Promotion', 'Banner Advertising', 'Advertising Plans'] },
+        col3: null,
+      },
+    ],
+  },
+}
 
 const MarqueeMessage = () => (
   <p className="text-white text-sm font-medium px-8 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
@@ -32,12 +177,75 @@ const MarqueeMessage = () => (
   </p>
 )
 
+const AdCard = ({ menuLabel, spanFull }) => {
+  const ad = AD_CARDS[menuLabel] || AD_CARDS['For Buyers']
+  return (
+    <div
+      className={`rounded-2xl p-5 flex flex-col h-full ${spanFull ? 'sm:col-span-2' : ''}`}
+      style={{ backgroundColor: 'rgba(30, 136, 229, 0.06)' }}
+    >
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <span className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: BLUE }}>
+            <Sparkles size={14} className="text-white" />
+          </span>
+          <span className="text-xs font-bold tracking-wider" style={{ color: BLUE }}>
+            {ad.label}
+          </span>
+        </div>
+        <ArrowUpRight size={16} style={{ color: BLUE }} />
+      </div>
+      <h4 className="text-xl font-bold mt-1 mb-3" style={{ color: GREEN }}>
+        {ad.title}
+      </h4>
+      <ul className="space-y-2.5">
+        {ad.bullets.map((b) => (
+          <li key={b} className="flex items-center gap-2 text-sm text-slate-700">
+            <CheckCircle2 size={16} style={{ color: BLUE }} className="flex-shrink-0" />
+            {b}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+const MenuColumn = ({ heading, items }) => {
+  if (!heading || !items?.length) return null
+  return (
+    <div>
+      <h5 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">{heading}</h5>
+      <ul className="space-y-3.5">
+        {items.map((item) => (
+          <li key={item}>
+            <button className="text-sm font-semibold text-slate-700 hover:text-[#1E88E5] transition-colors duration-200 text-left">
+              {item}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 const Navbar = ({ showNavbar = true }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [scrollPct, setScrollPct] = useState(0)
   const [mounted, setMounted] = useState(false)
   const location = useLocation ? useLocation() : { pathname: '' }
+
+  const [isLocationOpen, setIsLocationOpen] = useState(false)
+  const [cityQuery, setCityQuery] = useState('')
+  const locationRef = useRef(null)
+  const dropdownRef = useRef(null)
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
+
+  const [openMegaMenu, setOpenMegaMenu] = useState(null)
+  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0)
+  const megaTriggerRefs = useRef({})
+  const megaPanelRef = useRef(null)
+  const [megaPosition, setMegaPosition] = useState({ top: 0, left: 0 })
 
   useEffect(() => {
     const t = requestAnimationFrame(() => setMounted(true))
@@ -54,6 +262,70 @@ const Navbar = ({ showNavbar = true }) => {
       window.removeEventListener('scroll', onScroll)
     }
   }, [])
+
+  useEffect(() => {
+    const onClickOutside = (e) => {
+      if (
+        locationRef.current &&
+        !locationRef.current.contains(e.target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target)
+      ) {
+        setIsLocationOpen(false)
+      }
+      const currentTrigger = openMegaMenu ? megaTriggerRefs.current[openMegaMenu] : null
+      if (
+        openMegaMenu &&
+        currentTrigger &&
+        !currentTrigger.contains(e.target) &&
+        megaPanelRef.current &&
+        !megaPanelRef.current.contains(e.target)
+      ) {
+        setOpenMegaMenu(null)
+      }
+    }
+    const onEscape = (e) => {
+      if (e.key === 'Escape') {
+        setIsLocationOpen(false)
+        setOpenMegaMenu(null)
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    document.addEventListener('keydown', onEscape)
+    return () => {
+      document.removeEventListener('mousedown', onClickOutside)
+      document.removeEventListener('keydown', onEscape)
+    }
+  }, [openMegaMenu])
+
+  useEffect(() => {
+    if (isLocationOpen && locationRef.current) {
+      const rect = locationRef.current.getBoundingClientRect()
+      setDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+    }
+  }, [isLocationOpen])
+
+  const toggleMegaMenu = (label) => {
+    setIsLocationOpen(false)
+    setActiveCategoryIndex(0)
+    setOpenMegaMenu((current) => {
+      const next = current === label ? null : label
+      if (next) {
+        const trigger = megaTriggerRefs.current[label]
+        if (trigger) {
+          const rect = trigger.getBoundingClientRect()
+          const panelWidth = 1100
+          const left = Math.max(16, (window.innerWidth - panelWidth) / 2)
+          setMegaPosition({ top: rect.bottom + 12, left })
+        }
+      }
+      return next
+    })
+  }
+
+  const activeMenuData = openMegaMenu ? MEGA_MENUS[openMegaMenu] : null
+  const activeCategory = activeMenuData?.categories[activeCategoryIndex]
+  const hasCol3 = !!activeCategory?.col3?.items?.length
 
   if (!showNavbar) return null
 
@@ -76,6 +348,11 @@ const Navbar = ({ showNavbar = true }) => {
           0% { transform: translateX(-120%) skewX(-15deg); }
           100% { transform: translateX(220%) skewX(-15deg); }
         }
+        @keyframes loc-in {
+          from { opacity: 0; transform: scale(0.95) translateY(-8px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-loc-in { animation: loc-in 0.18s ease both; }
         .nb-marquee-wrapper { overflow: hidden; width: 100%; position: relative; }
         .nb-marquee-track {
           display: flex;
@@ -139,7 +416,7 @@ const Navbar = ({ showNavbar = true }) => {
         </div>
       </div>
 
-      {/* Main Navbar (bg colors unchanged) */}
+      {/* Main Navbar — top row + right-side icon set mirrors Header.jsx exactly */}
       <nav
         className="w-full transition-all duration-300"
         style={{
@@ -153,50 +430,108 @@ const Navbar = ({ showNavbar = true }) => {
             className="flex items-center justify-between transition-all duration-300"
             style={{ height: scrolled ? '68px' : '80px' }}
           >
-            {/* Logo + location, like Header */}
+            {/* Logo + location, matching Header */}
             <div className="flex items-center gap-4 flex-shrink-0">
               <Link to="/" className="group flex items-center space-x-2.5">
-             
                 <span className="text-2xl font-bold transition-colors duration-300" style={{ color: GREEN }}>
                   Nestnbest
                 </span>
               </Link>
-              <button
-                className="hidden lg:flex items-center gap-1 text-sm font-medium border-l border-gray-300 pl-4 text-gray-700 hover:text-[#193C06] transition-colors duration-200"
-              >
-                Buy in Central Delhi
-                <ChevronDown size={15} />
-              </button>
+              <div className="relative" ref={locationRef}>
+                <button
+                  onClick={() => {
+                    setOpenMegaMenu(null)
+                    setIsLocationOpen((open) => !open)
+                  }}
+                  className="hidden sm:flex items-center gap-1 text-sm font-medium border-l border-gray-300 pl-4 text-gray-700 hover:text-[#193C06] transition-colors duration-200"
+                >
+                  All India
+                  <ChevronDown
+                    size={16}
+                    className="transition-transform duration-200"
+                    style={{ transform: isLocationOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+
+                {isLocationOpen &&
+                  createPortal(
+                    <div
+                      ref={dropdownRef}
+                      className="fixed w-[400px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      style={{ top: `${dropdownPosition.top}px`, left: `${dropdownPosition.left}px`, maxHeight: '400px' }}
+                    >
+                      <div className="p-4 pb-4">
+                        <h3 className="text-lg font-bold mb-4" style={{ color: GREEN }}>
+                          Select City
+                        </h3>
+
+                        <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 shadow-sm mb-4">
+                          <Search size={16} className="text-slate-400 flex-shrink-0" />
+                          <input
+                            type="text"
+                            value={cityQuery}
+                            onChange={(e) => setCityQuery(e.target.value)}
+                            placeholder="Search city..."
+                            className="flex-1 min-w-0 bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-1">
+                          {POPULAR_CITIES.filter(city =>
+                            city.name.toLowerCase().includes(cityQuery.toLowerCase()) ||
+                            city.state.toLowerCase().includes(cityQuery.toLowerCase())
+                          ).map((city) => (
+                            <button
+                              key={city.name}
+                              onClick={() => {
+                                setCityQuery(city.name)
+                                setIsLocationOpen(false)
+                              }}
+                              className="p-2 rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-left"
+                            >
+                              <div className="font-semibold text-sm" style={{ color: GREEN }}>
+                                {city.name}
+                              </div>
+                              <div className="text-xs text-slate-500 mt-0.5">
+                                {city.state}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>,
+                    document.body
+                  )}
+              </div>
             </div>
 
             {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-7">
+            <div className="hidden lg:flex items-center gap-7">
               {NAV_LINKS.map((link) => {
-                const isActive = location?.pathname === link.to
+                const hasMenu = !!MEGA_MENUS[link.label]
                 return (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className={`nb-underline flex items-center gap-1.5 font-medium transition-colors duration-200 ${isActive ? 'active' : 'text-gray-700'}`}
-                    onMouseEnter={(e) => !isActive && (e.currentTarget.style.color = GREEN)}
-                    onMouseLeave={(e) => !isActive && (e.currentTarget.style.color = '')}
-                  >
-                    {link.label}
-                    {link.badge && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
-                        {link.badge}
-                      </span>
-                    )}
-                  </Link>
+                  <div key={link.label} className="relative" ref={hasMenu ? (el) => (megaTriggerRefs.current[link.label] = el) : null}>
+                    <button
+                      onClick={() => (hasMenu ? toggleMegaMenu(link.label) : undefined)}
+                      className="relative flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#193C06] transition-colors duration-200"
+                    >
+                      {link.label}
+                      {link.badge && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                          {link.badge}
+                        </span>
+                      )}
+                      {hasMenu && (
+                        <ChevronDown
+                          size={14}
+                          className="transition-transform duration-200"
+                          style={{ transform: openMegaMenu === link.label ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                        />
+                      )}
+                    </button>
+                  </div>
                 )
               })}
-            </div>
-
-            {/* Right side, matching Header's icon set */}
-            <div className="hidden md:flex items-center space-x-3">
-              <button className="group flex items-center space-x-1.5 text-gray-700 transition-all duration-300 px-2.5 py-2 rounded-lg hover:bg-white hover:shadow-sm">
-                <Heart size={18} className="transition-all duration-300 group-hover:scale-110 group-hover:text-red-500" />
-              </button>
 
               <button
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
@@ -205,7 +540,7 @@ const Navbar = ({ showNavbar = true }) => {
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = GREEN)}
               >
                 Post property
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-white/90 leading-none" style={{ color: GREEN }}>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 leading-none">
                   FREE
                 </span>
               </button>
@@ -224,10 +559,14 @@ const Navbar = ({ showNavbar = true }) => {
                 </span>
                 <ChevronDown size={14} />
               </button>
+
+              <button className="text-gray-700 hover:text-[#193C06] transition-colors duration-200">
+                <Menu size={22} />
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="text-gray-700 p-2 rounded-lg hover:bg-gray-200 transition-all duration-300"
@@ -251,17 +590,25 @@ const Navbar = ({ showNavbar = true }) => {
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <div className="md:hidden py-4 space-y-1 border-t border-gray-200 nb-fade-down">
-              <button className="flex items-center gap-1 w-full text-left text-gray-700 font-medium py-3 px-2 border-b border-gray-100 mb-1">
-                Buy in Central Delhi
-                <ChevronDown size={15} />
+            <div className="lg:hidden py-4 space-y-1 border-t border-gray-200 nb-fade-down">
+              <button
+                onClick={() => {
+                  setIsLocationOpen(!isLocationOpen)
+                }}
+                className="flex items-center gap-1 w-full text-left text-gray-700 font-medium py-3 px-2 border-b border-gray-100 mb-1"
+              >
+                All India
+                <ChevronDown
+                  size={15}
+                  className="transition-transform duration-200"
+                  style={{ transform: isLocationOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                />
               </button>
               {NAV_LINKS.map((link, i) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
+                <button
+                  key={link.label}
                   onClick={() => setIsMenuOpen(false)}
-                  className="group flex items-center justify-between text-gray-700 hover:text-[#193C06] font-medium py-3 px-2 rounded-lg hover:bg-white transition-all duration-200 nb-slide-in"
+                  className="group flex items-center justify-between text-gray-700 hover:text-[#193C06] font-medium py-3 px-2 rounded-lg hover:bg-white transition-all duration-200 nb-slide-in w-full text-left"
                   style={{ animationDelay: `${i * 0.05}s` }}
                 >
                   <span className="flex items-center gap-1.5">
@@ -273,19 +620,20 @@ const Navbar = ({ showNavbar = true }) => {
                     )}
                   </span>
                   <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ color: GREEN }} />
-                </Link>
+                </button>
               ))}
               <div className="pt-3 mt-2 border-t border-gray-200 space-y-2">
-                <button className="flex items-center space-x-2 text-gray-700 hover:text-[#193C06] font-medium py-2.5 px-2 w-full rounded-lg hover:bg-white transition-all duration-200">
-                  <Heart size={18} />
-                  <span>Wishlist</span>
+                <button
+                  className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-700 hover:border-[#193C06] hover:text-[#193C06] transition-colors duration-200"
+                  aria-label="Support"
+                >
+                  <Headphones size={16} />
                 </button>
                 <button className="flex items-center space-x-2 text-gray-700 hover:text-[#193C06] font-medium py-2.5 px-2 w-full rounded-lg hover:bg-white transition-all duration-200">
-                  <Headphones size={18} />
-                  <span>Support</span>
+                  <User size={18} />
+                  <span>Account</span>
                 </button>
                 <button className="flex items-center justify-center gap-2 text-white font-medium px-6 py-2.5 rounded-lg text-center w-full transition-all duration-300 hover:shadow-md" style={{ backgroundColor: GREEN }}>
-                  <User size={16} />
                   Post property (FREE)
                 </button>
               </div>
@@ -301,6 +649,70 @@ const Navbar = ({ showNavbar = true }) => {
           />
         </div>
       </nav>
+
+      {/* Mega menu panel (portal) — identical structure to Header.jsx */}
+      {openMegaMenu &&
+        activeMenuData &&
+        createPortal(
+          <div
+            ref={megaPanelRef}
+            className="fixed w-[1100px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 flex"
+            style={{ top: `${megaPosition.top}px`, left: `${megaPosition.left}px`, maxHeight: 'calc(100vh - 50px)' }}
+          >
+            {/* Column 1 — categories */}
+            <div className="w-64 flex-shrink-0 bg-slate-50 py-6 px-5 space-y-1 overflow-y-auto flex flex-col">
+              <div className="flex-1 space-y-1">
+                {activeMenuData.categories.map((cat, i) => {
+                  const isActive = i === activeCategoryIndex
+                  return (
+                    <button
+                      key={cat.label}
+                      onClick={() => setActiveCategoryIndex(i)}
+                      className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg text-sm font-bold uppercase tracking-wide text-left transition-colors duration-200"
+                      style={{
+                        color: isActive ? GREEN : '#64748B',
+                        backgroundColor: isActive ? 'rgba(25,60,6,0.06)' : 'transparent',
+                      }}
+                    >
+                      <span className="flex items-center gap-2 normal-case font-bold">
+                        {cat.label}
+                        {cat.badge && (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-600 text-white leading-none normal-case">
+                            {cat.badge}
+                          </span>
+                        )}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              <div className="pt-5 mt-4 border-t border-slate-200 text-xs text-slate-500 leading-relaxed">
+                contact us toll free on
+                <div className="text-sm font-bold mt-1" style={{ color: GREEN }}>
+                  {CONTACT_INFO.phone} <span className="font-normal text-slate-400">({CONTACT_INFO.hours})</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Columns 2-4 */}
+            <div className="flex-1 min-w-0 flex flex-col">
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-8 p-6 overflow-y-auto">
+                <MenuColumn heading={activeCategory?.col2?.heading} items={activeCategory?.col2?.items} />
+                {hasCol3 && <MenuColumn heading={activeCategory?.col3?.heading} items={activeCategory?.col3?.items} />}
+                <AdCard menuLabel={openMegaMenu} spanFull={!hasCol3} />
+              </div>
+
+              <div className="flex items-center gap-2 px-6 py-4 bg-slate-50 border-t border-slate-100 text-sm text-slate-500">
+                <Mail size={14} className="flex-shrink-0" />
+                Email us at <span className="font-medium text-slate-700">{CONTACT_INFO.email}</span> or call us at
+                <Phone size={14} className="flex-shrink-0 ml-1" />
+                <span className="font-medium text-slate-700">{CONTACT_INFO.phone}</span> (IND Toll-Free)
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   )
 }

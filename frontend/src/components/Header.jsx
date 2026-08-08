@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 import {
   Search,
   ChevronDown,
+  ChevronUp,
   ChevronRight,
   ChevronLeft,
   Headphones,
@@ -11,6 +12,7 @@ import {
   Menu,
   LocateFixed,
   Mic,
+  Check,
   CheckCircle2,
   ArrowUpRight,
   Sparkles,
@@ -94,17 +96,17 @@ const MEGA_MENUS = {
     categories: [
       {
         label: 'Buy a Home',
-        col2: { heading: 'Properties in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors','Penthouses','Farmhouses'] },
+        col2: { heading: 'Properties in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Penthouses', 'Farmhouses'] },
         col3: { heading: 'Popular Searches', items: ['Property in Delhi', 'Verified Property in Delhi', 'New Projects'] },
       },
       {
         label: 'Land/Plot',
-        col2: { heading: 'Plot Types', items: ['Residential Plots','Commercial Plots', 'Agricultural Land', 'Farm House Land','Industrial Land','Corner Plots','Gated Community Plots'] },
+        col2: { heading: 'Plot Types', items: ['Residential Plots', 'Commercial Plots', 'Agricultural Land', 'Farm House Land', 'Industrial Land', 'Corner Plots', 'Gated Community Plots'] },
         col3: { heading: 'Popular Searches', items: ['Plots near me', 'Gated community plots'] },
       },
       {
         label: 'Commercial',
-        col2: { heading: 'Commercial Spaces', items: ['Office Space', 'Retail Shops', 'Showroom', 'Warehouse','Industrial Building','Factory','Restaurant Space','Hotel','Co-working Space'] },
+        col2: { heading: 'Commercial Spaces', items: ['Office Space', 'Retail Shops', 'Showroom', 'Warehouse', 'Industrial Building', 'Factory', 'Restaurant Space', 'Hotel', 'Co-working Space'] },
         col3: null,
       },
       {
@@ -112,60 +114,69 @@ const MEGA_MENUS = {
         col2: { heading: 'Properties in Delhi', items: ['Property in Karol Bagh', 'Property in New Rajendra Nagar', 'Property in Malcha Marg', 'Property in Connaught Place', 'Property in DaryaGanj', 'Property in Old Rajinder Nagar', 'Property in Paharganj'] },
         col3: { heading: 'Popular Searches', items: ['Property in Delhi', 'Verified Property in Delhi', 'New Projects'] },
       },
-
-    
       { label: 'Insights', badge: 'NEW', col2: null, col3: null },
-      
     ],
   },
   'For Tenants': {
-
-
     categories: [
       {
         label: 'Rent a Home',
-        col2: { heading: 'Rentals in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas','Builder Floors','Studio Apartments','Penthouses','Farmhouses'] },
+        col2: { heading: 'Rentals in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments', 'Penthouses', 'Farmhouses'] },
         col3: { heading: 'Popular Searches', items: ['1 BHK for Rent', '2 BHK for Rent', 'Pet-Friendly Rentals'] },
       },
       {
- 
         label: 'PG / Co-living',
-        col2: { heading: 'PG Options', items: [' Boys PG', 'Girls PG', 'Co-living Spaces','Single Rooms','Shared Rooms','Private Rooms'] },
+        col2: { heading: 'PG Options', items: [' Boys PG', 'Girls PG', 'Co-living Spaces', 'Single Rooms', 'Shared Rooms', 'Private Rooms'] },
         col3: { heading: 'Popular Searches', items: ['PG near me', 'PG with Food'] },
       },
       {
-        
         label: 'Commercial Rent',
         col2: { heading: 'Rent for Business', items: ['Office Space', 'Shops', 'Showrooms', 'Retail Space', 'Warehouse', 'Factory', 'Industrial Space', 'Restaurant Space', 'Hotel Space', 'Co-working Space', 'Business Center'] },
         col3: null,
       },
-     
     ],
   },
   'For Owners': {
     categories: [
       {
         label: 'List Your Property',
-        col2: { heading: 'Post a Listing', items: ['Post Property Free', 'Upload Photos & Videos', 'Get Verified Badge'] },
-        col3: { heading: 'Popular Tools', items: ['Rent Estimator', 'Property Valuation'] },
-      },
-      {
-        label: 'Manage Listings',
-        col2: { heading: 'Owner Dashboard', items: ['Track Enquiries', 'Edit Listings', 'Boost Visibility'] },
+        col2: { heading: 'Post Property', items: ['Post Property for Sale', 'Post Property for Rent', 'Post Commercial Property', 'Post Land / Plot', 'Post Property for Free'] },
         col3: null,
       },
-      
+      {
+        label: 'Manage Your Property',
+        col2: { heading: 'Property Management', items: ['My Properties', 'Edit Property', 'Update Photos & Videos', 'Update Property Details', 'Property Status', 'Delete / Deactivate Listing'] },
+        col3: null,
+      },
+      {
+        label: 'Get Leads',
+        col2: { heading: 'Lead Management', items: ['Buyer Enquiries', 'Tenant Enquiries', 'Call Requests', 'Site Visit Requests', 'Messages', 'Lead Management'] },
+        col3: null,
+      },
     ],
   },
   'For Dealers / Builders': {
     categories: [
       {
-        label: 'Dealer Solutions',
-        col2: { heading: 'For Dealers', items: ['Bulk Listing Upload', 'Lead Management', 'Verified Dealer Badge'] },
-        col3: { heading: 'Popular Tools', items: ['CRM Integration', 'Performance Reports'] },
+        label: 'Manage Properties',
+        col2: { heading: 'Property Management', items: ['Post a Property', 'Manage Listings', 'Edit Property', 'Property Photos & Videos', 'Property Documents', 'Property Status'] },
+        col3: null,
       },
-      
-      { label: 'Advertise With Us', col2: null, col3: null },
+      {
+        label: 'For Builders',
+        col2: { heading: 'Builder Solutions', items: ['Post New Projects', 'Manage Projects', 'Project Inventory', 'Floor Plans', 'Project Brochure', 'Construction Updates', 'Builder Profile'] },
+        col3: null,
+      },
+      {
+        label: 'Lead Management',
+        col2: { heading: 'Lead Tracking', items: ['Buyer Leads', 'Tenant Leads', 'Enquiries', 'Contact Requests', 'Schedule Site Visits', 'Lead Dashboard'] },
+        col3: null,
+      },
+      {
+        label: 'Promote Properties',
+        col2: { heading: 'Advertising', items: ['Featured Listings', 'Premium Listings', 'Boost Property', 'Project Promotion', 'Banner Advertising', 'Advertising Plans'] },
+        col3: null,
+      },
     ],
   },
 }
@@ -177,6 +188,83 @@ const NAV_LINKS = [
   { label: 'For Dealers / Builders' },
   { label: 'Insights', badge: 'NEW' },
 ]
+
+// ---- Search-bar filter panel content (per tab), modelled on 99acres ---
+const TAB_CONFIG = {
+  Buy: {
+    selector: 'All Residential',
+    placeholder: 'Search "Farm house in Punjab below 1 cr"',
+    showLocation: true,
+    checkboxGroups: [
+      ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
+      ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
+      ['Independent House/Villa', 'Farm House'],
+    ],
+    crossLink: 'Looking for commercial properties ?',
+    bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
+  },
+  Rent: {
+    selector: 'All Residential',
+    placeholder: 'Search "Hyderabad"',
+    showLocation: true,
+    checkboxGroups: [
+      ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
+      ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
+      ['Independent House/Villa', 'Farm House'],
+    ],
+    crossLink: 'Looking for commercial properties ?',
+    bottomFilters: ['Budget', 'Bedroom', 'Posted By', 'Furnishing'],
+  },
+  'New Launch': {
+    selector: 'All Residential',
+    placeholder: 'Search "New launch projects in Gurgaon"',
+    showLocation: true,
+    checkboxGroups: [
+      ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
+      ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
+      ['Independent House/Villa', 'Farm House'],
+    ],
+    crossLink: 'Looking for commercial properties ?',
+    bottomFilters: ['Budget', 'Bedroom', 'Possession Status', 'Posted By'],
+  },
+  Commercial: {
+    dualSelector: ['Buy', 'All Commercial'],
+    placeholder: 'Search "Hyderabad"',
+    showLocation: true,
+    propertyTypesHeading: 'Property Types',
+    checkboxGroups: [
+      ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
+      ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
+    ],
+    investmentOptions: {
+      heading: 'Investment Options',
+      badge: 'NEW',
+      items: ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'SCO Plots', 'Hotels', 'Bank/ATM Space'],
+    },
+    crossLink: 'Looking for residential properties ?',
+    investLink: 'Looking to invest?',
+    bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+  },
+  'Plots/Land': {
+    selector: 'Residential',
+    placeholder: 'Search "Hyderabad"',
+    showLocation: true,
+    radioGroup: {
+      heading: 'Plots/Land',
+      options: ['Residential Plots/Land', 'Commercial Plots/Land'],
+    },
+    bottomFilters: ['Budget', 'Area', 'Posted By'],
+  },
+  Projects: {
+    selector: 'Residential Project',
+    placeholder: 'Search "Flats for rent in sector 77 Noida"',
+    showLocation: false,
+    projectCheckboxHeading: 'Residential Project',
+    checkboxGroups: [['New Launch', 'Under Construction', 'Ready to move']],
+    crossLink: 'Looking for commercial projects ?',
+    bottomFilters: ['Budget', 'Bedroom'],
+  },
+}
 
 const AdCard = ({ menuLabel, spanFull }) => {
   const ad = AD_CARDS[menuLabel] || AD_CARDS['For Buyers']
@@ -229,6 +317,54 @@ const MenuColumn = ({ heading, items }) => {
   )
 }
 
+// ---- Filter-panel building blocks --------------------------------------
+const CheckboxRow = ({ label, checked, onToggle }) => (
+  <button type="button" onClick={onToggle} className="flex items-center gap-2.5 text-sm text-left group">
+    <span
+      className="w-[18px] h-[18px] rounded flex items-center justify-center flex-shrink-0 border-[1.5px] transition-colors duration-150"
+      style={{
+        backgroundColor: checked ? BLUE : '#fff',
+        borderColor: checked ? BLUE : '#CBD5E1',
+      }}
+    >
+      {checked && <Check size={12.5} className="text-white" strokeWidth={3.5} />}
+    </span>
+    <span className="font-medium text-slate-700 group-hover:text-slate-900 transition-colors duration-150">{label}</span>
+  </button>
+)
+
+const RadioRow = ({ label, selected, onSelect }) => (
+  <button type="button" onClick={onSelect} className="flex items-center gap-2.5 text-sm text-left group">
+    <span
+      className="w-[18px] h-[18px] rounded-full border-[1.5px] flex items-center justify-center flex-shrink-0 transition-colors duration-150"
+      style={{ borderColor: selected ? BLUE : '#CBD5E1' }}
+    >
+      {selected && <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BLUE }} />}
+    </span>
+    <span className="font-medium text-slate-700 group-hover:text-slate-900 transition-colors duration-150">{label}</span>
+  </button>
+)
+
+const FilterPill = ({ label }) => (
+  <button
+    type="button"
+    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm font-medium text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-colors duration-200"
+  >
+    {label}
+    <ChevronDown size={15} className="text-slate-400" />
+  </button>
+)
+
+const CrossLinkRow = ({ text, className = '' }) => (
+  <p className={`text-sm text-slate-500 ${className}`}>
+    {text} <button type="button" className="font-semibold hover:underline" style={{ color: BLUE }}>Click here</button>
+  </p>
+)
+
+const NewBadge = () => (
+  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-500 text-white leading-none flex-shrink-0">NEW</span>
+)
+
 const Header = () => {
   const [activeTab, setActiveTab] = useState('Buy')
   const [query, setQuery] = useState('')
@@ -246,6 +382,60 @@ const Header = () => {
   const megaTriggerRefs = useRef({})
   const megaPanelRef = useRef(null)
   const [megaPosition, setMegaPosition] = useState({ top: 0, left: 0 })
+
+  // Filter-panel state: per-tab checkbox selections + plots/land radio choice
+  const [checkedByTab, setCheckedByTab] = useState(() => {
+    const initial = {}
+    Object.entries(TAB_CONFIG).forEach(([tab, cfg]) => {
+      initial[tab] = {}
+      cfg.checkboxGroups?.flat().forEach((item) => {
+        initial[tab][item] = true
+      })
+      cfg.investmentOptions?.items.forEach((item) => {
+        initial[tab][item] = false
+      })
+    })
+    return initial
+  })
+  const [plotsSelection, setPlotsSelection] = useState('Residential Plots/Land')
+  const investScrollRef = useRef(null)
+
+  // Filter panel is collapsed by default — opens only when the property-type
+  // selector ("All Residential", "All Commercial", etc.) is clicked.
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const searchCardRef = useRef(null)
+
+  const toggleFilterPanel = () => {
+    setIsLocationOpen(false)
+    setOpenMegaMenu(null)
+    setIsFilterOpen((open) => !open)
+  }
+
+  const toggleCheckbox = (tab, item) => {
+    setCheckedByTab((prev) => ({ ...prev, [tab]: { ...prev[tab], [item]: !prev[tab][item] } }))
+  }
+
+  const clearTabFilters = (tab) => {
+    const cfg = TAB_CONFIG[tab]
+    setCheckedByTab((prev) => {
+      const cleared = { ...prev[tab] }
+      cfg.checkboxGroups?.flat().forEach((item) => {
+        cleared[item] = false
+      })
+      cfg.investmentOptions?.items.forEach((item) => {
+        cleared[item] = false
+      })
+      return { ...prev, [tab]: cleared }
+    })
+  }
+
+  const scrollInvest = (dir) => {
+    investScrollRef.current?.scrollBy({ top: dir * 90, behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    setIsFilterOpen(false)
+  }, [activeTab])
 
   useEffect(() => {
     const onClickOutside = (e) => {
@@ -267,11 +457,15 @@ const Header = () => {
       ) {
         setOpenMegaMenu(null)
       }
+      if (isFilterOpen && searchCardRef.current && !searchCardRef.current.contains(e.target)) {
+        setIsFilterOpen(false)
+      }
     }
     const onEscape = (e) => {
       if (e.key === 'Escape') {
         setIsLocationOpen(false)
         setOpenMegaMenu(null)
+        setIsFilterOpen(false)
       }
     }
     document.addEventListener('mousedown', onClickOutside)
@@ -280,7 +474,7 @@ const Header = () => {
       document.removeEventListener('mousedown', onClickOutside)
       document.removeEventListener('keydown', onEscape)
     }
-  }, [openMegaMenu])
+  }, [openMegaMenu, isFilterOpen])
 
   useEffect(() => {
     if (isLocationOpen && locationRef.current) {
@@ -322,6 +516,8 @@ const Header = () => {
   const activeMenuData = openMegaMenu ? MEGA_MENUS[openMegaMenu] : null
   const activeCategory = activeMenuData?.categories[activeCategoryIndex]
   const hasCol3 = !!activeCategory?.col3?.items?.length
+
+  const tabConfig = TAB_CONFIG[activeTab]
 
   return (
     <div className="w-full">
@@ -578,7 +774,7 @@ const Header = () => {
       {/* Tab bar + search — overlapping card below the hero */}
       <div className="relative z-10 -mt-18">
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-t-2xl shadow-2xl border border-slate-100">
+          <div ref={searchCardRef} className="bg-white rounded-t-2xl shadow-2xl border border-slate-100">
             <div className="flex items-center gap-8 px-6 pt-5 overflow-x-auto scrollbar-hide">
               {TABS.map((tab) => {
                 const isActive = activeTab === tab.label
@@ -609,11 +805,44 @@ const Header = () => {
 
             <div className="h-px bg-slate-100" />
 
+            {/* Selector(s) + search input + action icons */}
             <div className="flex flex-col sm:flex-row items-stretch gap-3 sm:gap-0 px-4 sm:px-6 py-4">
-              <button className="flex items-center gap-1.5 px-4 py-3 sm:pr-5 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0" style={{ color: NAVY }}>
-                All Residential
-                <ChevronDown size={16} className="text-slate-400" />
-              </button>
+              {tabConfig.dualSelector ? (
+                <div className="flex items-center flex-shrink-0 sm:pr-5 sm:border-r border-slate-200">
+                  <button type="button" className="flex items-center gap-1.5 pr-3 py-3 text-sm font-semibold hover:text-[#1E88E5] transition-colors duration-150" style={{ color: NAVY }}>
+                    {tabConfig.dualSelector[0]}
+                    <ChevronDown size={16} className="text-slate-400" />
+                  </button>
+                  <span className="w-px h-5 bg-slate-200 mx-1" />
+                  <button
+                    type="button"
+                    onClick={toggleFilterPanel}
+                    className="flex items-center gap-1.5 pl-3 py-3 text-sm font-semibold hover:text-[#1E88E5] transition-colors duration-150"
+                    style={{ color: NAVY }}
+                  >
+                    {tabConfig.dualSelector[1]}
+                    <ChevronDown
+                      size={16}
+                      className="text-slate-400 transition-transform duration-200"
+                      style={{ transform: isFilterOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                    />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={toggleFilterPanel}
+                  className="flex items-center gap-1.5 px-4 py-3 sm:pr-5 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
+                  style={{ color: NAVY }}
+                >
+                  {tabConfig.selector}
+                  <ChevronDown
+                    size={16}
+                    className="text-slate-400 transition-transform duration-200"
+                    style={{ transform: isFilterOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+              )}
 
               <div className="flex items-center gap-3 flex-1 px-4 sm:px-5">
                 <Search size={18} className="text-slate-400 flex-shrink-0" />
@@ -621,15 +850,17 @@ const Header = () => {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder='Search "Flats for rent in sector 77 Noida"'
+                  placeholder={tabConfig.placeholder}
                   className="w-full bg-transparent text-sm sm:text-base text-slate-700 placeholder-slate-400 focus:outline-none"
                 />
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0 justify-end sm:pr-2">
-                <button className="w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 transition-colors duration-200 hover:bg-slate-50" aria-label="Use current location">
-                  <LocateFixed size={18} style={{ color: BLUE }} />
-                </button>
+                {tabConfig.showLocation && (
+                  <button className="w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 transition-colors duration-200 hover:bg-slate-50" aria-label="Use current location">
+                    <LocateFixed size={18} style={{ color: BLUE }} />
+                  </button>
+                )}
                 <button className="w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 transition-colors duration-200 hover:bg-slate-50" aria-label="Search by voice">
                   <Mic size={18} style={{ color: BLUE }} />
                 </button>
@@ -638,6 +869,137 @@ const Header = () => {
                 </button>
               </div>
             </div>
+
+            {/* Expandable filter panel — content driven by TAB_CONFIG[activeTab], opens on selector click */}
+            {isFilterOpen && (
+            <div className="border-t border-slate-100 px-4 sm:px-6 py-6 animate-filter-in origin-top">
+              {activeTab === 'Commercial' ? (
+                <>
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_240px] gap-8">
+                    <div>
+                      <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
+                        {tabConfig.propertyTypesHeading}
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5">
+                        {tabConfig.checkboxGroups.map((group, gi) => (
+                          <div key={gi} className="space-y-3.5">
+                            {group.map((item) => (
+                              <CheckboxRow
+                                key={item}
+                                label={item}
+                                checked={!!checkedByTab[activeTab]?.[item]}
+                                onToggle={() => toggleCheckbox(activeTab, item)}
+                              />
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="hidden lg:block w-px bg-slate-100" />
+
+                    <div>
+                      <div className="flex items-center justify-between gap-3 mb-4">
+                        <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 flex items-center gap-1.5">
+                          {tabConfig.investmentOptions.heading}
+                          <NewBadge />
+                        </h4>
+                        <button type="button" onClick={() => clearTabFilters(activeTab)} className="text-sm font-semibold flex-shrink-0 hover:underline" style={{ color: BLUE }}>
+                          Clear
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <button type="button" onClick={() => scrollInvest(-1)} className="w-full flex justify-center text-slate-300 hover:text-slate-500 transition-colors duration-150">
+                          <ChevronUp size={14} />
+                        </button>
+                        <div ref={investScrollRef} className="max-h-[150px] overflow-y-auto space-y-3.5 py-1.5 scrollbar-hide">
+                          {tabConfig.investmentOptions.items.map((item) => (
+                            <CheckboxRow
+                              key={item}
+                              label={item}
+                              checked={!!checkedByTab[activeTab]?.[item]}
+                              onToggle={() => toggleCheckbox(activeTab, item)}
+                            />
+                          ))}
+                        </div>
+                        <button type="button" onClick={() => scrollInvest(1)} className="w-full flex justify-center text-slate-300 hover:text-slate-500 transition-colors duration-150">
+                          <ChevronDown size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <CrossLinkRow text={tabConfig.crossLink} className="mt-5" />
+                  <p className="text-sm text-slate-500 mt-2 flex items-center gap-1.5">
+                    <NewBadge />
+                    {tabConfig.investLink}{' '}
+                    <button type="button" className="font-semibold hover:underline" style={{ color: BLUE }}>
+                      Click here
+                    </button>
+                  </p>
+                </>
+              ) : activeTab === 'Plots/Land' ? (
+                <>
+                  <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
+                    {tabConfig.radioGroup.heading}
+                  </h4>
+                  <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
+                    {tabConfig.radioGroup.options.map((opt) => (
+                      <RadioRow key={opt} label={opt} selected={plotsSelection === opt} onSelect={() => setPlotsSelection(opt)} />
+                    ))}
+                  </div>
+                </>
+              ) : activeTab === 'Projects' ? (
+                <>
+                  <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
+                    {tabConfig.projectCheckboxHeading}
+                  </h4>
+                  <div className="flex flex-wrap items-center gap-x-10 gap-y-3 mb-5">
+                    {tabConfig.checkboxGroups[0].map((item) => (
+                      <CheckboxRow
+                        key={item}
+                        label={item}
+                        checked={!!checkedByTab[activeTab]?.[item]}
+                        onToggle={() => toggleCheckbox(activeTab, item)}
+                      />
+                    ))}
+                  </div>
+                  <CrossLinkRow text={tabConfig.crossLink} />
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-end mb-3">
+                    <button type="button" onClick={() => clearTabFilters(activeTab)} className="text-sm font-semibold hover:underline" style={{ color: BLUE }}>
+                      Clear
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-10 gap-y-3.5 mb-5">
+                    {tabConfig.checkboxGroups.map((group, gi) => (
+                      <div key={gi} className="space-y-3.5">
+                        {group.map((item) => (
+                          <CheckboxRow
+                            key={item}
+                            label={item}
+                            checked={!!checkedByTab[activeTab]?.[item]}
+                            onToggle={() => toggleCheckbox(activeTab, item)}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                  <CrossLinkRow text={tabConfig.crossLink} />
+                </>
+              )}
+
+              <div className="h-px bg-slate-100 my-5" />
+
+              <div className="flex flex-wrap items-center gap-3">
+                {tabConfig.bottomFilters.map((f) => (
+                  <FilterPill key={f} label={f} />
+                ))}
+              </div>
+            </div>
+            )}
           </div>
         </div>
       </div>
@@ -650,8 +1012,14 @@ const Header = () => {
           to { opacity: 1; transform: scale(1) translateY(0); }
         }
         .animate-loc-in { animation: loc-in 0.18s ease both; }
+        @keyframes filter-in {
+          from { opacity: 0; transform: scaleY(0.96) translateY(-4px); }
+          to { opacity: 1; transform: scaleY(1) translateY(0); }
+        }
+        .animate-filter-in { animation: filter-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
         @media (prefers-reduced-motion: reduce) {
           .animate-loc-in { animation: none; }
+          .animate-filter-in { animation: none; }
         }
       `}</style>
     </div>
