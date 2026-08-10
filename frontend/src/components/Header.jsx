@@ -27,9 +27,10 @@ const BLUE = '#1E88E5'
 const TABS = [
   { label: 'Buy' },
   { label: 'Rent' },
+  { label: 'Plots/Land' },
   { label: 'New Launch', dot: true },
   { label: 'Commercial' },
-  { label: 'Plots/Land' },
+  
   { label: 'Projects' },
 ]
 
@@ -38,20 +39,15 @@ const RECENT_SEARCHES = ['PG in Central Delhi', 'Buy in Central Delhi']
 const QUICK_REGIONS = ['All India', 'Dubai', 'For NRI']
 const POPULAR_CITIES = [
   { name: 'Delhi', state: 'Delhi NCR' },
-  { name: 'Mumbai', state: 'Maharashtra' },
-  { name: 'Bangalore', state: 'Karnataka' },
-  { name: 'Chennai', state: 'Tamil Nadu' },
-  { name: 'Hyderabad', state: 'Telangana' },
-  { name: 'Pune', state: 'Maharashtra' },
-  { name: 'Kolkata', state: 'West Bengal' },
-  { name: 'Ahmedabad', state: 'Gujarat' },
-  { name: 'Jaipur', state: 'Rajasthan' },
-  { name: 'Lucknow', state: 'Uttar Pradesh' },
-  { name: 'Chandigarh', state: 'Punjab' },
+  { name: 'Central Delhi', state: 'Delhi' },
+  { name: 'East Delhi', state: 'Delhi' },
+  { name: 'North Delhi', state: 'Delhi' },
+  { name: 'South Delhi', state: 'Delhi' },
+  { name: 'West Delhi', state: 'Delhi' },
+  { name: 'Greater Noida', state: 'Delhi NCR' },
   { name: 'Noida', state: 'Delhi NCR' },
-  { name: 'Gurgaon', state: 'Delhi NCR' },
   { name: 'Faridabad', state: 'Delhi NCR' },
-  { name: 'Ghaziabad', state: 'Delhi NCR' },
+  { name: 'Gurgaon', state: 'Delhi NCR' },
 ]
 
 const HERO_IMAGES = [assets.header, assets.header2, assets.header3, assets.header4].filter(Boolean)
@@ -95,7 +91,7 @@ const MEGA_MENUS = {
   'For Buyers': {
     categories: [
       {
-        label: 'Buy a Home',
+        label: 'Apartments',
         col2: { heading: 'Properties in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Penthouses', 'Farmhouses'] },
         col3: { heading: 'Popular Searches', items: ['Property in Delhi', 'Verified Property in Delhi', 'New Projects'] },
       },
@@ -120,7 +116,7 @@ const MEGA_MENUS = {
   'For Tenants': {
     categories: [
       {
-        label: 'Rent a Home',
+        label: 'Apartments',
         col2: { heading: 'Rentals in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments', 'Penthouses', 'Farmhouses'] },
         col3: { heading: 'Popular Searches', items: ['1 BHK for Rent', '2 BHK for Rent', 'Pet-Friendly Rentals'] },
       },
@@ -190,9 +186,105 @@ const NAV_LINKS = [
 ]
 
 // ---- Search-bar filter panel content (per tab), modelled on 99acres ---
+const PROPERTY_CATEGORIES = {
+  Residential: {
+    Buy: {
+      placeholder: 'Search "Farm house in Punjab below 1 cr"',
+      showLocation: true,
+      checkboxGroups: [
+        ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
+        ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
+        ['Independent House/Villa', 'Farm House'],
+      ],
+      crossLink: 'Looking for commercial properties ?',
+      bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
+    },
+    Rent: {
+      placeholder: 'Search "Hyderabad"',
+      showLocation: true,
+      checkboxGroups: [
+        ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
+        ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
+        ['Independent House/Villa', 'Farm House'],
+      ],
+      crossLink: 'Looking for commercial properties ?',
+      bottomFilters: ['Budget', 'Bedroom', 'Posted By', 'Furnishing'],
+    },
+    'New Launch': {
+      placeholder: 'Search "New launch projects in Gurgaon"',
+      showLocation: true,
+      checkboxGroups: [
+        ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
+        ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
+        ['Independent House/Villa', 'Farm House'],
+      ],
+      crossLink: 'Looking for commercial properties ?',
+      bottomFilters: ['Budget', 'Bedroom', 'Possession Status', 'Posted By'],
+    },
+  },
+  Commercial: {
+    Buy: {
+      placeholder: 'Search "Hyderabad"',
+      showLocation: true,
+      propertyTypesHeading: 'Property Types',
+      checkboxGroups: [
+        ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
+        ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
+        ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'Hotels', 'Bank/ATM Space'],
+      ],
+      crossLink: 'Looking for residential properties ?',
+      bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+    },
+    Rent: {
+      placeholder: 'Search "Hyderabad"',
+      showLocation: true,
+      propertyTypesHeading: 'Property Types',
+      checkboxGroups: [
+        ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
+        ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
+        ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'Hotels', 'Bank/ATM Space'],
+      ],
+      crossLink: 'Looking for residential properties ?',
+      bottomFilters: ['Budget', 'Area', 'Posted By'],
+    },
+    'New Launch': {
+      placeholder: 'Search "New launch projects in Gurgaon"',
+      showLocation: true,
+      propertyTypesHeading: 'Property Types',
+      checkboxGroups: [
+        ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
+        ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
+        ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'Hotels', 'Bank/ATM Space'],
+      ],
+      crossLink: 'Looking for residential properties ?',
+      bottomFilters: ['Budget', 'Area', 'Possession Status', 'Posted By'],
+    },
+  },
+  'Plot/Land': {
+    Buy: {
+      placeholder: 'Search "Hyderabad"',
+      showLocation: true,
+      radioGroup: {
+        heading: 'Plots/Land',
+        options: ['Residential Plots/Land', 'Commercial Plots/Land'],
+      },
+      bottomFilters: ['Budget', 'Area', 'Posted By'],
+    },
+    Rent: {
+      placeholder: 'Search "Hyderabad"',
+      showLocation: true,
+      radioGroup: {
+        heading: 'Plots/Land',
+        options: ['Residential Plots/Land', 'Commercial Plots/Land'],
+      },
+      bottomFilters: ['Budget', 'Area', 'Posted By'],
+    },
+  },
+}
+
 const TAB_CONFIG = {
   Buy: {
-    selector: 'All Residential',
+    selector: 'Residential',
     placeholder: 'Search "Farm house in Punjab below 1 cr"',
     showLocation: true,
     checkboxGroups: [
@@ -204,7 +296,7 @@ const TAB_CONFIG = {
     bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
   },
   Rent: {
-    selector: 'All Residential',
+    selector: 'Residential',
     placeholder: 'Search "Hyderabad"',
     showLocation: true,
     checkboxGroups: [
@@ -216,7 +308,7 @@ const TAB_CONFIG = {
     bottomFilters: ['Budget', 'Bedroom', 'Posted By', 'Furnishing'],
   },
   'New Launch': {
-    selector: 'All Residential',
+    selector: 'Residential',
     placeholder: 'Search "New launch projects in Gurgaon"',
     showLocation: true,
     checkboxGroups: [
@@ -228,21 +320,16 @@ const TAB_CONFIG = {
     bottomFilters: ['Budget', 'Bedroom', 'Possession Status', 'Posted By'],
   },
   Commercial: {
-    dualSelector: ['Buy', 'All Commercial'],
+    selector: 'All Commercial',
     placeholder: 'Search "Hyderabad"',
     showLocation: true,
     propertyTypesHeading: 'Property Types',
     checkboxGroups: [
       ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
       ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
+      ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'Hotels', 'Bank/ATM Space'],
     ],
-    investmentOptions: {
-      heading: 'Investment Options',
-      badge: 'NEW',
-      items: ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'SCO Plots', 'Hotels', 'Bank/ATM Space'],
-    },
     crossLink: 'Looking for residential properties ?',
-    investLink: 'Looking to invest?',
     bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
   },
   'Plots/Land': {
@@ -389,7 +476,7 @@ const Header = () => {
     Object.entries(TAB_CONFIG).forEach(([tab, cfg]) => {
       initial[tab] = {}
       cfg.checkboxGroups?.flat().forEach((item) => {
-        initial[tab][item] = true
+        initial[tab][item] = false
       })
       cfg.investmentOptions?.items.forEach((item) => {
         initial[tab][item] = false
@@ -397,7 +484,7 @@ const Header = () => {
     })
     return initial
   })
-  const [plotsSelection, setPlotsSelection] = useState('Residential Plots/Land')
+  const [plotsSelection, setPlotsSelection] = useState(null)
   const investScrollRef = useRef(null)
 
   // Filter panel is collapsed by default — opens only when the property-type
@@ -405,8 +492,23 @@ const Header = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const searchCardRef = useRef(null)
 
+  // Property category dropdown state
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState('Residential')
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null)
+  const categoryDropdownRef = useRef(null)
+  const categoryTriggerRef = useRef(null)
+  const [categoryDropdownPosition, setCategoryDropdownPosition] = useState({ top: 0, left: 0 })
+
+  // Sub-category dropdown state
+  const [isSubCategoryDropdownOpen, setIsSubCategoryDropdownOpen] = useState(false)
+  const subCategoryDropdownRef = useRef(null)
+  const subCategoryTriggerRef = useRef(null)
+  const [subCategoryDropdownPosition, setSubCategoryDropdownPosition] = useState({ top: 0, left: 0 })
+
   const toggleFilterPanel = () => {
     setIsLocationOpen(false)
+    setIsCategoryDropdownOpen(false)
     setOpenMegaMenu(null)
     setIsFilterOpen((open) => !open)
   }
@@ -435,6 +537,7 @@ const Header = () => {
 
   useEffect(() => {
     setIsFilterOpen(false)
+    setIsCategoryDropdownOpen(false)
   }, [activeTab])
 
   useEffect(() => {
@@ -447,6 +550,23 @@ const Header = () => {
       ) {
         setIsLocationOpen(false)
       }
+      if (
+        categoryTriggerRef.current &&
+        !categoryTriggerRef.current.contains(e.target) &&
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(e.target)
+      ) {
+        setIsCategoryDropdownOpen(false)
+        setIsSubCategoryDropdownOpen(false)
+      }
+      if (
+        subCategoryTriggerRef.current &&
+        !subCategoryTriggerRef.current.contains(e.target) &&
+        subCategoryDropdownRef.current &&
+        !subCategoryDropdownRef.current.contains(e.target)
+      ) {
+        setIsSubCategoryDropdownOpen(false)
+      }
       const currentTrigger = openMegaMenu ? megaTriggerRefs.current[openMegaMenu] : null
       if (
         openMegaMenu &&
@@ -457,15 +577,13 @@ const Header = () => {
       ) {
         setOpenMegaMenu(null)
       }
-      if (isFilterOpen && searchCardRef.current && !searchCardRef.current.contains(e.target)) {
-        setIsFilterOpen(false)
-      }
     }
     const onEscape = (e) => {
       if (e.key === 'Escape') {
         setIsLocationOpen(false)
+        setIsCategoryDropdownOpen(false)
+        setIsSubCategoryDropdownOpen(false)
         setOpenMegaMenu(null)
-        setIsFilterOpen(false)
       }
     }
     document.addEventListener('mousedown', onClickOutside)
@@ -482,6 +600,20 @@ const Header = () => {
       setDropdownPosition({ top: rect.bottom + 8, left: rect.left })
     }
   }, [isLocationOpen])
+
+  useEffect(() => {
+    if (isCategoryDropdownOpen && categoryTriggerRef.current) {
+      const rect = categoryTriggerRef.current.getBoundingClientRect()
+      setCategoryDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+    }
+  }, [isCategoryDropdownOpen])
+
+  useEffect(() => {
+    if (isSubCategoryDropdownOpen && subCategoryTriggerRef.current) {
+      const rect = subCategoryTriggerRef.current.getBoundingClientRect()
+      setSubCategoryDropdownPosition({ top: rect.top, left: rect.right + 8 })
+    }
+  }, [isSubCategoryDropdownOpen])
 
   const toggleMegaMenu = (label) => {
     setIsLocationOpen(false)
@@ -518,6 +650,7 @@ const Header = () => {
   const hasCol3 = !!activeCategory?.col3?.items?.length
 
   const tabConfig = TAB_CONFIG[activeTab]
+  const categoryConfig = PROPERTY_CATEGORIES[selectedCategory]?.[activeTab] || tabConfig
 
   return (
     <div className="w-full">
@@ -583,7 +716,7 @@ const Header = () => {
                     }}
                     className="hidden sm:flex items-center gap-1 text-white/90 text-sm font-medium border-l border-white/30 pl-4 hover:text-white transition-colors duration-200"
                   >
-                  All India 
+                 Select City
                     <ChevronDown
                       size={16}
                       className="transition-transform duration-200"
@@ -828,7 +961,7 @@ const Header = () => {
                     />
                   </button>
                 </div>
-              ) : (
+              ) : activeTab === 'Commercial' ? (
                 <button
                   type="button"
                   onClick={toggleFilterPanel}
@@ -842,6 +975,82 @@ const Header = () => {
                     style={{ transform: isFilterOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                   />
                 </button>
+              ) : activeTab === 'Buy' || activeTab === 'Rent' || activeTab === 'New Launch' || activeTab === 'Plots/Land' || activeTab === 'Projects' ? (
+                <div className="flex items-center gap-1 flex-shrink-0 sm:pr-5 sm:border-r border-slate-200">
+                  {Object.keys(PROPERTY_CATEGORIES).filter(cat => 
+                    activeTab === 'Buy' || activeTab === 'Rent' ? true : cat !== 'Plot/Land'
+                  ).map((category) => (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => {
+                        if (isFilterOpen && selectedCategory === category) {
+                          setIsFilterOpen(false)
+                        } else {
+                          setSelectedCategory(category)
+                          setIsFilterOpen(true)
+                        }
+                      }}
+                      className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#1E88E5] transition-colors duration-150"
+                      style={{ color: selectedCategory === category ? '#1E88E5' : '#1A202C' }}
+                    >
+                      {category}
+                      <ChevronDown
+                        size={14}
+                        className="text-slate-400 transition-transform duration-200"
+                        style={{ transform: isFilterOpen && selectedCategory === category ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                      />
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="relative" ref={categoryTriggerRef}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLocationOpen(false)
+                      setOpenMegaMenu(null)
+                      setIsCategoryDropdownOpen((open) => !open)
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-3 sm:pr-5 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
+                    style={{ color: NAVY }}
+                  >
+                    {selectedCategory}
+                    <ChevronDown
+                      size={16}
+                      className="text-slate-400 transition-transform duration-200"
+                      style={{ transform: isCategoryDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                    />
+                  </button>
+
+                  {isCategoryDropdownOpen &&
+                    createPortal(
+                      <div
+                        ref={categoryDropdownRef}
+                        className="fixed w-48 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                        style={{ top: `${categoryDropdownPosition.top}px`, left: `${categoryDropdownPosition.left}px` }}
+                      >
+                        <div className="py-2">
+                          {Object.keys(PROPERTY_CATEGORIES).filter(cat => cat !== 'Plot/Land').map((category) => (
+                            <button
+                              key={category}
+                              onClick={() => {
+                                setSelectedCategory(category)
+                                setIsCategoryDropdownOpen(false)
+                                setIsFilterOpen(true)
+                              }}
+                              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
+                                selectedCategory === category ? 'bg-slate-50 text-[#1E88E5]' : 'text-slate-700 hover:bg-slate-50'
+                              }`}
+                            >
+                              {category}
+                            </button>
+                          ))}
+                        </div>
+                      </div>,
+                      document.body
+                    )}
+                </div>
               )}
 
               <div className="flex items-center gap-3 flex-1 px-4 sm:px-5">
@@ -850,13 +1059,13 @@ const Header = () => {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={tabConfig.placeholder}
+                  placeholder={categoryConfig.placeholder}
                   className="w-full bg-transparent text-sm sm:text-base text-slate-700 placeholder-slate-400 focus:outline-none"
                 />
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0 justify-end sm:pr-2">
-                {tabConfig.showLocation && (
+                {categoryConfig.showLocation && (
                   <button className="w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 transition-colors duration-200 hover:bg-slate-50" aria-label="Use current location">
                     <LocateFixed size={18} style={{ color: BLUE }} />
                   </button>
@@ -870,84 +1079,64 @@ const Header = () => {
               </div>
             </div>
 
-            {/* Expandable filter panel — content driven by TAB_CONFIG[activeTab], opens on selector click */}
+            {/* Expandable filter panel — content driven by categoryConfig, opens on selector click */}
             {isFilterOpen && (
             <div className="border-t border-slate-100 px-4 sm:px-6 py-6 animate-filter-in origin-top">
-              {activeTab === 'Commercial' ? (
+              {categoryConfig.propertyTypesHeading ? (
                 <>
-                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_240px] gap-8">
-                    <div>
-                      <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
-                        {tabConfig.propertyTypesHeading}
-                      </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5">
-                        {tabConfig.checkboxGroups.map((group, gi) => (
-                          <div key={gi} className="space-y-3.5">
-                            {group.map((item) => (
-                              <CheckboxRow
-                                key={item}
-                                label={item}
-                                checked={!!checkedByTab[activeTab]?.[item]}
-                                onToggle={() => toggleCheckbox(activeTab, item)}
-                              />
-                            ))}
-                          </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400">
+                      {categoryConfig.propertyTypesHeading}
+                    </h4>
+                    <button type="button" onClick={() => clearTabFilters(activeTab)} className="text-sm font-semibold flex-shrink-0 hover:underline" style={{ color: BLUE }}>
+                      Clear
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-3.5">
+                    {categoryConfig.checkboxGroups.map((group, gi) => (
+                      <div key={gi} className="space-y-3.5">
+                        {group.map((item) => (
+                          <CheckboxRow
+                            key={item}
+                            label={item}
+                            checked={!!checkedByTab[activeTab]?.[item]}
+                            onToggle={() => toggleCheckbox(activeTab, item)}
+                          />
                         ))}
                       </div>
-                    </div>
-
-                    <div className="hidden lg:block w-px bg-slate-100" />
-
-                    <div>
-                      <div className="flex items-center justify-between gap-3 mb-4">
-                        <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 flex items-center gap-1.5">
-                          {tabConfig.investmentOptions.heading}
-                          <NewBadge />
-                        </h4>
-                        <button type="button" onClick={() => clearTabFilters(activeTab)} className="text-sm font-semibold flex-shrink-0 hover:underline" style={{ color: BLUE }}>
-                          Clear
-                        </button>
-                      </div>
-                      <div className="relative">
-                        <button type="button" onClick={() => scrollInvest(-1)} className="w-full flex justify-center text-slate-300 hover:text-slate-500 transition-colors duration-150">
-                          <ChevronUp size={14} />
-                        </button>
-                        <div ref={investScrollRef} className="max-h-[150px] overflow-y-auto space-y-3.5 py-1.5 scrollbar-hide">
-                          {tabConfig.investmentOptions.items.map((item) => (
-                            <CheckboxRow
-                              key={item}
-                              label={item}
-                              checked={!!checkedByTab[activeTab]?.[item]}
-                              onToggle={() => toggleCheckbox(activeTab, item)}
-                            />
-                          ))}
-                        </div>
-                        <button type="button" onClick={() => scrollInvest(1)} className="w-full flex justify-center text-slate-300 hover:text-slate-500 transition-colors duration-150">
-                          <ChevronDown size={14} />
-                        </button>
-                      </div>
-                    </div>
+                    ))}
                   </div>
 
-                  <CrossLinkRow text={tabConfig.crossLink} className="mt-5" />
-                  <p className="text-sm text-slate-500 mt-2 flex items-center gap-1.5">
-                    <NewBadge />
-                    {tabConfig.investLink}{' '}
-                    <button type="button" className="font-semibold hover:underline" style={{ color: BLUE }}>
-                      Click here
-                    </button>
-                  </p>
+                  {categoryConfig.crossLink && <CrossLinkRow text={categoryConfig.crossLink} className="mt-5" />}
                 </>
-              ) : activeTab === 'Plots/Land' ? (
+              ) : categoryConfig.radioGroup ? (
                 <>
                   <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
-                    {tabConfig.radioGroup.heading}
+                    {categoryConfig.radioGroup.heading}
                   </h4>
                   <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
-                    {tabConfig.radioGroup.options.map((opt) => (
+                    {categoryConfig.radioGroup.options.map((opt) => (
                       <RadioRow key={opt} label={opt} selected={plotsSelection === opt} onSelect={() => setPlotsSelection(opt)} />
                     ))}
                   </div>
+                </>
+              ) : categoryConfig.checkboxGroups ? (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5">
+                    {categoryConfig.checkboxGroups.map((group, gi) => (
+                      <div key={gi} className="space-y-3.5">
+                        {group.map((item) => (
+                          <CheckboxRow
+                            key={item}
+                            label={item}
+                            checked={!!checkedByTab[activeTab]?.[item]}
+                            onToggle={() => toggleCheckbox(activeTab, item)}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                  {categoryConfig.crossLink && <CrossLinkRow text={categoryConfig.crossLink} className="mt-5" />}
                 </>
               ) : activeTab === 'Projects' ? (
                 <>

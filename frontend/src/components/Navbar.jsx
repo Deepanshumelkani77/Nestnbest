@@ -62,20 +62,15 @@ const CONTACT_INFO = {
 
 const POPULAR_CITIES = [
   { name: 'Delhi', state: 'Delhi NCR' },
-  { name: 'Mumbai', state: 'Maharashtra' },
-  { name: 'Bangalore', state: 'Karnataka' },
-  { name: 'Chennai', state: 'Tamil Nadu' },
-  { name: 'Hyderabad', state: 'Telangana' },
-  { name: 'Pune', state: 'Maharashtra' },
-  { name: 'Kolkata', state: 'West Bengal' },
-  { name: 'Ahmedabad', state: 'Gujarat' },
-  { name: 'Jaipur', state: 'Rajasthan' },
-  { name: 'Lucknow', state: 'Uttar Pradesh' },
-  { name: 'Chandigarh', state: 'Punjab' },
+  { name: 'Central Delhi', state: 'Delhi' },
+  { name: 'East Delhi', state: 'Delhi' },
+  { name: 'North Delhi', state: 'Delhi' },
+  { name: 'South Delhi', state: 'Delhi' },
+  { name: 'West Delhi', state: 'Delhi' },
+  { name: 'Greater Noida', state: 'Delhi NCR' },
   { name: 'Noida', state: 'Delhi NCR' },
-  { name: 'Gurgaon', state: 'Delhi NCR' },
   { name: 'Faridabad', state: 'Delhi NCR' },
-  { name: 'Ghaziabad', state: 'Delhi NCR' },
+  { name: 'Gurgaon', state: 'Delhi NCR' },
 ]
 
 const MEGA_MENUS = {
@@ -241,6 +236,11 @@ const Navbar = ({ showNavbar = true }) => {
   const dropdownRef = useRef(null)
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
 
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
+  const userDropdownRef = useRef(null)
+  const userTriggerRef = useRef(null)
+  const [userDropdownPosition, setUserDropdownPosition] = useState({ top: 0, left: 0 })
+
   const [openMegaMenu, setOpenMegaMenu] = useState(null)
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0)
   const megaTriggerRefs = useRef({})
@@ -273,6 +273,14 @@ const Navbar = ({ showNavbar = true }) => {
       ) {
         setIsLocationOpen(false)
       }
+      if (
+        userTriggerRef.current &&
+        !userTriggerRef.current.contains(e.target) &&
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(e.target)
+      ) {
+        setIsUserDropdownOpen(false)
+      }
       const currentTrigger = openMegaMenu ? megaTriggerRefs.current[openMegaMenu] : null
       if (
         openMegaMenu &&
@@ -287,6 +295,7 @@ const Navbar = ({ showNavbar = true }) => {
     const onEscape = (e) => {
       if (e.key === 'Escape') {
         setIsLocationOpen(false)
+        setIsUserDropdownOpen(false)
         setOpenMegaMenu(null)
       }
     }
@@ -305,8 +314,16 @@ const Navbar = ({ showNavbar = true }) => {
     }
   }, [isLocationOpen])
 
+  useEffect(() => {
+    if (isUserDropdownOpen && userTriggerRef.current) {
+      const rect = userTriggerRef.current.getBoundingClientRect()
+      setUserDropdownPosition({ top: rect.bottom + 8, left: rect.right - 200 })
+    }
+  }, [isUserDropdownOpen])
+
   const toggleMegaMenu = (label) => {
     setIsLocationOpen(false)
+    setIsUserDropdownOpen(false)
     setActiveCategoryIndex(0)
     setOpenMegaMenu((current) => {
       const next = current === label ? null : label
@@ -552,13 +569,52 @@ const Navbar = ({ showNavbar = true }) => {
                 <Headphones size={16} />
               </button>
 
-              <button className="relative flex items-center gap-1 text-gray-700 hover:text-[#193C06] transition-colors duration-200">
-                <span className="relative">
-                  <User size={22} />
-                  <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-rose-500 border border-[#F4F5F9]" />
-                </span>
-                <ChevronDown size={14} />
-              </button>
+              <div className="relative" ref={userTriggerRef}>
+                <button
+                  onClick={() => {
+                    setIsLocationOpen(false)
+                    setOpenMegaMenu(null)
+                    setIsUserDropdownOpen((open) => !open)
+                  }}
+                  className="relative flex items-center gap-1 text-gray-700 hover:text-[#193C06] transition-colors duration-200"
+                >
+                  <span className="relative">
+                    <User size={22} />
+                    <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-rose-500 border border-[#F4F5F9]" />
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className="transition-transform duration-200"
+                    style={{ transform: isUserDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+
+                {isUserDropdownOpen &&
+                  createPortal(
+                    <div
+                      ref={userDropdownRef}
+                      className="fixed w-48 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      style={{ top: `${userDropdownPosition.top}px`, left: `${userDropdownPosition.left}px` }}
+                    >
+                      <div className="py-2">
+                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          <User size={16} className="text-slate-400" />
+                          Sign In
+                        </button>
+                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          <User size={16} className="text-slate-400" />
+                          Register
+                        </button>
+                        <div className="my-2 border-t border-slate-100" />
+                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          <Headphones size={16} className="text-slate-400" />
+                          Support
+                        </button>
+                      </div>
+                    </div>,
+                    document.body
+                  )}
+              </div>
 
               <button className="text-gray-700 hover:text-[#193C06] transition-colors duration-200">
                 <Menu size={22} />
