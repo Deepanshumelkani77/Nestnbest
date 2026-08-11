@@ -208,13 +208,8 @@ const ProjectCard = ({ project }) => {
           alt={project.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className={`absolute top-3 left-3 px-3 py-1 rounded-full ${getStatusColor(project.status)} text-white text-xs font-semibold`}>
-          {project.status}
-        </div>
-        <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500 text-white text-xs font-semibold">
-          <Star size={12} fill="currentColor" />
-          {project.rating}
-        </div>
+      
+        
       </div>
 
       <div className="p-5">
