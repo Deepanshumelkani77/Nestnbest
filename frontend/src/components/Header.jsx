@@ -26,12 +26,9 @@ const BLUE = '#1E88E5'
 
 const TABS = [
   { label: 'Buy' },
-  { label: 'Rent' },
-  { label: 'Plots/Land' },
   { label: 'New Launch', dot: true },
-  { label: 'Commercial' },
-  
   { label: 'Projects' },
+    { label: 'Rent' },
 ]
 
 const LOCATION_TABS = ['Buy', 'Rent / Lease', 'Plots/Land', 'PG / Co-living']
@@ -192,34 +189,49 @@ const PROPERTY_CATEGORIES = {
       placeholder: 'Search "Farm house in Punjab below 1 cr"',
       showLocation: true,
       checkboxGroups: [
-        ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
-        ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
-        ['Independent House/Villa', 'Farm House'],
+        ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments'],
+        ['Duplex Homes', 'Penthouse', 'Residential Plots', 'Gated Community', 'Farm Houses'],
       ],
-      crossLink: 'Looking for commercial properties ?',
       bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
     },
     Rent: {
       placeholder: 'Search "Hyderabad"',
       showLocation: true,
       checkboxGroups: [
-        ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
-        ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
-        ['Independent House/Villa', 'Farm House'],
+        ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments'],
+        ['Furnished Flats', 'Semi-Furnished Flats', 'Unfurnished Flats'],
       ],
-      crossLink: 'Looking for commercial properties ?',
       bottomFilters: ['Budget', 'Bedroom', 'Posted By', 'Furnishing'],
     },
     'New Launch': {
       placeholder: 'Search "New launch projects in Gurgaon"',
       showLocation: true,
       checkboxGroups: [
-        ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
-        ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
-        ['Independent House/Villa', 'Farm House'],
+        ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Studio Apartments'],
+        ['Luxury Homes', 'Residential Plots', 'Township Projects'],
       ],
-      crossLink: 'Looking for commercial properties ?',
       bottomFilters: ['Budget', 'Bedroom', 'Possession Status', 'Posted By'],
+    },
+    Projects: {
+      placeholder: 'Search "Residential projects in Hyderabad"',
+      showLocation: true,
+      propertyTypesHeading: 'Project Types',
+      checkboxGroups: [
+        ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Luxury Projects'],
+        ['Affordable Housing', 'Township Projects'],
+      ],
+      bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
+    },
+  },
+  'PG / Co-Living': {
+    Rent: {
+      placeholder: 'Search "PG in Hyderabad"',
+      showLocation: true,
+      checkboxGroups: [
+        ['Boys PG', 'Girls PG', 'Co-Living Spaces', 'Single Room', 'Shared Room'],
+        ['Student Accommodation', 'Working Professionals'],
+      ],
+      bottomFilters: ['Budget', 'Posted By', 'Furnishing'],
     },
   },
   Commercial: {
@@ -228,11 +240,9 @@ const PROPERTY_CATEGORIES = {
       showLocation: true,
       propertyTypesHeading: 'Property Types',
       checkboxGroups: [
-        ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
-        ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
-        ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'Hotels', 'Bank/ATM Space'],
+        ['Office Space', 'Commercial Shops', 'Showrooms', 'Retail Spaces', 'Commercial Buildings'],
+        ['Commercial Plots', 'Co-working Spaces', 'Food Court / Restaurant Space', 'Hotels & Hospitality', 'Commercial Complexes'],
       ],
-      crossLink: 'Looking for residential properties ?',
       bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
     },
     Rent: {
@@ -240,11 +250,9 @@ const PROPERTY_CATEGORIES = {
       showLocation: true,
       propertyTypesHeading: 'Property Types',
       checkboxGroups: [
-        ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
-        ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
-        ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'Hotels', 'Bank/ATM Space'],
+        ['Office Space', 'Shops', 'Showrooms', 'Commercial Buildings', 'Co-working Spaces'],
+        ['Business Centres'],
       ],
-      crossLink: 'Looking for residential properties ?',
       bottomFilters: ['Budget', 'Area', 'Posted By'],
     },
     'New Launch': {
@@ -252,32 +260,62 @@ const PROPERTY_CATEGORIES = {
       showLocation: true,
       propertyTypesHeading: 'Property Types',
       checkboxGroups: [
-        ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
-        ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
-        ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'Hotels', 'Bank/ATM Space'],
+        ['Office Spaces', 'Shops', 'Showrooms', 'Commercial Buildings', 'Commercial Plots'],
+        ['Co-working Spaces', 'Business Parks'],
       ],
-      crossLink: 'Looking for residential properties ?',
       bottomFilters: ['Budget', 'Area', 'Possession Status', 'Posted By'],
     },
+    Projects: {
+      placeholder: 'Search "Commercial projects in Hyderabad"',
+      showLocation: true,
+      propertyTypesHeading: 'Project Types',
+      checkboxGroups: [
+        ['Office Projects', 'Retail Projects', 'Shopping Complexes', 'Commercial Buildings'],
+        ['Business Parks', 'Mixed-Use Projects'],
+      ],
+      bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+    },
   },
-  'Plot/Land': {
+  Industrial: {
     Buy: {
       placeholder: 'Search "Hyderabad"',
       showLocation: true,
-      radioGroup: {
-        heading: 'Plots/Land',
-        options: ['Residential Plots/Land', 'Commercial Plots/Land'],
-      },
-      bottomFilters: ['Budget', 'Area', 'Posted By'],
+      propertyTypesHeading: 'Property Types',
+      checkboxGroups: [
+        ['Industrial Plots', 'Factory / Manufacturing Units', 'Industrial Sheds', 'Warehouses', 'Logistics & Distribution Centers'],
+        ['Cold Storage', 'Industrial Buildings', 'Godowns', 'Workshop Units', 'Industrial Land'],
+      ],
+      bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
     },
     Rent: {
-      placeholder: 'Search "Hyderabad"',
+      placeholder: 'Search "Industrial rent in Hyderabad"',
       showLocation: true,
-      radioGroup: {
-        heading: 'Plots/Land',
-        options: ['Residential Plots/Land', 'Commercial Plots/Land'],
-      },
+      propertyTypesHeading: 'Property Types',
+      checkboxGroups: [
+        ['Warehouses', 'Industrial Sheds', 'Factory Units', 'Godowns', 'Industrial Buildings'],
+        ['Logistics Spaces'],
+      ],
       bottomFilters: ['Budget', 'Area', 'Posted By'],
+    },
+    'New Launch': {
+      placeholder: 'Search "New launch projects in Gurgaon"',
+      showLocation: true,
+      propertyTypesHeading: 'Property Types',
+      checkboxGroups: [
+        ['Industrial Plots', 'Industrial Sheds', 'Warehouses', 'Factories', 'Manufacturing Units'],
+        ['Logistics Parks', 'Industrial Buildings'],
+      ],
+      bottomFilters: ['Budget', 'Area', 'Possession Status', 'Posted By'],
+    },
+    Projects: {
+      placeholder: 'Search "Industrial projects in Hyderabad"',
+      showLocation: true,
+      propertyTypesHeading: 'Project Types',
+      checkboxGroups: [
+        ['Industrial Parks', 'Warehousing Projects', 'Logistics Parks', 'Manufacturing Projects'],
+        ['Industrial Sheds', 'Factory Projects'],
+      ],
+      bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
     },
   },
 }
@@ -288,23 +326,19 @@ const TAB_CONFIG = {
     placeholder: 'Search "Farm house in Punjab below 1 cr"',
     showLocation: true,
     checkboxGroups: [
-      ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
-      ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
-      ['Independent House/Villa', 'Farm House'],
+      ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments'],
+      ['Duplex Homes', 'Penthouse', 'Residential Plots', 'Gated Community', 'Farm Houses'],
     ],
-    crossLink: 'Looking for commercial properties ?',
     bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
   },
   Rent: {
-    selector: 'Residential',
+    selector: 'Residential Rent',
     placeholder: 'Search "Hyderabad"',
     showLocation: true,
     checkboxGroups: [
-      ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
-      ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
-      ['Independent House/Villa', 'Farm House'],
+      ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments'],
+      ['Furnished Flats', 'Semi-Furnished Flats', 'Unfurnished Flats'],
     ],
-    crossLink: 'Looking for commercial properties ?',
     bottomFilters: ['Budget', 'Bedroom', 'Posted By', 'Furnishing'],
   },
   'New Launch': {
@@ -312,11 +346,9 @@ const TAB_CONFIG = {
     placeholder: 'Search "New launch projects in Gurgaon"',
     showLocation: true,
     checkboxGroups: [
-      ['Flat/Apartment', 'Residential Land', 'Serviced Apartments'],
-      ['Builder Floor', '1 RK/ Studio Apartment', 'Other'],
-      ['Independent House/Villa', 'Farm House'],
+      ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Studio Apartments'],
+      ['Luxury Homes', 'Residential Plots', 'Township Projects'],
     ],
-    crossLink: 'Looking for commercial properties ?',
     bottomFilters: ['Budget', 'Bedroom', 'Possession Status', 'Posted By'],
   },
   Commercial: {
@@ -325,31 +357,32 @@ const TAB_CONFIG = {
     showLocation: true,
     propertyTypesHeading: 'Property Types',
     checkboxGroups: [
-      ['Ready to move offices', 'Shops & Retail', 'Agricultural/Farm Land', 'Warehouse', 'Factory & Manufacturing', 'Others'],
-      ['Bare shell offices', 'Commercial/Inst. Land', 'Industrial Land/Plots', 'Cold Storage', 'Hotel/Resorts'],
-      ['Pre Leased Spaces', 'Food Courts', 'Restaurants', 'Multiplexes', 'Hotels', 'Bank/ATM Space'],
+      ['Office Space', 'Commercial Shops', 'Showrooms', 'Retail Spaces', 'Commercial Buildings'],
+      ['Commercial Plots', 'Co-working Spaces', 'Food Court / Restaurant Space', 'Hotels & Hospitality', 'Commercial Complexes'],
     ],
-    crossLink: 'Looking for residential properties ?',
     bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
   },
-  'Plots/Land': {
-    selector: 'Residential',
+  Industrial: {
+    selector: 'Industrial',
     placeholder: 'Search "Hyderabad"',
     showLocation: true,
-    radioGroup: {
-      heading: 'Plots/Land',
-      options: ['Residential Plots/Land', 'Commercial Plots/Land'],
-    },
-    bottomFilters: ['Budget', 'Area', 'Posted By'],
+    propertyTypesHeading: 'Property Types',
+    checkboxGroups: [
+      ['Industrial Plots', 'Factory / Manufacturing Units', 'Industrial Sheds', 'Warehouses', 'Logistics & Distribution Centers'],
+      ['Cold Storage', 'Industrial Buildings', 'Godowns', 'Workshop Units', 'Industrial Land'],
+    ],
+    bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
   },
   Projects: {
-    selector: 'Residential Project',
-    placeholder: 'Search "Flats for rent in sector 77 Noida"',
-    showLocation: false,
-    projectCheckboxHeading: 'Residential Project',
-    checkboxGroups: [['New Launch', 'Under Construction', 'Ready to move']],
-    crossLink: 'Looking for commercial projects ?',
-    bottomFilters: ['Budget', 'Bedroom'],
+    selector: 'Residential Projects',
+    placeholder: 'Search "Residential projects in Hyderabad"',
+    showLocation: true,
+    propertyTypesHeading: 'Project Types',
+    checkboxGroups: [
+      ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Luxury Projects'],
+      ['Affordable Housing', 'Township Projects'],
+    ],
+    bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
   },
 }
 
@@ -506,9 +539,43 @@ const Header = () => {
   const subCategoryTriggerRef = useRef(null)
   const [subCategoryDropdownPosition, setSubCategoryDropdownPosition] = useState({ top: 0, left: 0 })
 
+  // Search city dropdown state
+  const [isSearchCityDropdownOpen, setIsSearchCityDropdownOpen] = useState(false)
+  const [selectedCity, setSelectedCity] = useState('')
+  const searchCityDropdownRef = useRef(null)
+  const searchCityTriggerRef = useRef(null)
+  const [searchCityDropdownPosition, setSearchCityDropdownPosition] = useState({ top: 0, left: 0 })
+
+  // Project status dropdown state
+  const [isProjectStatusDropdownOpen, setIsProjectStatusDropdownOpen] = useState(false)
+  const [selectedProjectStatus, setSelectedProjectStatus] = useState('')
+  const projectStatusDropdownRef = useRef(null)
+  const projectStatusTriggerRef = useRef(null)
+  const [projectStatusDropdownPosition, setProjectStatusDropdownPosition] = useState({ top: 0, left: 0 })
+
+  const PROJECT_STATUS_OPTIONS = ['New Launch', 'Pre-Launch', 'Under Construction', 'Ready to Move']
+
+  // Dynamic text animation for New Launch tab
+  const [dynamicTabText, setDynamicTabText] = useState('New Launch')
+  const [isAnimating, setIsAnimating] = useState(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true)
+      setTimeout(() => {
+        setDynamicTabText((prev) => (prev === 'New Launch' ? 'New Nest' : 'New Launch'))
+        setTimeout(() => setIsAnimating(false), 50)
+      }, 300)
+    }, 4000)
+
+    return () => clearInterval(interval)
+  }, [])
+
   const toggleFilterPanel = () => {
     setIsLocationOpen(false)
     setIsCategoryDropdownOpen(false)
+    setIsSearchCityDropdownOpen(false)
+    setIsProjectStatusDropdownOpen(false)
     setOpenMegaMenu(null)
     setIsFilterOpen((open) => !open)
   }
@@ -538,6 +605,8 @@ const Header = () => {
   useEffect(() => {
     setIsFilterOpen(false)
     setIsCategoryDropdownOpen(false)
+    setIsSearchCityDropdownOpen(false)
+    setIsProjectStatusDropdownOpen(false)
   }, [activeTab])
 
   useEffect(() => {
@@ -567,6 +636,22 @@ const Header = () => {
       ) {
         setIsSubCategoryDropdownOpen(false)
       }
+      if (
+        searchCityTriggerRef.current &&
+        !searchCityTriggerRef.current.contains(e.target) &&
+        searchCityDropdownRef.current &&
+        !searchCityDropdownRef.current.contains(e.target)
+      ) {
+        setIsSearchCityDropdownOpen(false)
+      }
+      if (
+        projectStatusTriggerRef.current &&
+        !projectStatusTriggerRef.current.contains(e.target) &&
+        projectStatusDropdownRef.current &&
+        !projectStatusDropdownRef.current.contains(e.target)
+      ) {
+        setIsProjectStatusDropdownOpen(false)
+      }
       const currentTrigger = openMegaMenu ? megaTriggerRefs.current[openMegaMenu] : null
       if (
         openMegaMenu &&
@@ -583,6 +668,8 @@ const Header = () => {
         setIsLocationOpen(false)
         setIsCategoryDropdownOpen(false)
         setIsSubCategoryDropdownOpen(false)
+        setIsSearchCityDropdownOpen(false)
+        setIsProjectStatusDropdownOpen(false)
         setOpenMegaMenu(null)
       }
     }
@@ -609,11 +696,67 @@ const Header = () => {
   }, [isCategoryDropdownOpen])
 
   useEffect(() => {
+    const handleScroll = () => {
+      if (isCategoryDropdownOpen && categoryTriggerRef.current) {
+        const rect = categoryTriggerRef.current.getBoundingClientRect()
+        setCategoryDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+      }
+    }
+
+    if (isCategoryDropdownOpen) {
+      window.addEventListener('scroll', handleScroll, true)
+      return () => window.removeEventListener('scroll', handleScroll, true)
+    }
+  }, [isCategoryDropdownOpen])
+
+  useEffect(() => {
     if (isSubCategoryDropdownOpen && subCategoryTriggerRef.current) {
       const rect = subCategoryTriggerRef.current.getBoundingClientRect()
       setSubCategoryDropdownPosition({ top: rect.top, left: rect.right + 8 })
     }
   }, [isSubCategoryDropdownOpen])
+
+  useEffect(() => {
+    if (isSearchCityDropdownOpen && searchCityTriggerRef.current) {
+      const rect = searchCityTriggerRef.current.getBoundingClientRect()
+      setSearchCityDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+    }
+  }, [isSearchCityDropdownOpen])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isSearchCityDropdownOpen && searchCityTriggerRef.current) {
+        const rect = searchCityTriggerRef.current.getBoundingClientRect()
+        setSearchCityDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+      }
+    }
+
+    if (isSearchCityDropdownOpen) {
+      window.addEventListener('scroll', handleScroll, true)
+      return () => window.removeEventListener('scroll', handleScroll, true)
+    }
+  }, [isSearchCityDropdownOpen])
+
+  useEffect(() => {
+    if (isProjectStatusDropdownOpen && projectStatusTriggerRef.current) {
+      const rect = projectStatusTriggerRef.current.getBoundingClientRect()
+      setProjectStatusDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+    }
+  }, [isProjectStatusDropdownOpen])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isProjectStatusDropdownOpen && projectStatusTriggerRef.current) {
+        const rect = projectStatusTriggerRef.current.getBoundingClientRect()
+        setProjectStatusDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+      }
+    }
+
+    if (isProjectStatusDropdownOpen) {
+      window.addEventListener('scroll', handleScroll, true)
+      return () => window.removeEventListener('scroll', handleScroll, true)
+    }
+  }, [isProjectStatusDropdownOpen])
 
   const toggleMegaMenu = (label) => {
     setIsLocationOpen(false)
@@ -911,14 +1054,24 @@ const Header = () => {
             <div className="flex items-center gap-8 px-6 pt-5 overflow-x-auto scrollbar-hide">
               {TABS.map((tab) => {
                 const isActive = activeTab === tab.label
+                const displayText = tab.label === 'New Launch' ? dynamicTabText : tab.label
+                const isNewNest = tab.label === 'New Launch' && dynamicTabText === 'New Nest'
                 return (
                   <button
                     key={tab.label}
                     onClick={() => setActiveTab(tab.label)}
-                    className="relative flex items-center gap-1.5 pb-4 text-sm sm:text-base font-semibold whitespace-nowrap transition-colors duration-200"
-                    style={{ color: isActive ? NAVY : '#475569' }}
+                    className={`relative flex items-center gap-1.5 pb-4 text-sm sm:text-base font-semibold whitespace-nowrap transition-colors duration-200 ${
+                      tab.label === 'New Launch' ? 'w-[110px] justify-center' : ''
+                    }`}
+                    style={{ color: isNewNest ? '#EF4444' : (isActive ? NAVY : '#475569') }}
                   >
-                    {tab.label}
+                    <span
+                      className={`transition-all duration-300 ${
+                        isAnimating && tab.label === 'New Launch' ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'
+                      }`}
+                    >
+                      {displayText}
+                    </span>
                     {tab.dot && <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />}
                     {isActive && (
                       <span className="absolute left-0 right-0 -bottom-px h-[3px] rounded-full transition-all duration-300" style={{ backgroundColor: BLUE }} />
@@ -975,35 +1128,7 @@ const Header = () => {
                     style={{ transform: isFilterOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                   />
                 </button>
-              ) : activeTab === 'Buy' || activeTab === 'Rent' || activeTab === 'New Launch' || activeTab === 'Plots/Land' || activeTab === 'Projects' ? (
-                <div className="flex items-center gap-1 flex-shrink-0 sm:pr-5 sm:border-r border-slate-200">
-                  {Object.keys(PROPERTY_CATEGORIES).filter(cat => 
-                    activeTab === 'Buy' || activeTab === 'Rent' ? true : cat !== 'Plot/Land'
-                  ).map((category) => (
-                    <button
-                      key={category}
-                      type="button"
-                      onClick={() => {
-                        if (isFilterOpen && selectedCategory === category) {
-                          setIsFilterOpen(false)
-                        } else {
-                          setSelectedCategory(category)
-                          setIsFilterOpen(true)
-                        }
-                      }}
-                      className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#1E88E5] transition-colors duration-150"
-                      style={{ color: selectedCategory === category ? '#1E88E5' : '#1A202C' }}
-                    >
-                      {category}
-                      <ChevronDown
-                        size={14}
-                        className="text-slate-400 transition-transform duration-200"
-                        style={{ transform: isFilterOpen && selectedCategory === category ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                      />
-                    </button>
-                  ))}
-                </div>
-              ) : (
+              ) : activeTab === 'Buy' || activeTab === 'Rent' || activeTab === 'New Launch' || activeTab === 'Projects' ? (
                 <div className="relative" ref={categoryTriggerRef}>
                   <button
                     type="button"
@@ -1031,7 +1156,11 @@ const Header = () => {
                         style={{ top: `${categoryDropdownPosition.top}px`, left: `${categoryDropdownPosition.left}px` }}
                       >
                         <div className="py-2">
-                          {Object.keys(PROPERTY_CATEGORIES).filter(cat => cat !== 'Plot/Land').map((category) => (
+                          {Object.keys(PROPERTY_CATEGORIES).filter(cat => {
+                            if (cat === 'Plot/Land') return false
+                            if (activeTab !== 'Rent' && cat === 'PG / Co-Living') return false
+                            return true
+                          }).map((category) => (
                             <button
                               key={category}
                               onClick={() => {
@@ -1051,7 +1180,154 @@ const Header = () => {
                       document.body
                     )}
                 </div>
+              ) : (
+                <div className="flex items-center gap-1 flex-shrink-0 sm:pr-5 sm:border-r border-slate-200">
+                  {Object.keys(PROPERTY_CATEGORIES).filter(cat => cat !== 'Plot/Land').map((category) => (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => {
+                        if (isFilterOpen && selectedCategory === category) {
+                          setIsFilterOpen(false)
+                        } else {
+                          setSelectedCategory(category)
+                          setIsFilterOpen(true)
+                        }
+                      }}
+                      className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#1E88E5] transition-colors duration-150"
+                      style={{ color: selectedCategory === category ? '#1E88E5' : '#1A202C' }}
+                    >
+                      {category}
+                      <ChevronDown
+                        size={14}
+                        className="text-slate-400 transition-transform duration-200"
+                        style={{ transform: isFilterOpen && selectedCategory === category ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                      />
+                    </button>
+                  ))}
+                </div>
               )}
+
+              {activeTab === 'Projects' && (
+                <div className="relative" ref={projectStatusTriggerRef}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCategoryDropdownOpen(false)
+                      setIsSearchCityDropdownOpen(false)
+                      setOpenMegaMenu(null)
+                      setIsProjectStatusDropdownOpen((open) => !open)
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
+                    style={{ color: NAVY }}
+                  >
+                    {selectedProjectStatus || 'Project Status'}
+                    <ChevronDown
+                      size={16}
+                      className="text-slate-400 transition-transform duration-200"
+                      style={{ transform: isProjectStatusDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                    />
+                  </button>
+
+                  {isProjectStatusDropdownOpen &&
+                    createPortal(
+                      <div
+                        ref={projectStatusDropdownRef}
+                        className="fixed w-48 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                        style={{ top: `${projectStatusDropdownPosition.top}px`, left: `${projectStatusDropdownPosition.left}px` }}
+                      >
+                        <div className="py-2">
+                          {PROJECT_STATUS_OPTIONS.map((status) => (
+                            <button
+                              key={status}
+                              onClick={() => {
+                                setSelectedProjectStatus(status)
+                                setIsProjectStatusDropdownOpen(false)
+                              }}
+                              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
+                                selectedProjectStatus === status ? 'bg-slate-50 text-[#1E88E5]' : 'text-slate-700 hover:bg-slate-50'
+                              }`}
+                            >
+                              {status}
+                            </button>
+                          ))}
+                        </div>
+                      </div>,
+                      document.body
+                    )}
+                </div>
+              )}
+
+              <div className="relative" ref={searchCityTriggerRef}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsCategoryDropdownOpen(false)
+                    setOpenMegaMenu(null)
+                    setIsSearchCityDropdownOpen((open) => !open)
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
+                  style={{ color: NAVY }}
+                >
+                  {selectedCity || 'Select City'}
+                  <ChevronDown
+                    size={16}
+                    className="text-slate-400 transition-transform duration-200"
+                    style={{ transform: isSearchCityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+
+                {isSearchCityDropdownOpen &&
+                  createPortal(
+                    <div
+                      ref={searchCityDropdownRef}
+                      className="fixed w-[320px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      style={{ top: `${searchCityDropdownPosition.top}px`, left: `${searchCityDropdownPosition.left}px`, maxHeight: '400px' }}
+                    >
+                      <div className="p-4 pb-4">
+                        <h3 className="text-lg font-bold mb-4" style={{ color: NAVY }}>
+                          Select City
+                        </h3>
+
+                        <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 shadow-sm mb-4">
+                          <Search size={16} className="text-slate-400 flex-shrink-0" />
+                          <input
+                            type="text"
+                            value={cityQuery}
+                            onChange={(e) => setCityQuery(e.target.value)}
+                            placeholder="Search city..."
+                            className="flex-1 min-w-0 bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+                          {POPULAR_CITIES.filter(city =>
+                            city.name.toLowerCase().includes(cityQuery.toLowerCase()) ||
+                            city.state.toLowerCase().includes(cityQuery.toLowerCase())
+                          ).map((city) => (
+                            <button
+                              key={city.name}
+                              onClick={() => {
+                                setSelectedCity(city.name)
+                                setCityQuery(city.name)
+                                setIsSearchCityDropdownOpen(false)
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-left"
+                            >
+                              <div className="font-semibold text-sm" style={{ color: NAVY }}>
+                                {city.name}
+                              </div>
+                              <div className="text-xs text-slate-500">
+                                {city.state}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>,
+                    document.body
+                  )}
+              </div>
 
               <div className="flex items-center gap-3 flex-1 px-4 sm:px-5">
                 <Search size={18} className="text-slate-400 flex-shrink-0" />
@@ -1059,7 +1335,7 @@ const Header = () => {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={categoryConfig.placeholder}
+                  placeholder="Enter locality"
                   className="w-full bg-transparent text-sm sm:text-base text-slate-700 placeholder-slate-400 focus:outline-none"
                 />
               </div>
@@ -1084,15 +1360,10 @@ const Header = () => {
             <div className="border-t border-slate-100 px-4 sm:px-6 py-6 animate-filter-in origin-top">
               {categoryConfig.propertyTypesHeading ? (
                 <>
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400">
-                      {categoryConfig.propertyTypesHeading}
-                    </h4>
-                    <button type="button" onClick={() => clearTabFilters(activeTab)} className="text-sm font-semibold flex-shrink-0 hover:underline" style={{ color: BLUE }}>
-                      Clear
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-3.5">
+                  <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
+                    {categoryConfig.propertyTypesHeading}
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-3.5">
                     {categoryConfig.checkboxGroups.map((group, gi) => (
                       <div key={gi} className="space-y-3.5">
                         {group.map((item) => (
@@ -1157,12 +1428,7 @@ const Header = () => {
                 </>
               ) : (
                 <>
-                  <div className="flex justify-end mb-3">
-                    <button type="button" onClick={() => clearTabFilters(activeTab)} className="text-sm font-semibold hover:underline" style={{ color: BLUE }}>
-                      Clear
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-10 gap-y-3.5 mb-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5 mb-5">
                     {tabConfig.checkboxGroups.map((group, gi) => (
                       <div key={gi} className="space-y-3.5">
                         {group.map((item) => (
@@ -1182,10 +1448,20 @@ const Header = () => {
 
               <div className="h-px bg-slate-100 my-5" />
 
-              <div className="flex flex-wrap items-center gap-3">
-                {tabConfig.bottomFilters.map((f) => (
-                  <FilterPill key={f} label={f} />
-                ))}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  {tabConfig.bottomFilters.map((f) => (
+                    <FilterPill key={f} label={f} />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsFilterOpen(false)}
+                  className="px-6 py-2.5 rounded-lg text-white text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                  style={{ backgroundColor: BLUE }}
+                >
+                  Done
+                </button>
               </div>
             </div>
             )}

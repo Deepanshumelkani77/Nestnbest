@@ -1,5 +1,5 @@
 import React from 'react'
-import NewPeoject from '../components/NewProject'
+import Residents from '../components/Residents'
 import BuyProperty from '../components/BuyProperty'
 import Agents from '../components/Agents'
 import Tools from '../components/Tools'
@@ -11,7 +11,7 @@ const Home = () => {
       {/* Home page content - Header is rendered in App.jsx */}
 
 
-<NewPeoject />
+<Residents />
 <BuyProperty />
 <Agents />
 <Tools/>
