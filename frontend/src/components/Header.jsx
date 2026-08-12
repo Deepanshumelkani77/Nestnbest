@@ -525,13 +525,10 @@ const Header = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const searchCardRef = useRef(null)
 
-  // Property category dropdown state
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false)
+  //Property category dropdown state
   const [selectedCategory, setSelectedCategory] = useState('Residential')
   const [selectedSubCategory, setSelectedSubCategory] = useState(null)
-  const categoryDropdownRef = useRef(null)
-  const categoryTriggerRef = useRef(null)
-  const [categoryDropdownPosition, setCategoryDropdownPosition] = useState({ top: 0, left: 0 })
+  const [filterPanelSelectedCategory, setFilterPanelSelectedCategory] = useState('Residential')
 
   // Sub-category dropdown state
   const [isSubCategoryDropdownOpen, setIsSubCategoryDropdownOpen] = useState(false)
@@ -573,7 +570,6 @@ const Header = () => {
 
   const toggleFilterPanel = () => {
     setIsLocationOpen(false)
-    setIsCategoryDropdownOpen(false)
     setIsSearchCityDropdownOpen(false)
     setIsProjectStatusDropdownOpen(false)
     setOpenMegaMenu(null)
@@ -604,7 +600,6 @@ const Header = () => {
 
   useEffect(() => {
     setIsFilterOpen(false)
-    setIsCategoryDropdownOpen(false)
     setIsSearchCityDropdownOpen(false)
     setIsProjectStatusDropdownOpen(false)
   }, [activeTab])
@@ -618,15 +613,6 @@ const Header = () => {
         !dropdownRef.current.contains(e.target)
       ) {
         setIsLocationOpen(false)
-      }
-      if (
-        categoryTriggerRef.current &&
-        !categoryTriggerRef.current.contains(e.target) &&
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(e.target)
-      ) {
-        setIsCategoryDropdownOpen(false)
-        setIsSubCategoryDropdownOpen(false)
       }
       if (
         subCategoryTriggerRef.current &&
@@ -666,7 +652,6 @@ const Header = () => {
     const onEscape = (e) => {
       if (e.key === 'Escape') {
         setIsLocationOpen(false)
-        setIsCategoryDropdownOpen(false)
         setIsSubCategoryDropdownOpen(false)
         setIsSearchCityDropdownOpen(false)
         setIsProjectStatusDropdownOpen(false)
@@ -688,26 +673,6 @@ const Header = () => {
     }
   }, [isLocationOpen])
 
-  useEffect(() => {
-    if (isCategoryDropdownOpen && categoryTriggerRef.current) {
-      const rect = categoryTriggerRef.current.getBoundingClientRect()
-      setCategoryDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-    }
-  }, [isCategoryDropdownOpen])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isCategoryDropdownOpen && categoryTriggerRef.current) {
-        const rect = categoryTriggerRef.current.getBoundingClientRect()
-        setCategoryDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-      }
-    }
-
-    if (isCategoryDropdownOpen) {
-      window.addEventListener('scroll', handleScroll, true)
-      return () => window.removeEventListener('scroll', handleScroll, true)
-    }
-  }, [isCategoryDropdownOpen])
 
   useEffect(() => {
     if (isSubCategoryDropdownOpen && subCategoryTriggerRef.current) {
@@ -1129,57 +1094,23 @@ const Header = () => {
                   />
                 </button>
               ) : activeTab === 'Buy' || activeTab === 'Rent' || activeTab === 'New Launch' || activeTab === 'Projects' ? (
-                <div className="relative" ref={categoryTriggerRef}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsLocationOpen(false)
-                      setOpenMegaMenu(null)
-                      setIsCategoryDropdownOpen((open) => !open)
-                    }}
-                    className="flex items-center gap-1.5 px-4 py-3 sm:pr-5 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
-                    style={{ color: NAVY }}
-                  >
-                    {selectedCategory}
-                    <ChevronDown
-                      size={16}
-                      className="text-slate-400 transition-transform duration-200"
-                      style={{ transform: isCategoryDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                    />
-                  </button>
-
-                  {isCategoryDropdownOpen &&
-                    createPortal(
-                      <div
-                        ref={categoryDropdownRef}
-                        className="fixed w-48 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
-                        style={{ top: `${categoryDropdownPosition.top}px`, left: `${categoryDropdownPosition.left}px` }}
-                      >
-                        <div className="py-2">
-                          {Object.keys(PROPERTY_CATEGORIES).filter(cat => {
-                            if (cat === 'Plot/Land') return false
-                            if (activeTab !== 'Rent' && cat === 'PG / Co-Living') return false
-                            return true
-                          }).map((category) => (
-                            <button
-                              key={category}
-                              onClick={() => {
-                                setSelectedCategory(category)
-                                setIsCategoryDropdownOpen(false)
-                                setIsFilterOpen(true)
-                              }}
-                              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
-                                selectedCategory === category ? 'bg-slate-50 text-[#1E88E5]' : 'text-slate-700 hover:bg-slate-50'
-                              }`}
-                            >
-                              {category}
-                            </button>
-                          ))}
-                        </div>
-                      </div>,
-                      document.body
-                    )}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLocationOpen(false)
+                    setOpenMegaMenu(null)
+                    setIsFilterOpen((open) => !open)
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-3 sm:pr-5 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
+                  style={{ color: NAVY }}
+                >
+                  {selectedCategory}
+                  <ChevronDown
+                    size={16}
+                    className="text-slate-400 transition-transform duration-200"
+                    style={{ transform: isFilterOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
               ) : (
                 <div className="flex items-center gap-1 flex-shrink-0 sm:pr-5 sm:border-r border-slate-200">
                   {Object.keys(PROPERTY_CATEGORIES).filter(cat => cat !== 'Plot/Land').map((category) => (
@@ -1213,7 +1144,6 @@ const Header = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      setIsCategoryDropdownOpen(false)
                       setIsSearchCityDropdownOpen(false)
                       setOpenMegaMenu(null)
                       setIsProjectStatusDropdownOpen((open) => !open)
@@ -1262,7 +1192,6 @@ const Header = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setIsCategoryDropdownOpen(false)
                     setOpenMegaMenu(null)
                     setIsSearchCityDropdownOpen((open) => !open)
                   }}
@@ -1281,16 +1210,16 @@ const Header = () => {
                   createPortal(
                     <div
                       ref={searchCityDropdownRef}
-                      className="fixed w-[320px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
-                      style={{ top: `${searchCityDropdownPosition.top}px`, left: `${searchCityDropdownPosition.left}px`, maxHeight: '400px' }}
+                      className="fixed w-[450px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      style={{ top: `${searchCityDropdownPosition.top}px`, left: `${searchCityDropdownPosition.left}px`, maxHeight: '450px' }}
                     >
-                      <div className="p-4 pb-4">
-                        <h3 className="text-lg font-bold mb-4" style={{ color: NAVY }}>
+                      <div className="p-5 pb-4">
+                        <h3 className="text-xl font-bold mb-4" style={{ color: NAVY }}>
                           Select City
                         </h3>
 
-                        <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 shadow-sm mb-4">
-                          <Search size={16} className="text-slate-400 flex-shrink-0" />
+                        <div className="flex items-center gap-2 border border-slate-200 rounded-xl px-4 py-3 shadow-sm mb-5 bg-slate-50">
+                          <Search size={18} className="text-slate-400 flex-shrink-0" />
                           <input
                             type="text"
                             value={cityQuery}
@@ -1300,7 +1229,7 @@ const Header = () => {
                           />
                         </div>
 
-                        <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+                        <div className="grid grid-cols-3 gap-3 max-h-[320px] overflow-y-auto pr-2">
                           {POPULAR_CITIES.filter(city =>
                             city.name.toLowerCase().includes(cityQuery.toLowerCase()) ||
                             city.state.toLowerCase().includes(cityQuery.toLowerCase())
@@ -1312,14 +1241,12 @@ const Header = () => {
                                 setCityQuery(city.name)
                                 setIsSearchCityDropdownOpen(false)
                               }}
-                              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-left"
+                              className="flex flex-col items-center justify-start p-4 rounded-xl border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-center group"
                             >
-                              <div className="font-semibold text-sm" style={{ color: NAVY }}>
+                              <div className="font-semibold text-sm group-hover:text-[#1E88E5] transition-colors duration-200" style={{ color: NAVY }}>
                                 {city.name}
                               </div>
-                              <div className="text-xs text-slate-500">
-                                {city.state}
-                              </div>
+                              
                             </button>
                           ))}
                         </div>
@@ -1358,45 +1285,92 @@ const Header = () => {
             {/* Expandable filter panel — content driven by categoryConfig, opens on selector click */}
             {isFilterOpen && (
             <div className="border-t border-slate-100 px-4 sm:px-6 py-6 animate-filter-in origin-top">
-              {categoryConfig.propertyTypesHeading ? (
-                <>
-                  <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
-                    {categoryConfig.propertyTypesHeading}
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-3.5">
-                    {categoryConfig.checkboxGroups.map((group, gi) => (
-                      <div key={gi} className="space-y-3.5">
-                        {group.map((item) => (
-                          <CheckboxRow
-                            key={item}
-                            label={item}
-                            checked={!!checkedByTab[activeTab]?.[item]}
-                            onToggle={() => toggleCheckbox(activeTab, item)}
-                          />
-                        ))}
-                      </div>
+              <div className="flex gap-6">
+                {/* Left column - Category selection */}
+                <div className="w-48 flex-shrink-0">
+                  <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">Categories</h4>
+                  <div className="space-y-1">
+                    {Object.keys(PROPERTY_CATEGORIES).filter(cat => {
+                      if (cat === 'Plot/Land') return false
+                      if (activeTab !== 'Rent' && cat === 'PG / Co-Living') return false
+                      return true
+                    }).map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => {
+                          setFilterPanelSelectedCategory(category)
+                          setSelectedCategory(category)
+                        }}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors duration-200 rounded-lg ${
+                          filterPanelSelectedCategory === category ? 'bg-slate-100 text-[#1E88E5]' : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        {category}
+                      </button>
                     ))}
                   </div>
+                </div>
 
-                  {categoryConfig.crossLink && <CrossLinkRow text={categoryConfig.crossLink} className="mt-5" />}
-                </>
-              ) : categoryConfig.radioGroup ? (
-                <>
-                  <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
-                    {categoryConfig.radioGroup.heading}
-                  </h4>
-                  <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
-                    {categoryConfig.radioGroup.options.map((opt) => (
-                      <RadioRow key={opt} label={opt} selected={plotsSelection === opt} onSelect={() => setPlotsSelection(opt)} />
-                    ))}
-                  </div>
-                </>
-              ) : categoryConfig.checkboxGroups ? (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5">
-                    {categoryConfig.checkboxGroups.map((group, gi) => (
-                      <div key={gi} className="space-y-3.5">
-                        {group.map((item) => (
+                {/* Right column - Checkboxes */}
+                <div className="flex-1">
+                  {categoryConfig.propertyTypesHeading ? (
+                    <>
+                      <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
+                        {categoryConfig.propertyTypesHeading}
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-3.5">
+                        {categoryConfig.checkboxGroups.map((group, gi) => (
+                          <div key={gi} className="space-y-3.5">
+                            {group.map((item) => (
+                              <CheckboxRow
+                                key={item}
+                                label={item}
+                                checked={!!checkedByTab[activeTab]?.[item]}
+                                onToggle={() => toggleCheckbox(activeTab, item)}
+                              />
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+
+                      {categoryConfig.crossLink && <CrossLinkRow text={categoryConfig.crossLink} className="mt-5" />}
+                    </>
+                  ) : categoryConfig.radioGroup ? (
+                    <>
+                      <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
+                        {categoryConfig.radioGroup.heading}
+                      </h4>
+                      <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
+                        {categoryConfig.radioGroup.options.map((opt) => (
+                          <RadioRow key={opt} label={opt} selected={plotsSelection === opt} onSelect={() => setPlotsSelection(opt)} />
+                        ))}
+                      </div>
+                    </>
+                  ) : categoryConfig.checkboxGroups ? (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5">
+                        {categoryConfig.checkboxGroups.map((group, gi) => (
+                          <div key={gi} className="space-y-3.5">
+                            {group.map((item) => (
+                              <CheckboxRow
+                                key={item}
+                                label={item}
+                                checked={!!checkedByTab[activeTab]?.[item]}
+                                onToggle={() => toggleCheckbox(activeTab, item)}
+                              />
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                      {categoryConfig.crossLink && <CrossLinkRow text={categoryConfig.crossLink} className="mt-5" />}
+                    </>
+                  ) : activeTab === 'Projects' ? (
+                    <>
+                      <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
+                        {tabConfig.projectCheckboxHeading}
+                      </h4>
+                      <div className="flex flex-wrap items-center gap-x-10 gap-y-3 mb-5">
+                        {tabConfig.checkboxGroups[0].map((item) => (
                           <CheckboxRow
                             key={item}
                             label={item}
@@ -1405,46 +1379,29 @@ const Header = () => {
                           />
                         ))}
                       </div>
-                    ))}
-                  </div>
-                  {categoryConfig.crossLink && <CrossLinkRow text={categoryConfig.crossLink} className="mt-5" />}
-                </>
-              ) : activeTab === 'Projects' ? (
-                <>
-                  <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
-                    {tabConfig.projectCheckboxHeading}
-                  </h4>
-                  <div className="flex flex-wrap items-center gap-x-10 gap-y-3 mb-5">
-                    {tabConfig.checkboxGroups[0].map((item) => (
-                      <CheckboxRow
-                        key={item}
-                        label={item}
-                        checked={!!checkedByTab[activeTab]?.[item]}
-                        onToggle={() => toggleCheckbox(activeTab, item)}
-                      />
-                    ))}
-                  </div>
-                  <CrossLinkRow text={tabConfig.crossLink} />
-                </>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5 mb-5">
-                    {tabConfig.checkboxGroups.map((group, gi) => (
-                      <div key={gi} className="space-y-3.5">
-                        {group.map((item) => (
-                          <CheckboxRow
-                            key={item}
-                            label={item}
-                            checked={!!checkedByTab[activeTab]?.[item]}
-                            onToggle={() => toggleCheckbox(activeTab, item)}
-                          />
+                      <CrossLinkRow text={tabConfig.crossLink} />
+                    </>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5 mb-5">
+                        {tabConfig.checkboxGroups.map((group, gi) => (
+                          <div key={gi} className="space-y-3.5">
+                            {group.map((item) => (
+                              <CheckboxRow
+                                key={item}
+                                label={item}
+                                checked={!!checkedByTab[activeTab]?.[item]}
+                                onToggle={() => toggleCheckbox(activeTab, item)}
+                              />
+                            ))}
+                          </div>
                         ))}
                       </div>
-                    ))}
-                  </div>
-                  <CrossLinkRow text={tabConfig.crossLink} />
-                </>
-              )}
+                      <CrossLinkRow text={tabConfig.crossLink} />
+                    </>
+                  )}
+                </div>
+              </div>
 
               <div className="h-px bg-slate-100 my-5" />
 

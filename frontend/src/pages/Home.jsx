@@ -1,10 +1,10 @@
 import React from 'react'
 import Residents from '../components/Residents'
-import BuyProperty from '../components/BuyProperty'
+import Commercial from '../components/Commercial'
 import Agents from '../components/Agents'
 import Tools from '../components/Tools'
 import Land from '../components/Land'
-
+import Industrial from '../components/Industrial'
 const Home = () => {
   return (
     <div>
@@ -12,10 +12,12 @@ const Home = () => {
 
 
 <Residents />
-<BuyProperty />
+<Land />
+<Commercial/>
+
 <Agents />
 <Tools/>
-<Land />
+<Industrial />
       
     </div>
   )
