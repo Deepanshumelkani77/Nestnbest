@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { createPortal } from 'react-dom'
+import { AppContext } from '../context/AppContext'
 import {
   Search,
   ChevronDown,
@@ -489,6 +490,7 @@ const Header = () => {
   const [activeTab, setActiveTab] = useState('Buy')
   const [query, setQuery] = useState('')
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const { openSignup } = useContext(AppContext)
 
   const [isLocationOpen, setIsLocationOpen] = useState(false)
   const [locationTab, setLocationTab] = useState('Buy')
@@ -549,6 +551,12 @@ const Header = () => {
   const projectStatusDropdownRef = useRef(null)
   const projectStatusTriggerRef = useRef(null)
   const [projectStatusDropdownPosition, setProjectStatusDropdownPosition] = useState({ top: 0, left: 0 })
+
+  // User dropdown state
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
+  const userDropdownRef = useRef(null)
+  const userTriggerRef = useRef(null)
+  const [userDropdownPosition, setUserDropdownPosition] = useState({ top: 0, left: 0 })
 
   const PROJECT_STATUS_OPTIONS = ['New Launch', 'Pre-Launch', 'Under Construction', 'Ready to Move']
 
@@ -638,9 +646,16 @@ const Header = () => {
       ) {
         setIsProjectStatusDropdownOpen(false)
       }
+      if (
+        userTriggerRef.current &&
+        !userTriggerRef.current.contains(e.target) &&
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(e.target)
+      ) {
+        setIsUserDropdownOpen(false)
+      }
       const currentTrigger = openMegaMenu ? megaTriggerRefs.current[openMegaMenu] : null
       if (
-        openMegaMenu &&
         currentTrigger &&
         !currentTrigger.contains(e.target) &&
         megaPanelRef.current &&
@@ -655,6 +670,7 @@ const Header = () => {
         setIsSubCategoryDropdownOpen(false)
         setIsSearchCityDropdownOpen(false)
         setIsProjectStatusDropdownOpen(false)
+        setIsUserDropdownOpen(false)
         setOpenMegaMenu(null)
       }
     }
@@ -722,6 +738,13 @@ const Header = () => {
       return () => window.removeEventListener('scroll', handleScroll, true)
     }
   }, [isProjectStatusDropdownOpen])
+
+  useEffect(() => {
+    if (isUserDropdownOpen && userTriggerRef.current) {
+      const rect = userTriggerRef.current.getBoundingClientRect()
+      setUserDropdownPosition({ top: rect.bottom + 8, left: rect.right - 200 })
+    }
+  }, [isUserDropdownOpen])
 
   const toggleMegaMenu = (label) => {
     setIsLocationOpen(false)
@@ -926,13 +949,52 @@ const Header = () => {
                   <Headphones size={16} />
                 </button>
 
-                <button className="relative flex items-center gap-1 text-white hover:text-white/80 transition-colors duration-200">
-                  <span className="relative">
-                    <User size={22} />
-                    <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-rose-500 border border-white" />
-                  </span>
-                  <ChevronDown size={14} />
-                </button>
+                <div className="relative" ref={userTriggerRef}>
+                  <button
+                    onClick={() => {
+                      setIsLocationOpen(false)
+                      setOpenMegaMenu(null)
+                      setIsUserDropdownOpen((open) => !open)
+                    }}
+                    className="relative flex items-center gap-1 text-white hover:text-white/80 transition-colors duration-200"
+                  >
+                    <span className="relative">
+                      <User size={22} />
+                      <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-rose-500 border border-white" />
+                    </span>
+                    <ChevronDown
+                      size={14}
+                      className="transition-transform duration-200"
+                      style={{ transform: isUserDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                    />
+                  </button>
+
+                  {isUserDropdownOpen &&
+                    createPortal(
+                      <div
+                        ref={userDropdownRef}
+                        className="fixed w-48 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                        style={{ top: `${userDropdownPosition.top}px`, left: `${userDropdownPosition.left}px` }}
+                      >
+                        <div className="py-2">
+                          <button onClick={() => { setIsUserDropdownOpen(false); openSignup('login') }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            <User size={16} className="text-slate-400" />
+                            Sign In
+                          </button>
+                          <button onClick={() => { setIsUserDropdownOpen(false); openSignup('signup') }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            <User size={16} className="text-slate-400" />
+                            Register
+                          </button>
+                          <div className="my-2 border-t border-slate-100" />
+                          <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            <Headphones size={16} className="text-slate-400" />
+                            Support
+                          </button>
+                        </div>
+                      </div>,
+                      document.body
+                    )}
+                </div>
 
                 <button className="text-white hover:text-white/80 transition-colors duration-200">
                   <Menu size={22} />

@@ -3,7 +3,9 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Navbar from './components/Navbar'
 import Header from './components/Header'
-
+import Footer from './components/Footer'
+import Signup from './components/Signup'
+import AppContextProvider, { AppContext } from './context/AppContext'
 
 const App = () => {
   const location = useLocation()
@@ -28,15 +30,19 @@ const App = () => {
   }, [isHomePage])
 
   return (
-    <div>
-      {isHomePage && <Header />}
-      <Navbar showNavbar={showNavbar || !isHomePage} />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </main>
-    </div>
+    <AppContextProvider>
+      <div>
+        {isHomePage && <Header />}
+        <Navbar showNavbar={showNavbar || !isHomePage} />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </main>
+        <Footer />
+        <Signup />
+      </div>
+    </AppContextProvider>
   )
 }
 

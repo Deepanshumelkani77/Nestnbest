@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { createPortal } from 'react-dom'
+import { AppContext } from '../context/AppContext'
 import {
   Menu,
   X,
@@ -229,6 +230,7 @@ const Navbar = ({ showNavbar = true }) => {
   const [scrollPct, setScrollPct] = useState(0)
   const [mounted, setMounted] = useState(false)
   const location = useLocation ? useLocation() : { pathname: '' }
+  const { openSignup } = useContext(AppContext)
 
   const [isLocationOpen, setIsLocationOpen] = useState(false)
   const [cityQuery, setCityQuery] = useState('')
@@ -597,11 +599,11 @@ const Navbar = ({ showNavbar = true }) => {
                       style={{ top: `${userDropdownPosition.top}px`, left: `${userDropdownPosition.left}px` }}
                     >
                       <div className="py-2">
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                        <button onClick={() => { setIsUserDropdownOpen(false); openSignup('login') }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                           <User size={16} className="text-slate-400" />
                           Sign In
                         </button>
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                        <button onClick={() => { setIsUserDropdownOpen(false); openSignup('signup') }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                           <User size={16} className="text-slate-400" />
                           Register
                         </button>

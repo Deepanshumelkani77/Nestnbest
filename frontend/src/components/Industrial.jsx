@@ -201,7 +201,7 @@ const IndustrialSection = ({ title, description, properties, viewAllText = 'View
   }
 
   return (
-    <div className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white">
+    <div className="w-full py-12  px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
