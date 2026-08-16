@@ -243,6 +243,11 @@ const Navbar = ({ showNavbar = true }) => {
   const userTriggerRef = useRef(null)
   const [userDropdownPosition, setUserDropdownPosition] = useState({ top: 0, left: 0 })
 
+  const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
+  const menuDropdownRef = useRef(null)
+  const menuTriggerRef = useRef(null)
+  const [menuDropdownPosition, setMenuDropdownPosition] = useState({ top: 0, left: 0 })
+
   const [openMegaMenu, setOpenMegaMenu] = useState(null)
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0)
   const megaTriggerRefs = useRef({})
@@ -283,6 +288,14 @@ const Navbar = ({ showNavbar = true }) => {
       ) {
         setIsUserDropdownOpen(false)
       }
+      if (
+        menuTriggerRef.current &&
+        !menuTriggerRef.current.contains(e.target) &&
+        menuDropdownRef.current &&
+        !menuDropdownRef.current.contains(e.target)
+      ) {
+        setIsMenuDropdownOpen(false)
+      }
       const currentTrigger = openMegaMenu ? megaTriggerRefs.current[openMegaMenu] : null
       if (
         openMegaMenu &&
@@ -298,6 +311,7 @@ const Navbar = ({ showNavbar = true }) => {
       if (e.key === 'Escape') {
         setIsLocationOpen(false)
         setIsUserDropdownOpen(false)
+        setIsMenuDropdownOpen(false)
         setOpenMegaMenu(null)
       }
     }
@@ -322,6 +336,13 @@ const Navbar = ({ showNavbar = true }) => {
       setUserDropdownPosition({ top: rect.bottom + 8, left: rect.right - 200 })
     }
   }, [isUserDropdownOpen])
+
+  useEffect(() => {
+    if (isMenuDropdownOpen && menuTriggerRef.current) {
+      const rect = menuTriggerRef.current.getBoundingClientRect()
+      setMenuDropdownPosition({ top: rect.bottom + 8, left: rect.right - 160 })
+    }
+  }, [isMenuDropdownOpen])
 
   const toggleMegaMenu = (label) => {
     setIsLocationOpen(false)
@@ -618,9 +639,44 @@ const Navbar = ({ showNavbar = true }) => {
                   )}
               </div>
 
-              <button className="text-gray-700 hover:text-[#193C06] transition-colors duration-200">
-                <Menu size={22} />
-              </button>
+              <div className="relative" ref={menuTriggerRef}>
+                <button
+                  onClick={() => {
+                    setIsLocationOpen(false)
+                    setOpenMegaMenu(null)
+                    setIsUserDropdownOpen(false)
+                    setIsMenuDropdownOpen((open) => !open)
+                  }}
+                  className="text-gray-700 hover:text-[#193C06] transition-colors duration-200"
+                >
+                  <Menu size={22} />
+                </button>
+
+                {isMenuDropdownOpen &&
+                  createPortal(
+                    <div
+                      ref={menuDropdownRef}
+                      className="fixed w-40 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      style={{ top: `${menuDropdownPosition.top}px`, left: `${menuDropdownPosition.left}px` }}
+                    >
+                      <div className="py-2">
+                        <Link to="/about" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          About
+                        </Link>
+                        <Link to="/contact" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          Contact
+                        </Link>
+                        <Link to="/blog" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          Blog
+                        </Link>
+                        <Link to="/career" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          Career
+                        </Link>
+                      </div>
+                    </div>,
+                    document.body
+                  )}
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
