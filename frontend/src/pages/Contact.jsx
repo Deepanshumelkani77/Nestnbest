@@ -279,18 +279,21 @@ const Contact = () => {
               </div>
             </div>
 
-            <div className="rounded-2xl p-6" style={{ background: `linear-gradient(120deg, ${NAVY}, #2E5C10)` }}>
-              <span className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-white/10">
-                <MessageSquare size={20} className="text-white" />
-              </span>
-              <h3 className="text-white font-bold text-lg mb-2">Prefer to chat?</h3>
-              <p className="text-white/80 text-sm leading-relaxed mb-5">
-                Our support team is online during business hours and typically replies in under 5 minutes.
-              </p>
-              <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg" style={{ color: NAVY }}>
-                Start Live Chat
-                <ArrowRight size={15} />
-              </button>
+            <div className="rounded-2xl p-6 relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${BLUE} 0%, ${NAVY} 100%)` }}>
+              <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-30" style={{ backgroundColor: '#FFFFFF' }} />
+              <div className="relative z-10">
+                <span className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-white/20 backdrop-blur-sm">
+                  <MessageSquare size={22} className="text-white" />
+                </span>
+                <h3 className="text-white font-bold text-lg mb-2">Prefer to chat?</h3>
+                <p className="text-white/90 text-sm leading-relaxed mb-5">
+                  Our support team is online during business hours and typically replies in under 5 minutes.
+                </p>
+                <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg" style={{ color: BLUE }}>
+                  Start Live Chat
+                  <ArrowRight size={15} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
