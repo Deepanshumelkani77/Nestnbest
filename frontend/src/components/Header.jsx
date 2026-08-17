@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { AppContext } from '../context/AppContext'
 import {
@@ -420,17 +420,49 @@ const AdCard = ({ menuLabel, spanFull }) => {
   )
 }
 
-const MenuColumn = ({ heading, items }) => {
+const MenuColumn = ({ heading, items, menuLabel, categoryLabel }) => {
   if (!heading || !items?.length) return null
+
+  const getFilterParams = (item) => {
+    const params = new URLSearchParams()
+    
+    // Set property type based on menu label
+    if (menuLabel === 'For Buyers') {
+      params.set('type', 'buy')
+    } else if (menuLabel === 'For Tenants') {
+      params.set('type', 'rent')
+    } else if (menuLabel === 'For Dealers / Builders') {
+      params.set('type', 'commercial')
+    }
+
+    // Set category based on category label
+    if (categoryLabel === 'Apartments') {
+      params.set('category', item)
+    } else if (categoryLabel === 'Land/Plot') {
+      params.set('type', 'land')
+      params.set('category', item)
+    } else if (categoryLabel === 'Commercial' || categoryLabel === 'Commercial Rent') {
+      params.set('type', 'commercial')
+      params.set('category', item)
+    } else if (categoryLabel === 'PG / Co-living') {
+      params.set('category', item)
+    }
+
+    return params.toString()
+  }
+
   return (
     <div>
       <h5 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">{heading}</h5>
       <ul className="space-y-3.5">
         {items.map((item) => (
           <li key={item}>
-            <button className="text-sm font-semibold text-slate-700 hover:text-[#1E88E5] transition-colors duration-200 text-left">
+            <Link
+              to={`/filter?${getFilterParams(item)}`}
+              className="text-sm font-semibold text-slate-700 hover:text-[#1E88E5] transition-colors duration-200 text-left"
+            >
               {item}
-            </button>
+            </Link>
           </li>
         ))}
       </ul>
@@ -487,6 +519,7 @@ const NewBadge = () => (
 )
 
 const Header = () => {
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('Buy')
   const [query, setQuery] = useState('')
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -797,6 +830,34 @@ const Header = () => {
 
   const goToPreviousImage = () => setCurrentImageIndex((prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)
   const goToNextImage = () => setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length)
+
+  const handleSearch = () => {
+    const params = new URLSearchParams()
+    
+    // Set property type based on active tab
+    if (activeTab === 'Buy') {
+      params.set('type', 'buy')
+    } else if (activeTab === 'Rent') {
+      params.set('type', 'rent')
+    } else if (activeTab === 'Commercial') {
+      params.set('type', 'commercial')
+    } else if (activeTab === 'New Launch' || activeTab === 'Projects') {
+      params.set('type', 'buy')
+    }
+
+    // Set search query if present
+    if (query.trim()) {
+      params.set('q', query.trim())
+    }
+
+    // Set city if selected
+    if (selectedCity) {
+      params.set('city', selectedCity)
+    }
+
+    // Navigate to filter page with parameters
+    navigate(`/filter?${params.toString()}`)
+  }
 
   const activeMenuData = openMegaMenu ? MEGA_MENUS[openMegaMenu] : null
   const activeCategory = activeMenuData?.categories[activeCategoryIndex]
@@ -1115,8 +1176,8 @@ const Header = () => {
             {/* Columns 2-4 */}
             <div className="flex-1 min-w-0 flex flex-col">
               <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-8 p-6 overflow-y-auto">
-                <MenuColumn heading={activeCategory?.col2?.heading} items={activeCategory?.col2?.items} />
-                {hasCol3 && <MenuColumn heading={activeCategory?.col3?.heading} items={activeCategory?.col3?.items} />}
+                <MenuColumn heading={activeCategory?.col2?.heading} items={activeCategory?.col2?.items} menuLabel={openMegaMenu} categoryLabel={activeCategory?.label} />
+                {hasCol3 && <MenuColumn heading={activeCategory?.col3?.heading} items={activeCategory?.col3?.items} menuLabel={openMegaMenu} categoryLabel={activeCategory?.label} />}
                 <AdCard menuLabel={openMegaMenu} spanFull={!hasCol3} />
               </div>
 
@@ -1395,7 +1456,11 @@ const Header = () => {
                 <button className="w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 transition-colors duration-200 hover:bg-slate-50" aria-label="Search by voice">
                   <Mic size={18} style={{ color: BLUE }} />
                 </button>
-                <button className="px-8 py-2.5 rounded-lg text-white text-sm sm:text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg" style={{ backgroundColor: BLUE }}>
+                <button 
+                  onClick={handleSearch}
+                  className="px-8 py-2.5 rounded-lg text-white text-sm sm:text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg" 
+                  style={{ backgroundColor: BLUE }}
+                >
                   Search
                 </button>
               </div>

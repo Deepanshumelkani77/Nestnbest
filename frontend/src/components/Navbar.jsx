@@ -206,17 +206,49 @@ const AdCard = ({ menuLabel, spanFull }) => {
   )
 }
 
-const MenuColumn = ({ heading, items }) => {
+const MenuColumn = ({ heading, items, menuLabel, categoryLabel }) => {
   if (!heading || !items?.length) return null
+
+  const getFilterParams = (item) => {
+    const params = new URLSearchParams()
+    
+    // Set property type based on menu label
+    if (menuLabel === 'For Buyers') {
+      params.set('type', 'buy')
+    } else if (menuLabel === 'For Tenants') {
+      params.set('type', 'rent')
+    } else if (menuLabel === 'For Dealers / Builders') {
+      params.set('type', 'commercial')
+    }
+
+    // Set category based on category label
+    if (categoryLabel === 'Buy a Home' || categoryLabel === 'Rent a Home') {
+      params.set('category', item)
+    } else if (categoryLabel === 'Land/Plot') {
+      params.set('type', 'land')
+      params.set('category', item)
+    } else if (categoryLabel === 'Commercial' || categoryLabel === 'Commercial Rent') {
+      params.set('type', 'commercial')
+      params.set('category', item)
+    } else if (categoryLabel === 'PG / Co-living') {
+      params.set('category', item)
+    }
+
+    return params.toString()
+  }
+
   return (
     <div>
       <h5 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">{heading}</h5>
       <ul className="space-y-3.5">
         {items.map((item) => (
           <li key={item}>
-            <button className="text-sm font-semibold text-slate-700 hover:text-[#1E88E5] transition-colors duration-200 text-left">
+            <Link
+              to={`/filter?${getFilterParams(item)}`}
+              className="text-sm font-semibold text-slate-700 hover:text-[#1E88E5] transition-colors duration-200 text-left"
+            >
               {item}
-            </button>
+            </Link>
           </li>
         ))}
       </ul>
@@ -672,6 +704,9 @@ const Navbar = ({ showNavbar = true }) => {
                         <Link to="/career" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                           Career
                         </Link>
+                        <Link to="/filter" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          Property Search
+                        </Link>
                       </div>
                     </div>,
                     document.body
@@ -812,8 +847,8 @@ const Navbar = ({ showNavbar = true }) => {
             {/* Columns 2-4 */}
             <div className="flex-1 min-w-0 flex flex-col">
               <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-8 p-6 overflow-y-auto">
-                <MenuColumn heading={activeCategory?.col2?.heading} items={activeCategory?.col2?.items} />
-                {hasCol3 && <MenuColumn heading={activeCategory?.col3?.heading} items={activeCategory?.col3?.items} />}
+                <MenuColumn heading={activeCategory?.col2?.heading} items={activeCategory?.col2?.items} menuLabel={openMegaMenu} categoryLabel={activeCategory?.label} />
+                {hasCol3 && <MenuColumn heading={activeCategory?.col3?.heading} items={activeCategory?.col3?.items} menuLabel={openMegaMenu} categoryLabel={activeCategory?.label} />}
                 <AdCard menuLabel={openMegaMenu} spanFull={!hasCol3} />
               </div>
 

@@ -10,6 +10,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Career from './pages/Career'
 import Blog from './pages/Blog'
+import Filter from './pages/Filter'
 
 const App = () => {
   const location = useLocation()
@@ -45,6 +46,7 @@ const App = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/career" element={<Career />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/filter" element={<Filter />} />
           </Routes>
         </main>
         <Footer />
