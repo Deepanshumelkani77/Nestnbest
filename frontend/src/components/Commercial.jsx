@@ -130,8 +130,8 @@ const CommercialCard = ({ property }) => {
   }
 
   return (
-    <div className="flex-shrink-0 w-[320px] sm:w-[380px] bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-      <div className="relative h-48 overflow-hidden">
+    <div className="block w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+      <div className="relative h-56 overflow-hidden">
         <img
           src={property.image}
           alt={property.name}
@@ -146,38 +146,38 @@ const CommercialCard = ({ property }) => {
         </div>
       </div>
 
-      <div className="p-5">
-        <h3 className="text-lg font-bold text-slate-800 mb-1">{property.name}</h3>
-        <div className="flex items-center gap-1.5 text-sm text-slate-500 mb-3">
-          <MapPin size={14} />
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-slate-800 mb-2">{property.name}</h3>
+        <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
+          <MapPin size={16} />
           {property.location}
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-slate-500 mb-3">
-          <Building2 size={14} />
+        <div className="flex items-center gap-2 text-sm text-slate-500 mb-4">
+          <Building2 size={16} />
           {property.builder}
         </div>
 
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="flex flex-wrap gap-2 mb-5">
           {property.amenities.slice(0, 3).map((amenity) => (
-            <span key={amenity} className="px-2 py-1 rounded-md bg-slate-100 text-xs text-slate-600">
+            <span key={amenity} className="px-3 py-1.5 rounded-full bg-slate-100 text-xs text-slate-600 font-medium">
               {amenity}
             </span>
           ))}
           {property.amenities.length > 3 && (
-            <span className="px-2 py-1 rounded-md bg-slate-100 text-xs text-slate-600">
+            <span className="px-3 py-1.5 rounded-full bg-slate-100 text-xs text-slate-600 font-medium">
               +{property.amenities.length - 3}
             </span>
           )}
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
           <div>
-            <p className="text-xs text-slate-500">Starting from</p>
-            <p className="text-lg font-bold" style={{ color: '#193C06' }}>
+            <p className="text-xs text-slate-500 mb-1">Starting from</p>
+            <p className="text-xl font-bold" style={{ color: '#193C06' }}>
               {property.price}
             </p>
           </div>
-          <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:scale-105 bg-[#193C06]" >
+          <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:scale-105 bg-[#193C06]" >
             View Details
             <ArrowRight size={16} />
           </button>
@@ -192,7 +192,7 @@ const CommercialSection = ({ title, description, properties, viewAllText = 'View
 
   const scroll = (direction) => {
     if (scrollRef.current) {
-      const scrollAmount = 400
+      const scrollAmount = 500
       scrollRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth',
@@ -201,35 +201,35 @@ const CommercialSection = ({ title, description, properties, viewAllText = 'View
   }
 
   return (
-    <div className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white">
+    <div className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white">
       <div className="max-w-8xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-3xl font-bold text-slate-800 mb-2">{title}</h2>
-            <p className="text-slate-500">{description}</p>
+            <h2 className="text-4xl font-bold text-slate-800 mb-3">{title}</h2>
+            <p className="text-lg text-slate-500">{description}</p>
           </div>
-          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white transition-all duration-200 hover:scale-105 hover:shadow-lg" style={{ backgroundColor: '#193C06' }}>
+          <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105 hover:shadow-lg" style={{ backgroundColor: '#193C06' }}>
             {viewAllText}
-            <ArrowRight size={18} />
+            <ArrowRight size={20} />
           </button>
         </div>
 
         <div className="relative">
           <button
             onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all duration-200 hover:scale-110"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-14 h-14 flex items-center justify-center rounded-full bg-white shadow-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all duration-200 hover:scale-110"
             aria-label="Scroll left"
           >
-            <ChevronLeft size={24} className="text-slate-600" />
+            <ChevronLeft size={28} className="text-slate-600" />
           </button>
 
           <div
             ref={scrollRef}
-            className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory px-8"
+            className="flex gap-8 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory px-12"
             style={{ scrollSnapType: 'x mandatory' }}
           >
             {properties.map((property) => (
-              <div key={property.id} className="snap-start">
+              <div key={property.id} className="snap-start flex-shrink-0">
                 <CommercialCard property={property} />
               </div>
             ))}
@@ -237,10 +237,10 @@ const CommercialSection = ({ title, description, properties, viewAllText = 'View
 
           <button
             onClick={() => scroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all duration-200 hover:scale-110"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-14 h-14 flex items-center justify-center rounded-full bg-white shadow-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all duration-200 hover:scale-110"
             aria-label="Scroll right"
           >
-            <ChevronRight size={24} className="text-slate-600" />
+            <ChevronRight size={28} className="text-slate-600" />
           </button>
         </div>
       </div>
