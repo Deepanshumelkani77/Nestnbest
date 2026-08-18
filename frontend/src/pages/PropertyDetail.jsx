@@ -310,7 +310,63 @@ const PropertyDetail = () => {
               </div>
             </SectionCard>
 
-           
+            {/* Price trends */}
+            <SectionCard eyebrow="Market Insights" title="Price trends in this locality">
+              <div className="flex flex-wrap items-center gap-4 mb-6">
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(16,185,129,0.1)' }}>
+                    <TrendingUp size={17} className="text-emerald-600" />
+                  </span>
+                  <div>
+                    <div className="font-bold text-sm" style={{ color: NAVY }}>+{priceAppreciation}%</div>
+                    <div className="text-slate-500 text-xs">5-year appreciation</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(30,136,229,0.1)' }}>
+                    <IndianRupee size={17} style={{ color: BLUE }} />
+                  </span>
+                  <div>
+                    <div className="font-bold text-sm" style={{ color: NAVY }}>
+                      ₹{priceTrendData[priceTrendData.length - 1].price.toLocaleString('en-IN')}/sq.ft
+                    </div>
+                    <div className="text-slate-500 text-xs">Current avg. rate</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={priceTrendData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={BLUE} stopOpacity={0.25} />
+                        <stop offset="95%" stopColor={BLUE} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+                    <XAxis dataKey="year" tick={{ fontSize: 12, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: '#94A3B8' }}
+                      axisLine={false}
+                      tickLine={false}
+                      tickFormatter={(v) => `₹${v / 1000}k`}
+                      width={45}
+                    />
+                    <Tooltip
+                      formatter={(value) => [`₹${value.toLocaleString('en-IN')}/sq.ft`, 'Avg. Price']}
+                      contentStyle={{ borderRadius: 10, border: '1px solid #F1F5F9', fontSize: 13 }}
+                    />
+                    <Area type="monotone" dataKey="price" stroke={BLUE} strokeWidth={2.5} fill="url(#priceGradient)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+
+              <p className="text-slate-400 text-xs mt-4">
+                * Price trends are indicative, based on transacted prices in the surrounding locality over the last 5 years.
+              </p>
+            </SectionCard>
+
             {/* Location & connectivity */}
             <SectionCard eyebrow="Location" title="Location & connectivity">
               <div className="rounded-xl overflow-hidden border border-slate-100 h-64 mb-5">
