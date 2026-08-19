@@ -12,6 +12,8 @@ import Career from './pages/Career'
 import Blog from './pages/Blog'
 import Filter from './pages/Filter'
 import PropertyDetail from './pages/PropertyDetail'
+import LandDetail from './pages/LandDetail'
+import CommercialDetail from './pages/CommercialDetail'
 
 const App = () => {
   const location = useLocation()
@@ -49,6 +51,8 @@ const App = () => {
             <Route path="/blog" element={<Blog />} />
             <Route path="/filter" element={<Filter />} />
             <Route path="/property/:id" element={<PropertyDetail />} />
+            <Route path="/land/:id" element={<LandDetail />} />
+            <Route path="/commercial/:id" element={<CommercialDetail />} />
           </Routes>
         </main>
         <Footer />

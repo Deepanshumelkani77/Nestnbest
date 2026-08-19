@@ -1,121 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, MapPin, Building2, Star, ArrowRight } from 'lucide-react'
+import { COMMERCIAL_DATA } from '../data/commercial'
 
-const READY_TO_MOVE_SPACES = [
-  {
-    id: 1,
-    name: 'DLF Tower A',
-    location: 'Sector 25, Gurgaon',
-    price: '₹85/sq ft onwards',
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
-    builder: 'DLF Ltd',
-    status: 'Ready to Move',
-    rating: 4.8,
-    amenities: ['24/7 Security', 'Parking', 'Cafeteria', 'Conference Rooms'],
-  },
-  {
-    id: 2,
-    name: 'Godrej Infinity',
-    location: 'Sector 49, Gurgaon',
-    price: '₹65/sq ft onwards',
-    image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop',
-    builder: 'Godrej Properties',
-    status: 'Ready to Move',
-    rating: 4.6,
-    amenities: ['Gym', 'Power Backup', 'Central AC'],
-  },
-  {
-    id: 3,
-    name: 'Tata Business Park',
-    location: 'Sector 72, Gurgaon',
-    price: '₹75/sq ft onwards',
-    image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=400&h=300&fit=crop',
-    builder: 'Tata Housing',
-    status: 'Ready to Move',
-    rating: 4.7,
-    amenities: ['Business Center', 'Spa', 'Club House'],
-  },
-  {
-    id: 4,
-    name: 'M3M Corporate Park',
-    location: 'Sector 65, Gurgaon',
-    price: '₹70/sq ft onwards',
-    image: 'https://images.unsplash.com/photo-1504384308090-c54be3852f33?w=400&h=300&fit=crop',
-    builder: 'M3M India',
-    status: 'Ready to Move',
-    rating: 4.5,
-    amenities: ['Swimming Pool', 'Gym', 'Parking'],
-  },
-  {
-    id: 5,
-    name: 'Emperor Business Center',
-    location: 'Sector 37C, Gurgaon',
-    price: '₹55/sq ft onwards',
-    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop',
-    builder: 'Emperor Group',
-    status: 'Ready to Move',
-    rating: 4.4,
-    amenities: ['Club House', 'Park', '24/7 Security'],
-  },
-]
-
-const RESALE_COMMERCIAL = [
-  {
-    id: 1,
-    name: 'DLF Office Space',
-    location: 'Sector 18, Noida',
-    price: '₹120/sq ft',
-    image: 'https://images.unsplash.com/photo-1555529733-0e670560f7e1?w=400&h=300&fit=crop',
-    builder: 'Resale',
-    status: 'Resale',
-    rating: 4.7,
-    amenities: ['High Footfall', 'Food Court', 'Parking', 'Security'],
-  },
-  {
-    id: 2,
-    name: 'Omaxe Retail Space',
-    location: 'Sector 79, Gurgaon',
-    price: '₹95/sq ft',
-    image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=400&h=300&fit=crop',
-    builder: 'Resale',
-    status: 'Resale',
-    rating: 4.5,
-    amenities: ['Retail Space', 'Food Court', 'Parking'],
-  },
-  {
-    id: 3,
-    name: 'Emaar Commercial',
-    location: 'Sector 62, Gurgaon',
-    price: '₹110/sq ft',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
-    builder: 'Resale',
-    status: 'Resale',
-    rating: 4.6,
-    amenities: ['Gym', 'Swimming Pool', 'Business Center'],
-  },
-  {
-    id: 4,
-    name: 'Vatika Office',
-    location: 'Sector 49, Gurgaon',
-    price: '₹85/sq ft',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=400&h=300&fit=crop',
-    builder: 'Resale',
-    status: 'Resale',
-    rating: 4.4,
-    amenities: ['Park', 'Club House', '24/7 Security'],
-  },
-  {
-    id: 5,
-    name: 'Raheja Commercial',
-    location: 'Sector 78, Gurgaon',
-    price: '₹100/sq ft',
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
-    builder: 'Resale',
-    status: 'Resale',
-    rating: 4.8,
-    amenities: ['Sky Lounge', 'Spa', 'Gym', 'Parking'],
-  },
-]
+const READY_TO_MOVE_SPACES = Object.values(COMMERCIAL_DATA).filter(p => p.status === 'Available')
+const RESALE_COMMERCIAL = Object.values(COMMERCIAL_DATA).filter(p => p.status === 'Resale')
 
 const CommercialCard = ({ property }) => {
   const getStatusColor = (status) => {
@@ -130,7 +19,7 @@ const CommercialCard = ({ property }) => {
   }
 
   return (
-    <div className="block w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <Link to={`/commercial/${property.id}`} className="block w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <div className="relative h-56 overflow-hidden">
         <img
           src={property.image}
@@ -177,13 +66,13 @@ const CommercialCard = ({ property }) => {
               {property.price}
             </p>
           </div>
-          <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:scale-105 bg-[#193C06]" >
+          <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:scale-105 bg-[#193C06]" onClick={(e) => e.preventDefault()}>
             View Details
             <ArrowRight size={16} />
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
