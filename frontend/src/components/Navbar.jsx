@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { AppContext } from '../context/AppContext'
+import { useAuth } from '../context/AuthContext'
 import {
   Menu,
   X,
@@ -262,7 +263,9 @@ const Navbar = ({ showNavbar = true }) => {
   const [scrollPct, setScrollPct] = useState(0)
   const [mounted, setMounted] = useState(false)
   const location = useLocation ? useLocation() : { pathname: '' }
+  const navigate = useNavigate()
   const { openSignup } = useContext(AppContext)
+  const { user, logout } = useAuth()
 
   const [isLocationOpen, setIsLocationOpen] = useState(false)
   const [cityQuery, setCityQuery] = useState('')
@@ -605,7 +608,8 @@ const Navbar = ({ showNavbar = true }) => {
                 )
               })}
 
-              <button
+              <Link
+                to={user ? "/post-property" : "/auth"}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
                 style={{ backgroundColor: GREEN }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = GREEN_DARK)}
@@ -615,7 +619,7 @@ const Navbar = ({ showNavbar = true }) => {
                 <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 leading-none">
                   FREE
                 </span>
-              </button>
+              </Link>
 
               <button
                 className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-700 hover:border-[#193C06] hover:text-[#193C06] transition-colors duration-200"
@@ -648,24 +652,51 @@ const Navbar = ({ showNavbar = true }) => {
                   createPortal(
                     <div
                       ref={userDropdownRef}
-                      className="fixed w-48 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      className="fixed w-56 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
                       style={{ top: `${userDropdownPosition.top}px`, left: `${userDropdownPosition.left}px` }}
                     >
-                      <div className="py-2">
-                        <button onClick={() => { setIsUserDropdownOpen(false); openSignup('login') }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                          <User size={16} className="text-slate-400" />
-                          Sign In
-                        </button>
-                        <button onClick={() => { setIsUserDropdownOpen(false); openSignup('signup') }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                          <User size={16} className="text-slate-400" />
-                          Register
-                        </button>
-                        <div className="my-2 border-t border-slate-100" />
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                          <Headphones size={16} className="text-slate-400" />
-                          Support
-                        </button>
-                      </div>
+                      {user ? (
+                        <div className="py-2">
+                          <div className="px-4 py-3 border-b border-slate-100">
+                            <div className="flex items-center gap-3">
+                              <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full" />
+                              <div className="min-w-0">
+                                <p className="font-semibold text-slate-800 truncate">{user.name}</p>
+                                <p className="text-xs text-slate-500 capitalize">{user.role}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <Link to="/dashboard" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            <User size={16} className="text-slate-400" />
+                            Dashboard
+                          </Link>
+                          <Link to="/post-property" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            <Sparkles size={16} className="text-slate-400" />
+                            Post Property
+                          </Link>
+                          <div className="my-2 border-t border-slate-100" />
+                          <button onClick={() => { setIsUserDropdownOpen(false); logout() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors duration-200">
+                            <X size={16} className="text-red-400" />
+                            Logout
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="py-2">
+                          <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            <User size={16} className="text-slate-400" />
+                            Sign In
+                          </Link>
+                          <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            <User size={16} className="text-slate-400" />
+                            Register
+                          </Link>
+                          <div className="my-2 border-t border-slate-100" />
+                          <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            <Headphones size={16} className="text-slate-400" />
+                            Support
+                          </button>
+                        </div>
+                      )}
                     </div>,
                     document.body
                   )}
@@ -778,13 +809,26 @@ const Navbar = ({ showNavbar = true }) => {
                 >
                   <Headphones size={16} />
                 </button>
-                <button className="flex items-center space-x-2 text-gray-700 hover:text-[#193C06] font-medium py-2.5 px-2 w-full rounded-lg hover:bg-white transition-all duration-200">
-                  <User size={18} />
-                  <span>Account</span>
-                </button>
-                <button className="flex items-center justify-center gap-2 text-white font-medium px-6 py-2.5 rounded-lg text-center w-full transition-all duration-300 hover:shadow-md" style={{ backgroundColor: GREEN }}>
+                {user ? (
+                  <>
+                    <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-gray-700 hover:text-[#193C06] font-medium py-2.5 px-2 w-full rounded-lg hover:bg-white transition-all duration-200">
+                      <User size={18} />
+                      <span>Dashboard</span>
+                    </Link>
+                    <button onClick={() => { setIsMenuOpen(false); logout() }} className="flex items-center space-x-2 text-red-600 hover:text-red-700 font-medium py-2.5 px-2 w-full rounded-lg hover:bg-white transition-all duration-200">
+                      <X size={18} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-gray-700 hover:text-[#193C06] font-medium py-2.5 px-2 w-full rounded-lg hover:bg-white transition-all duration-200">
+                    <User size={18} />
+                    <span>Sign In</span>
+                  </Link>
+                )}
+                <Link to={user ? "/post-property" : "/auth"} onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center gap-2 text-white font-medium px-6 py-2.5 rounded-lg text-center w-full transition-all duration-300 hover:shadow-md" style={{ backgroundColor: GREEN }}>
                   Post property (FREE)
-                </button>
+                </Link>
               </div>
             </div>
           )}

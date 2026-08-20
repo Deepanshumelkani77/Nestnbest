@@ -6,6 +6,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Signup from './components/Signup'
 import AppContextProvider, { AppContext } from './context/AppContext'
+import { AuthProvider } from './context/AuthContext'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Career from './pages/Career'
@@ -14,14 +15,22 @@ import Filter from './pages/Filter'
 import PropertyDetail from './pages/PropertyDetail'
 import LandDetail from './pages/LandDetail'
 import CommercialDetail from './pages/CommercialDetail'
+import IndustrialDetail from './pages/IndustrialDetail'
+import Auth from './pages/Auth'
+import Dashboard from './pages/Dashboard'
+import PostProperty from './pages/PostProperty'
 
 const App = () => {
   const location = useLocation()
   const [showNavbar, setShowNavbar] = useState(false)
   const isHomePage = location.pathname === '/'
 
+  // Routes that should not show Navbar and Footer
+  const noNavFooterRoutes = ['/auth', '/dashboard', '/post-property']
+  const shouldShowNavFooter = !noNavFooterRoutes.includes(location.pathname)
+
   useEffect(() => {
-    if (!isHomePage) {
+    if (!isHomePage || !shouldShowNavFooter) {
       setShowNavbar(true)
       return
     }
@@ -35,30 +44,37 @@ const App = () => {
     handleScroll() // Check initial scroll position
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isHomePage])
+  }, [isHomePage, shouldShowNavFooter])
 
   return (
-    <AppContextProvider>
-      <div>
-        {isHomePage && <Header />}
-        <Navbar showNavbar={showNavbar || !isHomePage} />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/career" element={<Career />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/filter" element={<Filter />} />
-            <Route path="/property/:id" element={<PropertyDetail />} />
-            <Route path="/land/:id" element={<LandDetail />} />
-            <Route path="/commercial/:id" element={<CommercialDetail />} />
-          </Routes>
-        </main>
-        <Footer />
-        <Signup />
-      </div>
-    </AppContextProvider>
+    <AuthProvider>
+      <AppContextProvider>
+        <div>
+          {isHomePage && <Header />}
+          {shouldShowNavFooter && <Navbar showNavbar={showNavbar || !isHomePage} />}
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/career" element={<Career />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/filter" element={<Filter />} />
+              <Route path="/property/:id" element={<PropertyDetail />} />
+              <Route path="/land/:id" element={<LandDetail />} />
+              <Route path="/commercial/:id" element={<CommercialDetail />} />
+              <Route path="/industrial/:id" element={<IndustrialDetail />} />
+              <Route path="/auth" element={<Auth />} />
+             
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/post-property" element={<PostProperty />} />
+            </Routes>
+          </main>
+          {shouldShowNavFooter && <Footer />}
+          {shouldShowNavFooter && <Signup />}
+        </div>
+      </AppContextProvider>
+    </AuthProvider>
   )
 }
 
