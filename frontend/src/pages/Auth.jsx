@@ -105,6 +105,17 @@ const Auth = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotError, setForgotError] = useState('')
+  const [forgotSuccess, setForgotSuccess] = useState(false)
+  const [emailOtpSent, setEmailOtpSent] = useState(false)
+  const [emailOtp, setEmailOtp] = useState('')
+  const [emailOtpVerified, setEmailOtpVerified] = useState(false)
+  const [mobileOtpSent, setMobileOtpSent] = useState(false)
+  const [mobileOtp, setMobileOtp] = useState('')
+  const [mobileOtpVerified, setMobileOtpVerified] = useState(false)
+  const [otpError, setOtpError] = useState('')
 
   useEffect(() => {
     setMounted(true)
@@ -185,6 +196,63 @@ const Auth = () => {
   const handleSignupChange = (e) => {
     setSignupData({ ...signupData, [e.target.name]: e.target.value })
     setError('')
+  }
+
+  const handleForgotPassword = (e) => {
+    e.preventDefault()
+    setForgotError('')
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(forgotEmail)) {
+      setForgotError('Please enter a valid email address')
+      return
+    }
+
+    console.log('Forgot password for:', forgotEmail)
+    setForgotSuccess(true)
+    setForgotEmail('')
+  }
+
+  const sendEmailOtp = () => {
+    setOtpError('')
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(signupData.email)) {
+      setOtpError('Please enter a valid email address first')
+      return
+    }
+    console.log('Sending OTP to email:', signupData.email)
+    setEmailOtpSent(true)
+  }
+
+  const verifyEmailOtp = () => {
+    setOtpError('')
+    if (emailOtp.length !== 6) {
+      setOtpError('Please enter a valid 6-digit OTP')
+      return
+    }
+    console.log('Verifying email OTP:', emailOtp)
+    setEmailOtpVerified(true)
+  }
+
+  const sendMobileOtp = () => {
+    setOtpError('')
+    const phoneRegex = /^\+?[0-9]+$/
+    if (!phoneRegex.test(signupData.phone)) {
+      setOtpError('Please enter a valid phone number first')
+      return
+    }
+    console.log('Sending OTP to mobile:', signupData.phone)
+    setMobileOtpSent(true)
+  }
+
+  const verifyMobileOtp = () => {
+    setOtpError('')
+    if (mobileOtp.length !== 6) {
+      setOtpError('Please enter a valid 6-digit OTP')
+      return
+    }
+    console.log('Verifying mobile OTP:', mobileOtp)
+    setMobileOtpVerified(true)
   }
 
   return (
@@ -424,7 +492,7 @@ const Auth = () => {
                     >
                       Password
                     </label>
-                    <button type="button" className="text-xs font-semibold" style={{ color: BRASS }}>
+                    <button type="button" onClick={() => setShowForgotPassword(true)} className="text-xs font-semibold" style={{ color: BRASS }}>
                       Forgot password?
                     </button>
                   </div>
@@ -463,47 +531,145 @@ const Auth = () => {
             ) : (
               /* ---- Signup Form ---- */
               <form onSubmit={handleSignupSubmit} className="space-y-3.5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <LedgerField
-                    label="Full name *"
-                    icon={User}
-                    type="text"
-                    name="name"
-                    value={signupData.name}
-                    onChange={handleSignupChange}
-                    placeholder="Your name"
-                    required
-                  />
-                  <LedgerField
-                    label="Phone number *"
-                    icon={Phone}
-                    type="tel"
-                    name="phone"
-                    value={signupData.phone}
-                    onChange={handleSignupChange}
-                    placeholder="10-digit number"
-                    required
-                  />
-                </div>
-
                 <LedgerField
-                  label="Email address *"
-                  icon={Mail}
-                  type="email"
-                  name="email"
-                  value={signupData.email}
+               
+                  icon={User}
+                  type="text"
+                  name="name"
+                  value={signupData.name}
                   onChange={handleSignupChange}
-                  placeholder="you@example.com"
+                  placeholder="Full name *"
                   required
                 />
 
                 <div>
-                  <label
-                    className="block text-[10px] font-semibold tracking-[0.14em] uppercase mb-1.5 font-mono-ui"
-                    style={{ color: '#8A8272' }}
-                  >
-                    Password *
-                  </label>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                     
+                      <div className="relative flex items-center border-b-2" style={{ borderColor: PAPER_LINE }}>
+                        <Phone size={16} className="mr-1 flex-shrink-0" style={{ color: '#A39A85' }} />
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={signupData.phone}
+                          onChange={handleSignupChange}
+                          placeholder="  Phone number *"
+                          required
+                          className="w-full bg-transparent py-2.5 pr-8 outline-none text-sm placeholder-[#B2A98F]"
+                          style={{ color: INKTEXT }}
+                        />
+                      </div>
+                    </div>
+                    {!mobileOtpVerified && (
+                      <button
+                        type="button"
+                        onClick={sendMobileOtp}
+                        disabled={mobileOtpSent}
+                        className="px-3 py-2 text-white text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ backgroundColor: INK, marginTop: '1.6rem' }}
+                      >
+                        {mobileOtpSent ? 'Sent' : 'Send OTP'}
+                      </button>
+                    )}
+                    {mobileOtpVerified && (
+                      <div
+                        className="px-3 py-2 text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md flex items-center gap-1"
+                        style={{ backgroundColor: 'rgba(95,122,92,0.15)', color: SAGE, marginTop: '1.6rem' }}
+                      >
+                        <CheckCircle2 size={12} />
+                        Verified
+                      </div>
+                    )}
+                  </div>
+                  {mobileOtpSent && !mobileOtpVerified && (
+                    <div className="mt-2 flex gap-2">
+                      <input
+                        type="text"
+                        value={mobileOtp}
+                        onChange={(e) => setMobileOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
+                        placeholder="Enter 6-digit OTP"
+                        maxLength={6}
+                        className="flex-1 px-3 py-2 border-b-2 text-sm outline-none placeholder-[#B2A98F]"
+                        style={{ borderColor: PAPER_LINE, color: INKTEXT }}
+                      />
+                      <button
+                        type="button"
+                        onClick={verifyMobileOtp}
+                        className="px-3 py-2 text-white text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md transition-all"
+                        style={{ backgroundColor: SAGE }}
+                      >
+                        Verify
+                      </button>
+                    </div>
+                  )}
+                  {otpError && <div className="text-[11px] font-semibold mt-1.5" style={{ color: CLAY }}>{otpError}</div>}
+                </div>
+
+                <div>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                    
+                      <div className="relative flex items-center border-b-2" style={{ borderColor: PAPER_LINE }}>
+                        <Mail size={16} className="mr-1 flex-shrink-0" style={{ color: '#A39A85' }} />
+                        <input
+                          type="email"
+                          name="email"
+                          value={signupData.email}
+                          onChange={handleSignupChange}
+                          placeholder="   Email address *"
+                          required
+                          className="w-full bg-transparent py-2.5 pr-8 outline-none text-sm placeholder-[#B2A98F]"
+                          style={{ color: INKTEXT }}
+                        />
+                      </div>
+                    </div>
+                    {!emailOtpVerified && (
+                      <button
+                        type="button"
+                        onClick={sendEmailOtp}
+                        disabled={emailOtpSent}
+                        className="px-3 py-2 text-white text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ backgroundColor: INK, marginTop: '1.6rem' }}
+                      >
+                        {emailOtpSent ? 'Sent' : 'Send OTP'}
+                      </button>
+                    )}
+                    {emailOtpVerified && (
+                      <div
+                        className="px-3 py-2 text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md flex items-center gap-1"
+                        style={{ backgroundColor: 'rgba(95,122,92,0.15)', color: SAGE, marginTop: '1.6rem' }}
+                      >
+                        <CheckCircle2 size={12} />
+                        Verified
+                      </div>
+                    )}
+                  </div>
+                  {emailOtpSent && !emailOtpVerified && (
+                    <div className="mt-2 flex gap-2">
+                      <input
+                        type="text"
+                        value={emailOtp}
+                        onChange={(e) => setEmailOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
+                        placeholder="Enter 6-digit OTP"
+                        maxLength={6}
+                        className="flex-1 px-3 py-2 border-b-2 text-sm outline-none placeholder-[#B2A98F]"
+                        style={{ borderColor: PAPER_LINE, color: INKTEXT }}
+                      />
+                      <button
+                        type="button"
+                        onClick={verifyEmailOtp}
+                        className="px-3 py-2 text-white text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md transition-all"
+                        style={{ backgroundColor: SAGE }}
+                      >
+                        Verify
+                      </button>
+                    </div>
+                  )}
+                  {otpError && <div className="text-[11px] font-semibold mt-1.5" style={{ color: CLAY }}>{otpError}</div>}
+                </div>
+
+                <div>
+                 
                   <div className="relative flex items-center border-b-2" style={{ borderColor: PAPER_LINE }}>
                     <Lock size={16} className="mr-3 flex-shrink-0" style={{ color: '#A39A85' }} />
                     <input
@@ -566,6 +732,99 @@ const Auth = () => {
           </div>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div
+            className="absolute inset-0 backdrop-blur-sm"
+            style={{ backgroundColor: 'rgba(21,36,32,0.6)' }}
+            onClick={() => setShowForgotPassword(false)}
+          />
+          <div
+            className="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl p-8 border"
+            style={{ borderColor: PAPER_LINE }}
+          >
+            <button
+              onClick={() => setShowForgotPassword(false)}
+              className="absolute top-4 right-4 text-[#A39A85] hover:text-[#6B6350] transition-colors"
+            >
+              ✕
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(184,134,59,0.15)' }}>
+                <Lock size={20} style={{ color: BRASS }} />
+              </div>
+              <h2 className="font-display text-xl mb-2" style={{ color: INKTEXT, fontWeight: 500 }}>Forgot Password?</h2>
+              <p className="text-sm" style={{ color: '#8A8272' }}>
+                Enter your email address and we'll send you a link to reset your password.
+              </p>
+            </div>
+
+            {!forgotSuccess ? (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div>
+                  <label
+                    className="block text-[10px] font-semibold tracking-[0.14em] uppercase mb-1.5 font-mono-ui"
+                    style={{ color: '#8A8272' }}
+                  >
+                    Email address
+                  </label>
+                  <div className="relative flex items-center border-b-2" style={{ borderColor: PAPER_LINE }}>
+                    <Mail size={16} className="mr-3 flex-shrink-0" style={{ color: '#A39A85' }} />
+                    <input
+                      type="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                      className="w-full bg-transparent py-2.5 pr-8 outline-none text-sm placeholder-[#B2A98F]"
+                      style={{ color: INKTEXT }}
+                    />
+                  </div>
+                </div>
+                {forgotError && <div className="text-[11px] font-semibold" style={{ color: CLAY }}>{forgotError}</div>}
+                <button
+                  type="submit"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 text-white text-sm font-semibold font-mono-ui uppercase tracking-wide transition-all duration-200 hover:-translate-y-0.5"
+                  style={{ backgroundColor: INK }}
+                >
+                  Send Reset Link
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(false)}
+                  className="w-full py-2 text-sm font-semibold transition-colors"
+                  style={{ color: '#8A8272' }}
+                >
+                  Back to Login
+                </button>
+              </form>
+            ) : (
+              <div className="text-center space-y-4">
+                <div
+                  className="w-16 h-16 mx-auto rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: 'rgba(95,122,92,0.15)' }}
+                >
+                  <CheckCircle2 size={24} style={{ color: SAGE }} />
+                </div>
+                <h3 className="font-display text-lg" style={{ color: INKTEXT, fontWeight: 500 }}>Check Your Email</h3>
+                <p className="text-sm" style={{ color: '#8A8272' }}>
+                  We've sent a password reset link to your email address. Please check your inbox and follow the instructions.
+                </p>
+                <button
+                  onClick={() => { setShowForgotPassword(false); setForgotSuccess(false) }}
+                  className="w-full flex items-center justify-center gap-2 py-3.5 text-white text-sm font-semibold font-mono-ui uppercase tracking-wide transition-all duration-200 hover:-translate-y-0.5"
+                  style={{ backgroundColor: INK }}
+                >
+                  Back to Login
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

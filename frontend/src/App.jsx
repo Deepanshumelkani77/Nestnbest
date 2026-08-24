@@ -17,6 +17,7 @@ import LandDetail from './pages/LandDetail'
 import CommercialDetail from './pages/CommercialDetail'
 import IndustrialDetail from './pages/IndustrialDetail'
 import Auth from './pages/Auth'
+import Insight from './pages/Insight'
 import Dashboard from './pages/Dashboard'
 import PostProperty from './pages/PostProperty'
 
@@ -27,7 +28,9 @@ const App = () => {
 
   // Routes that should not show Navbar and Footer
   const noNavFooterRoutes = ['/auth', '/dashboard', '/post-property']
+  const noFooterRoutes = ['/auth', '/dashboard', '/post-property', '/insight']
   const shouldShowNavFooter = !noNavFooterRoutes.includes(location.pathname)
+  const shouldShowFooter = !noFooterRoutes.includes(location.pathname)
 
   useEffect(() => {
     if (!isHomePage || !shouldShowNavFooter) {
@@ -65,13 +68,13 @@ const App = () => {
               <Route path="/commercial/:id" element={<CommercialDetail />} />
               <Route path="/industrial/:id" element={<IndustrialDetail />} />
               <Route path="/auth" element={<Auth />} />
-             
+              <Route path="/insight" element={<Insight />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/post-property" element={<PostProperty />} />
             </Routes>
           </main>
-          {shouldShowNavFooter && <Footer />}
-          {shouldShowNavFooter && <Signup />}
+          {shouldShowFooter && <Footer />}
+          {shouldShowFooter && <Signup />}
         </div>
       </AppContextProvider>
     </AuthProvider>

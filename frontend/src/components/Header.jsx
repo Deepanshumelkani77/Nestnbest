@@ -994,31 +994,47 @@ const Header = () => {
               <div className="hidden lg:flex items-center gap-7">
                 {NAV_LINKS.map((link) => {
                   const hasMenu = !!MEGA_MENUS[link.label]
+                  const isInsight = link.label === 'Insights'
                   return (
                     <div key={link.label} className="relative" ref={hasMenu ? (el) => (megaTriggerRefs.current[link.label] = el) : null}>
-                      <button
-                        onClick={() => (hasMenu ? toggleMegaMenu(link.label) : undefined)}
-                        className="relative flex items-center gap-1.5 text-white/90 text-sm font-medium hover:text-white transition-colors duration-200"
-                      >
-                        {link.label}
-                        {link.badge && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
-                            {link.badge}
-                          </span>
-                        )}
-                        {hasMenu && (
-                          <ChevronDown
-                            size={14}
-                            className="transition-transform duration-200"
-                            style={{ transform: openMegaMenu === link.label ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                          />
-                        )}
-                      </button>
+                      {isInsight ? (
+                        <Link
+                          to="/insight"
+                          className="relative flex items-center gap-1.5 text-white/90 text-sm font-medium hover:text-white transition-colors duration-200"
+                        >
+                          {link.label}
+                          {link.badge && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                              {link.badge}
+                            </span>
+                          )}
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={() => (hasMenu ? toggleMegaMenu(link.label) : undefined)}
+                          className="relative flex items-center gap-1.5 text-white/90 text-sm font-medium hover:text-white transition-colors duration-200"
+                        >
+                          {link.label}
+                          {link.badge && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                              {link.badge}
+                            </span>
+                          )}
+                          {hasMenu && (
+                            <ChevronDown
+                              size={14}
+                              className="transition-transform duration-200"
+                              style={{ transform: openMegaMenu === link.label ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                            />
+                          )}
+                        </button>
+                      )}
                     </div>
                   )
                 })}
 
-                <button
+                <Link
+                  to="/auth"
                   className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg"
                   style={{ color: NAVY }}
                 >
@@ -1026,7 +1042,7 @@ const Header = () => {
                   <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 leading-none">
                     FREE
                   </span>
-                </button>
+                </Link>
 
                 <button className="w-9 h-9 flex items-center justify-center rounded-full border border-white/40 text-white hover:bg-white/10 transition-colors duration-200">
                   <Headphones size={16} />
@@ -1225,12 +1241,12 @@ const Header = () => {
                 )
               })}
               <div className="ml-auto flex-shrink-0 pb-4">
-                <button className="flex items-center gap-1.5 text-sm sm:text-base font-semibold" style={{ color: NAVY }}>
+                <Link to="/post-property" className="flex items-center gap-1.5 text-sm sm:text-base font-semibold" style={{ color: NAVY }}>
                   Post Property
                   <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 leading-none">
                     FREE
                   </span>
-                </button>
+                </Link>
               </div>
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
@@ -15,11 +15,9 @@ import {
   Bed,
   Bath,
   Maximize,
-  Calendar,
   Phone,
   Mail,
   User,
-  Building,
   Layers,
   ShieldCheck,
   Droplets,
@@ -33,6 +31,26 @@ import {
   Wifi,
   Sparkles,
   ChevronLeft,
+  ChevronDown,
+  Compass,
+  Sofa,
+  Clock,
+  FileText,
+  Landmark,
+  IndianRupee,
+  ClipboardList,
+  Images,
+  ListChecks,
+  Contact,
+  BadgeCheck,
+  TrendingUp,
+  Eye,
+  ImageOff,
+  Ruler,
+  Route,
+  Gauge,
+  Warehouse,
+  Truck,
 } from 'lucide-react'
 
 const NAVY = '#193C06'
@@ -48,18 +66,25 @@ const PROPERTY_TYPES = [
 const RESIDENTIAL_SUBTYPES = [
   'Apartment', 'Villa', 'Independent House', 'Builder Floor', 'Plot', 'Penthouse', 'Studio Apartment'
 ]
-
 const COMMERCIAL_SUBTYPES = [
   'Office Space', 'Retail Space', 'Warehouse', 'Showroom', 'Co-working Space', 'Industrial Shed'
 ]
-
 const LAND_SUBTYPES = [
   'Residential Plot', 'Commercial Plot', 'Agricultural Land', 'Industrial Plot', 'Farm House'
 ]
-
 const INDUSTRIAL_SUBTYPES = [
   'Industrial Shed', 'Factory', 'Warehouse', 'Industrial Plot', 'Manufacturing Unit'
 ]
+
+const AREA_UNITS_STANDARD = ['sq.ft', 'sq.yard', 'sq.m', 'acre', 'bigha']
+const AREA_UNITS_LAND = ['acre', 'bigha', 'sq.yard', 'sq.ft', 'sq.m']
+
+const BHK_OPTIONS = ['1', '2', '3', '4', '4+']
+const FURNISHING_OPTIONS = ['Unfurnished', 'Semi-Furnished', 'Fully Furnished']
+const FACING_OPTIONS = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West']
+const OWNERSHIP_OPTIONS = ['Freehold', 'Leasehold', 'Co-operative Society', 'Power of Attorney']
+const CONTACT_TIME_OPTIONS = ['Anytime', 'Morning (9am–12pm)', 'Afternoon (12pm–4pm)', 'Evening (4pm–8pm)']
+const WAREHOUSE_SUBTYPES = ['Warehouse', 'Industrial Shed']
 
 const AMENITIES_OPTIONS = [
   { id: 'power_backup', label: 'Power Backup', icon: Zap },
@@ -75,6 +100,86 @@ const AMENITIES_OPTIONS = [
   { id: 'concierge', label: 'Concierge', icon: Sparkles },
   { id: 'fire_safety', label: 'Fire Safety', icon: ShieldCheck },
 ]
+
+const STEPS = [
+  { label: 'Type', icon: Home },
+  { label: 'Basic Info', icon: ClipboardList },
+  { label: 'Details', icon: Layers },
+  { label: 'Images', icon: Images },
+  { label: 'Amenities', icon: ListChecks },
+  { label: 'Contact', icon: Contact },
+  { label: 'Review', icon: BadgeCheck },
+]
+
+const TIPS = [
+  { icon: Camera, text: 'Listings with 5+ photos get up to 3x more enquiries.' },
+  { icon: TrendingUp, text: 'Marking price as negotiable increases buyer response rate.' },
+  { icon: Eye, text: 'A detailed description helps your listing rank higher in search.' },
+]
+
+/* ---- Reusable, consistently-styled form controls (original palette) ---- */
+const Label = ({ children, required }) => (
+  <label className="block text-sm font-semibold text-slate-700 mb-2">
+    {children}{required && <span className="text-red-500"> *</span>}
+  </label>
+)
+
+const TextField = ({ label, required, icon: Icon, ...props }) => (
+  <div>
+    <Label required={required}>{label}</Label>
+    <div className="relative">
+      {Icon && <Icon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />}
+      <input
+        {...props}
+        className={`w-full ${Icon ? 'pl-11' : 'pl-4'} pr-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200`}
+      />
+    </div>
+  </div>
+)
+
+const SelectField = ({ label, required, icon: Icon, options, placeholder, ...props }) => (
+  <div>
+    <Label required={required}>{label}</Label>
+    <div className="relative">
+      {Icon && <Icon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />}
+      <select
+        {...props}
+        className={`w-full ${Icon ? 'pl-11' : 'pl-4'} pr-10 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200 bg-white appearance-none cursor-pointer`}
+      >
+        <option value="">{placeholder || 'Select'}</option>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
+      <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+    </div>
+  </div>
+)
+
+/* Two-option Yes/No style toggle used for plot attributes (boundary wall, corner plot, loading dock) */
+const ToggleField = ({ label, icon: Icon, value, onChange }) => (
+  <div>
+    <Label>{label}</Label>
+    <div className="flex gap-2">
+      {['Yes', 'No'].map((opt) => {
+        const isActive = value === opt
+        return (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => onChange(opt)}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 text-sm font-semibold transition-all duration-200 ${
+              isActive ? 'border-[#193C06] bg-[#193C06] text-white' : 'border-slate-200 text-slate-500 hover:border-slate-300'
+            }`}
+          >
+            {Icon && <Icon size={15} />}
+            {opt}
+          </button>
+        )
+      })}
+    </div>
+  </div>
+)
 
 const PostProperty = () => {
   const navigate = useNavigate()
@@ -93,31 +198,61 @@ const PostProperty = () => {
     propertyType: '',
     subType: '',
     location: '',
+    locality: '',
     city: '',
     state: '',
     pincode: '',
     price: '',
     pricePerUnit: '',
-    
-    // Property Details
+    priceNegotiable: false,
+    maintenance: '',
+    ownershipType: '',
+
+    // Property Details — residential / commercial (office)
     bedrooms: '',
     bathrooms: '',
     balconies: '',
+    furnishing: '',
+    facing: '',
+    floorNumber: '',
+    totalFloors: '',
+    parkingCovered: '',
+    parkingOpen: '',
+
+    // Property Details — land
+    plotLength: '',
+    plotBreadth: '',
+    roadWidth: '',
+    boundaryWall: '',
+    cornerPlot: '',
+
+    // Property Details — industrial / warehouse-like commercial
+    powerLoad: '',
+    ceilingHeight: '',
+    loadingDock: '',
+
+    // Shared
     area: '',
     areaUnit: 'sq.ft',
-    floors: '',
     possession: '',
     age: '',
-    
+
     // Contact Info
     contactName: user?.name || '',
     contactPhone: user?.phone || '',
     contactEmail: user?.email || '',
-    
+    contactTime: 'Anytime',
+
     // Additional
     reraId: '',
     status: 'pending',
   })
+
+  const isResidential = selectedType === 'residential'
+  const isLand = selectedType === 'land'
+  const isWarehouseLike = selectedType === 'industrial' || (selectedType === 'commercial' && WAREHOUSE_SUBTYPES.includes(formData.subType))
+  const isCommercialOffice = selectedType === 'commercial' && !isWarehouseLike
+  const areaUnitOptions = isLand ? AREA_UNITS_LAND : AREA_UNITS_STANDARD
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files)
@@ -125,7 +260,7 @@ const PostProperty = () => {
       setError('Maximum 10 images allowed')
       return
     }
-    
+
     files.forEach(file => {
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -140,16 +275,21 @@ const PostProperty = () => {
   }
 
   const toggleAmenity = (amenityId) => {
-    setSelectedAmenities(prev => 
-      prev.includes(amenityId) 
+    setSelectedAmenities(prev =>
+      prev.includes(amenityId)
         ? prev.filter(id => id !== amenityId)
         : [...prev, amenityId]
     )
   }
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const { name, type, value, checked } = e.target
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value })
     setError('')
+  }
+
+  const setField = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   const validateStep = () => {
@@ -177,11 +317,13 @@ const PostProperty = () => {
   const handleNext = () => {
     if (validateStep()) {
       setStep(step + 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
   const handleBack = () => {
     setStep(step - 1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleSubmit = async (e) => {
@@ -191,7 +333,6 @@ const PostProperty = () => {
     setLoading(true)
     setError('')
 
-    // Simulate property submission - in production, this would be an API call
     setTimeout(() => {
       console.log('Property submitted:', { ...formData, type: selectedType, images, amenities: selectedAmenities })
       navigate('/dashboard', { state: { success: true } })
@@ -209,26 +350,67 @@ const PostProperty = () => {
     }
   }
 
+  /* Listing completeness score, used for the sidebar meter */
+  const completeness = useMemo(() => {
+    const checks = [
+      !!selectedType,
+      !!formData.title,
+      !!formData.subType,
+      !!formData.location,
+      !!formData.price,
+      !!formData.description,
+      !!formData.area,
+      images.length > 0,
+      selectedAmenities.length > 0,
+      !!formData.contactPhone,
+    ]
+    const filled = checks.filter(Boolean).length
+    return Math.round((filled / checks.length) * 100)
+  }, [selectedType, formData, images, selectedAmenities])
+
+  const progressPct = Math.round((step / STEPS.length) * 100)
+
+  const StepHeader = ({ icon: Icon, title, description }) => (
+    <div className="flex items-start gap-4 mb-8">
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${NAVY}0F` }}>
+        <Icon size={22} style={{ color: NAVY }} />
+      </div>
+      <div>
+        <h2 className="text-2xl font-bold mb-1" style={{ color: NAVY }}>{title}</h2>
+        <p className="text-slate-500 text-sm">{description}</p>
+      </div>
+    </div>
+  )
+
   const renderStep1 = () => (
     <div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: NAVY }}>Select Property Type</h2>
-      <p className="text-slate-500 mb-8">Choose the type of property you want to list</p>
+      <StepHeader icon={Home} title="Select Property Type" description="Choose the category that best fits your listing" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {PROPERTY_TYPES.map((type) => {
           const Icon = type.icon
+          const isActive = selectedType === type.id
           return (
             <button
               key={type.id}
               type="button"
-              onClick={() => setSelectedType(type.id)}
-              className={`p-6 rounded-2xl border-2 transition-all duration-200 text-left ${
-                selectedType === type.id
-                  ? 'border-[#193C06] bg-[#193C06]/5'
-                  : 'border-slate-200 hover:border-slate-300'
+              onClick={() => {
+                setSelectedType(type.id)
+                setField('areaUnit', type.id === 'land' ? 'acre' : 'sq.ft')
+              }}
+              className={`relative p-6 rounded-2xl border-2 transition-all duration-200 text-left ${
+                isActive ? 'border-[#193C06] bg-[#193C06]/5 shadow-sm' : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
               }`}
             >
-              <Icon size={32} className={`mb-3 ${selectedType === type.id ? 'text-[#193C06]' : 'text-slate-400'}`} />
+              {isActive && (
+                <CheckCircle2 size={20} className="absolute top-4 right-4" style={{ color: NAVY }} />
+              )}
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+                style={{ backgroundColor: isActive ? NAVY : '#F1F5F9' }}
+              >
+                <Icon size={22} className={isActive ? 'text-white' : 'text-slate-400'} />
+              </div>
               <h3 className="font-bold text-lg mb-1" style={{ color: NAVY }}>{type.label}</h3>
               <p className="text-sm text-slate-500">{type.description}</p>
             </button>
@@ -240,125 +422,154 @@ const PostProperty = () => {
 
   const renderStep2 = () => (
     <div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: NAVY }}>Basic Information</h2>
-      <p className="text-slate-500 mb-8">Provide the basic details about your property</p>
+      <StepHeader icon={ClipboardList} title="Basic Information" description="Tell buyers what makes this listing worth a look" />
 
       <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Property Title *</label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            placeholder="E.g., 3BHK Apartment in Sector 42"
-            className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-            required
-          />
-        </div>
+        <TextField
+          label="Property Title"
+          required
+          icon={FileText}
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          placeholder="E.g., 3BHK Apartment in Sector 42"
+        />
 
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Property Subtype *</label>
-          <select
-            name="subType"
-            value={formData.subType}
-            onChange={handleChange}
-            className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-            required
-          >
-            <option value="">Select subtype</option>
-            {getSubtypes().map((subtype) => (
-              <option key={subtype} value={subtype}>{subtype}</option>
-            ))}
-          </select>
-        </div>
+        <SelectField
+          label="Property Subtype"
+          required
+          icon={Layers}
+          name="subType"
+          value={formData.subType}
+          onChange={handleChange}
+          options={getSubtypes()}
+          placeholder="Select subtype"
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">City *</label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="E.g., Gurgaon"
-              className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">State *</label>
-            <input
-              type="text"
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              placeholder="E.g., Haryana"
-              className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-              required
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Full Location *</label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            placeholder="E.g., Sector 42, Gurgaon, Haryana"
-            className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
+          <TextField
+            label="City"
             required
+            icon={MapPin}
+            type="text"
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            placeholder="E.g., Gurgaon"
+          />
+          <TextField
+            label="State"
+            required
+            type="text"
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            placeholder="E.g., Haryana"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Pincode</label>
-          <input
+        <TextField
+          label="Full Location"
+          required
+          icon={MapPin}
+          type="text"
+          name="location"
+          value={formData.location}
+          onChange={handleChange}
+          placeholder="E.g., Sector 42, Gurgaon, Haryana"
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            label="Locality / Landmark"
+            icon={Landmark}
+            type="text"
+            name="locality"
+            value={formData.locality}
+            onChange={handleChange}
+            placeholder="E.g., Near Metro Station"
+          />
+          <TextField
+            label="Pincode"
             type="text"
             name="pincode"
             value={formData.pincode}
             onChange={handleChange}
             placeholder="E.g., 122002"
-            className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Expected Price (₹) *</label>
-            <input
-              type="text"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              placeholder="E.g., 85,00,000"
-              className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Price per Unit</label>
-            <input
-              type="text"
-              name="pricePerUnit"
-              value={formData.pricePerUnit}
-              onChange={handleChange}
-              placeholder="E.g., ₹12,000/sq.ft"
-              className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-            />
-          </div>
+          <TextField
+            label="Expected Price (₹)"
+            required
+            icon={IndianRupee}
+            type="text"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            placeholder="E.g., 85,00,000"
+          />
+          <TextField
+            label="Price per Unit"
+            type="text"
+            name="pricePerUnit"
+            value={formData.pricePerUnit}
+            onChange={handleChange}
+            placeholder="E.g., ₹12,000/sq.ft"
+          />
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            label="Maintenance (₹ / month)"
+            type="text"
+            name="maintenance"
+            value={formData.maintenance}
+            onChange={handleChange}
+            placeholder="E.g., 2,500"
+          />
+          <SelectField
+            label="Ownership Type"
+            name="ownershipType"
+            value={formData.ownershipType}
+            onChange={handleChange}
+            options={OWNERSHIP_OPTIONS}
+            placeholder="Select ownership"
+          />
+        </div>
+
+        <label className="flex items-center gap-3 cursor-pointer select-none w-fit px-4 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">
+          <span
+            className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+              formData.priceNegotiable ? 'border-[#193C06] bg-[#193C06]' : 'border-slate-300'
+            }`}
+          >
+            {formData.priceNegotiable && <CheckCircle2 size={13} className="text-white" strokeWidth={3} />}
+          </span>
+          <input
+            type="checkbox"
+            name="priceNegotiable"
+            checked={formData.priceNegotiable}
+            onChange={handleChange}
+            className="hidden"
+          />
+          <span className="text-sm font-medium text-slate-700">Price is negotiable</span>
+        </label>
+
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Property Description *</label>
+          <div className="flex items-center justify-between mb-2">
+            <Label required>Property Description</Label>
+            <span className="text-xs text-slate-400">{formData.description.length}/1000</span>
+          </div>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            placeholder="Describe your property in detail..."
+            placeholder="Describe your property in detail — layout, condition, neighbourhood, and what makes it stand out..."
             rows={5}
+            maxLength={1000}
             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200 resize-none"
             required
           />
@@ -367,154 +578,329 @@ const PostProperty = () => {
     </div>
   )
 
+  const renderAreaField = () => (
+    <div>
+      <Label required>Area</Label>
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Maximize size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <input
+            type="number"
+            name="area"
+            value={formData.area}
+            onChange={handleChange}
+            placeholder="Enter area"
+            className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
+            required
+          />
+        </div>
+        <div className="relative">
+          <select
+            name="areaUnit"
+            value={formData.areaUnit}
+            onChange={handleChange}
+            className="h-full pl-4 pr-9 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200 bg-white appearance-none cursor-pointer"
+          >
+            {areaUnitOptions.map((unit) => (
+              <option key={unit} value={unit}>{unit}</option>
+            ))}
+          </select>
+          <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        </div>
+      </div>
+    </div>
+  )
+
   const renderStep3 = () => (
     <div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: NAVY }}>Property Details</h2>
-      <p className="text-slate-500 mb-8">Provide detailed specifications of your property</p>
+      <StepHeader icon={Layers} title="Property Details" description="Specifications buyers filter and compare by" />
 
       <div className="space-y-6">
-        {selectedType === 'residential' && (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Bedrooms
-                  <Bed size={16} className="inline mr-1" />
-                </label>
-                <input
-                  type="number"
-                  name="bedrooms"
-                  value={formData.bedrooms}
-                  onChange={handleChange}
-                  placeholder="No. of bedrooms"
-                  className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Bathrooms
-                  <Bath size={16} className="inline mr-1" />
-                </label>
-                <input
-                  type="number"
-                  name="bathrooms"
-                  value={formData.bathrooms}
-                  onChange={handleChange}
-                  placeholder="No. of bathrooms"
-                  className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Balconies</label>
-                <input
-                  type="number"
-                  name="balconies"
-                  value={formData.balconies}
-                  onChange={handleChange}
-                  placeholder="No. of balconies"
-                  className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-                />
-              </div>
+        {/* Residential-only: configuration */}
+        {isResidential && (
+          <div>
+            <Label>Configuration (BHK)</Label>
+            <div className="flex flex-wrap gap-2">
+              {BHK_OPTIONS.map((n) => {
+                const isActive = formData.bedrooms === n
+                return (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setField('bedrooms', n)}
+                    className={`px-4 py-2.5 text-sm font-semibold rounded-xl border-2 transition-all duration-200 ${
+                      isActive
+                        ? 'border-[#193C06] bg-[#193C06] text-white'
+                        : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    {n} BHK
+                  </button>
+                )
+              })}
             </div>
-          </>
+          </div>
+        )}
+
+        {/* Area is always first — the one field every property type needs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {renderAreaField()}
+
+          {/* Land: plot dimensions replace floor count */}
+          {isLand && (
+            <div className="grid grid-cols-2 gap-2">
+              <TextField
+                label="Plot Length"
+                type="text"
+                name="plotLength"
+                value={formData.plotLength}
+                onChange={handleChange}
+                placeholder="E.g., 40 ft"
+              />
+              <TextField
+                label="Plot Breadth"
+                type="text"
+                name="plotBreadth"
+                value={formData.plotBreadth}
+                onChange={handleChange}
+                placeholder="E.g., 60 ft"
+              />
+            </div>
+          )}
+
+          {/* Residential & commercial offices: floor details */}
+          {(isResidential || isCommercialOffice) && (
+            <div className="grid grid-cols-2 gap-2">
+              <TextField
+                label="Floor No."
+                type="text"
+                name="floorNumber"
+                value={formData.floorNumber}
+                onChange={handleChange}
+                placeholder="E.g., 4"
+              />
+              <TextField
+                label="Total Floors"
+                type="text"
+                name="totalFloors"
+                value={formData.totalFloors}
+                onChange={handleChange}
+                placeholder="E.g., 12"
+              />
+            </div>
+          )}
+
+          {/* Industrial & warehouse-like commercial: building specs */}
+          {isWarehouseLike && (
+            <TextField
+              label="Ceiling Height"
+              icon={Ruler}
+              type="text"
+              name="ceilingHeight"
+              value={formData.ceilingHeight}
+              onChange={handleChange}
+              placeholder="E.g., 24 ft"
+            />
+          )}
+        </div>
+
+        {/* Residential: bathrooms & balconies */}
+        {isResidential && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <TextField
+              label="Bathrooms"
+              icon={Bath}
+              type="number"
+              name="bathrooms"
+              value={formData.bathrooms}
+              onChange={handleChange}
+              placeholder="No. of bathrooms"
+            />
+            <TextField
+              label="Balconies"
+              icon={Bed}
+              type="number"
+              name="balconies"
+              value={formData.balconies}
+              onChange={handleChange}
+              placeholder="No. of balconies"
+            />
+          </div>
+        )}
+
+        {/* Commercial office: washrooms */}
+        {isCommercialOffice && (
+          <TextField
+            label="Washrooms"
+            icon={Bath}
+            type="number"
+            name="bathrooms"
+            value={formData.bathrooms}
+            onChange={handleChange}
+            placeholder="No. of washrooms"
+          />
+        )}
+
+        {/* Furnishing + Facing — residential and commercial office */}
+        {(isResidential || isCommercialOffice) && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <SelectField
+              label="Furnishing Status"
+              icon={Sofa}
+              name="furnishing"
+              value={formData.furnishing}
+              onChange={handleChange}
+              options={FURNISHING_OPTIONS}
+              placeholder="Select furnishing"
+            />
+            <SelectField
+              label="Facing"
+              icon={Compass}
+              name="facing"
+              value={formData.facing}
+              onChange={handleChange}
+              options={FACING_OPTIONS}
+              placeholder="Select facing"
+            />
+          </div>
+        )}
+
+        {/* Land: facing + road width */}
+        {isLand && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <SelectField
+              label="Facing"
+              icon={Compass}
+              name="facing"
+              value={formData.facing}
+              onChange={handleChange}
+              options={FACING_OPTIONS}
+              placeholder="Select facing"
+            />
+            <TextField
+              label="Road Width"
+              icon={Route}
+              type="text"
+              name="roadWidth"
+              value={formData.roadWidth}
+              onChange={handleChange}
+              placeholder="E.g., 30 ft"
+            />
+          </div>
+        )}
+
+        {/* Land: boundary wall & corner plot */}
+        {isLand && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <ToggleField
+              label="Boundary Wall"
+              icon={ShieldCheck}
+              value={formData.boundaryWall}
+              onChange={(v) => setField('boundaryWall', v)}
+            />
+            <ToggleField
+              label="Corner Plot"
+              icon={MapPin}
+              value={formData.cornerPlot}
+              onChange={(v) => setField('cornerPlot', v)}
+            />
+          </div>
+        )}
+
+        {/* Industrial / warehouse-like: facing + power load */}
+        {isWarehouseLike && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <SelectField
+              label="Facing"
+              icon={Compass}
+              name="facing"
+              value={formData.facing}
+              onChange={handleChange}
+              options={FACING_OPTIONS}
+              placeholder="Select facing"
+            />
+            <TextField
+              label="Power Load"
+              icon={Gauge}
+              type="text"
+              name="powerLoad"
+              value={formData.powerLoad}
+              onChange={handleChange}
+              placeholder="E.g., 50 KVA"
+            />
+          </div>
+        )}
+
+        {isWarehouseLike && (
+          <ToggleField
+            label="Loading Dock Available"
+            icon={Truck}
+            value={formData.loadingDock}
+            onChange={(v) => setField('loadingDock', v)}
+          />
+        )}
+
+        {/* Parking — everything except plain land */}
+        {!isLand && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <TextField
+              label="Covered Parking"
+              icon={Car}
+              type="number"
+              name="parkingCovered"
+              value={formData.parkingCovered}
+              onChange={handleChange}
+              placeholder="No. of covered spots"
+            />
+            <TextField
+              label="Open Parking"
+              icon={Car}
+              type="number"
+              name="parkingOpen"
+              value={formData.parkingOpen}
+              onChange={handleChange}
+              placeholder="No. of open spots"
+            />
+          </div>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Area *
-              <Maximize size={16} className="inline mr-1" />
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="number"
-                name="area"
-                value={formData.area}
-                onChange={handleChange}
-                placeholder="Enter area"
-                className="flex-1 px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-                required
-              />
-              <select
-                name="areaUnit"
-                value={formData.areaUnit}
-                onChange={handleChange}
-                className="px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-              >
-                <option value="sq.ft">sq.ft</option>
-                <option value="sq.yard">sq.yard</option>
-                <option value="sq.m">sq.m</option>
-                <option value="acre">acre</option>
-                <option value="bigha">bigha</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Floors
-              <Layers size={16} className="inline mr-1" />
-            </label>
-            <input
-              type="text"
-              name="floors"
-              value={formData.floors}
-              onChange={handleChange}
-              placeholder="E.g., Ground + 2"
-              className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Possession Status</label>
-            <select
-              name="possession"
-              value={formData.possession}
-              onChange={handleChange}
-              className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-            >
-              <option value="">Select possession status</option>
-              <option value="Immediate">Immediate</option>
-              <option value="Within 3 months">Within 3 months</option>
-              <option value="Within 6 months">Within 6 months</option>
-              <option value="Within 1 year">Within 1 year</option>
-              <option value="Under Construction">Under Construction</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Property Age</label>
-            <select
+          <SelectField
+            label="Possession Status"
+            name="possession"
+            value={formData.possession}
+            onChange={handleChange}
+            options={['Immediate', 'Within 3 months', 'Within 6 months', 'Within 1 year', 'Under Construction']}
+            placeholder="Select possession status"
+          />
+          {!isLand && (
+            <SelectField
+              label="Property Age"
               name="age"
               value={formData.age}
               onChange={handleChange}
-              className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-            >
-              <option value="">Select property age</option>
-              <option value="New">New</option>
-              <option value="0-5 years">0-5 years</option>
-              <option value="5-10 years">5-10 years</option>
-              <option value="10-20 years">10-20 years</option>
-              <option value="20+ years">20+ years</option>
-            </select>
-          </div>
+              options={['New', '0-5 years', '5-10 years', '10-20 years', '20+ years']}
+              placeholder="Select property age"
+            />
+          )}
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">RERA ID (if applicable)</label>
-          <input
-            type="text"
-            name="reraId"
-            value={formData.reraId}
-            onChange={handleChange}
-            placeholder="Enter RERA registration number"
-            className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-          />
-        </div>
+        <TextField
+          label="RERA ID (if applicable)"
+          icon={ShieldCheck}
+          type="text"
+          name="reraId"
+          value={formData.reraId}
+          onChange={handleChange}
+          placeholder="Enter RERA registration number"
+        />
       </div>
     </div>
   )
 
   const renderStep4 = () => (
     <div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: NAVY }}>Property Images</h2>
-      <p className="text-slate-500 mb-8">Upload high-quality images of your property (max 10)</p>
+      <StepHeader icon={Images} title="Property Images" description="Upload high-quality images of your property (max 10)" />
 
       <div className="space-y-6">
         <div className="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center hover:border-[#1E88E5] transition-colors">
@@ -535,24 +921,27 @@ const PostProperty = () => {
         </div>
 
         {images.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {images.map((image, index) => (
-              <div key={index} className="relative group">
-                <img src={image} alt={`Property ${index + 1}`} className="w-full h-32 object-cover rounded-xl" />
-                <button
-                  type="button"
-                  onClick={() => removeImage(index)}
-                  className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X size={16} />
-                </button>
-                {index === 0 && (
-                  <span className="absolute bottom-2 left-2 px-2 py-1 rounded-lg bg-[#193C06] text-white text-xs font-semibold">
-                    Cover
-                  </span>
-                )}
-              </div>
-            ))}
+          <div>
+            <p className="text-sm font-semibold text-slate-700 mb-3">{images.length} of 10 images uploaded — first image is used as cover</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {images.map((image, index) => (
+                <div key={index} className="relative group">
+                  <img src={image} alt={`Property ${index + 1}`} className="w-full h-32 object-cover rounded-xl" />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={16} />
+                  </button>
+                  {index === 0 && (
+                    <span className="absolute bottom-2 left-2 px-2 py-1 rounded-lg bg-[#193C06] text-white text-xs font-semibold">
+                      Cover
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -561,8 +950,7 @@ const PostProperty = () => {
 
   const renderStep5 = () => (
     <div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: NAVY }}>Amenities</h2>
-      <p className="text-slate-500 mb-8">Select the amenities available at your property</p>
+      <StepHeader icon={ListChecks} title="Amenities" description="Select the amenities available at your property" />
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {AMENITIES_OPTIONS.map((amenity) => {
@@ -592,89 +980,82 @@ const PostProperty = () => {
 
   const renderStep6 = () => (
     <div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: NAVY }}>Contact Information</h2>
-      <p className="text-slate-500 mb-8">How should buyers contact you?</p>
+      <StepHeader icon={Contact} title="Contact Information" description="How should buyers reach you about this listing?" />
 
       <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Contact Name
-            <User size={16} className="inline mr-1" />
-          </label>
-          <input
-            type="text"
-            name="contactName"
-            value={formData.contactName}
-            onChange={handleChange}
-            placeholder="Your name"
-            className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
-          />
-        </div>
+        <TextField
+          label="Contact Name"
+          icon={User}
+          type="text"
+          name="contactName"
+          value={formData.contactName}
+          onChange={handleChange}
+          placeholder="Your name"
+        />
 
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Phone Number
-            <Phone size={16} className="inline mr-1" />
-          </label>
-          <input
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            label="Phone Number"
+            icon={Phone}
             type="tel"
             name="contactPhone"
             value={formData.contactPhone}
             onChange={handleChange}
             placeholder="Your phone number"
-            className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address
-            <Mail size={16} className="inline mr-1" />
-          </label>
-          <input
+          <TextField
+            label="Email Address"
+            icon={Mail}
             type="email"
             name="contactEmail"
             value={formData.contactEmail}
             onChange={handleChange}
             placeholder="Your email address"
-            className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#1E88E5] focus:ring-2 focus:ring-[#1E88E5]/20 outline-none transition-all duration-200"
           />
         </div>
+
+        <SelectField
+          label="Preferred Contact Time"
+          icon={Clock}
+          name="contactTime"
+          value={formData.contactTime}
+          onChange={handleChange}
+          options={CONTACT_TIME_OPTIONS}
+          placeholder="Select preferred time"
+        />
       </div>
     </div>
   )
 
+  const SummaryRow = ({ label, value }) => {
+    if (!value) return null
+    return (
+      <div className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0">
+        <span className="text-slate-500 text-sm">{label}</span>
+        <span className="font-semibold text-slate-800 text-sm text-right">{value}</span>
+      </div>
+    )
+  }
+
   const renderStep7 = () => (
     <div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: NAVY }}>Review & Submit</h2>
-      <p className="text-slate-500 mb-8">Review your property details before submitting</p>
+      <StepHeader icon={BadgeCheck} title="Review & Submit" description="Double-check the details before this goes live" />
 
       <div className="space-y-6">
         <div className="bg-slate-50 rounded-2xl p-6">
-          <h3 className="font-bold text-lg mb-4" style={{ color: NAVY }}>Property Summary</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-slate-500">Property Type:</span>
-              <span className="ml-2 font-semibold text-slate-800 capitalize">{selectedType}</span>
-            </div>
-            <div>
-              <span className="text-slate-500">Subtype:</span>
-              <span className="ml-2 font-semibold text-slate-800">{formData.subType}</span>
-            </div>
-            <div>
-              <span className="text-slate-500">Title:</span>
-              <span className="ml-2 font-semibold text-slate-800">{formData.title}</span>
-            </div>
-            <div>
-              <span className="text-slate-500">Location:</span>
-              <span className="ml-2 font-semibold text-slate-800">{formData.location}</span>
-            </div>
-            <div>
-              <span className="text-slate-500">Price:</span>
-              <span className="ml-2 font-semibold text-slate-800">₹{formData.price}</span>
-            </div>
-            <div>
-              <span className="text-slate-500">Area:</span>
-              <span className="ml-2 font-semibold text-slate-800">{formData.area} {formData.areaUnit}</span>
-            </div>
-          </div>
+          <h3 className="font-bold text-lg mb-3" style={{ color: NAVY }}>Property Summary</h3>
+          <SummaryRow label="Property Type" value={selectedType && selectedType[0].toUpperCase() + selectedType.slice(1)} />
+          <SummaryRow label="Subtype" value={formData.subType} />
+          <SummaryRow label="Title" value={formData.title} />
+          <SummaryRow label="Location" value={formData.location} />
+          {isResidential && <SummaryRow label="Configuration" value={formData.bedrooms && `${formData.bedrooms} BHK`} />}
+          {(isResidential || isCommercialOffice) && <SummaryRow label="Furnishing" value={formData.furnishing} />}
+          <SummaryRow label="Price" value={formData.price && `₹${formData.price}${formData.priceNegotiable ? ' (Negotiable)' : ''}`} />
+          <SummaryRow label="Area" value={formData.area && `${formData.area} ${formData.areaUnit}`} />
+          {isLand && <SummaryRow label="Plot Dimensions" value={formData.plotLength && formData.plotBreadth && `${formData.plotLength} x ${formData.plotBreadth}`} />}
+          {isLand && <SummaryRow label="Road Width" value={formData.roadWidth} />}
+          {isWarehouseLike && <SummaryRow label="Power Load" value={formData.powerLoad} />}
+          <SummaryRow label="Possession" value={formData.possession} />
         </div>
 
         {images.length > 0 && (
@@ -714,9 +1095,108 @@ const PostProperty = () => {
     </div>
   )
 
+  /* ---- Live listing preview sidebar ---- */
+  const PreviewSidebar = () => (
+    <div className="space-y-5">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden sticky top-6">
+        <div className="relative aspect-[4/3] bg-slate-100">
+          {images.length > 0 ? (
+            <img src={images[0]} alt="Cover preview" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
+              <ImageOff size={32} />
+              <span className="text-xs mt-2 text-slate-400">No photos yet</span>
+            </div>
+          )}
+          {selectedType && (
+            <span
+              className="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-xs font-semibold text-white capitalize"
+              style={{ backgroundColor: NAVY }}
+            >
+              {selectedType}
+            </span>
+          )}
+          {formData.priceNegotiable && (
+            <span className="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-xs font-semibold bg-white/95 text-slate-700">
+              Negotiable
+            </span>
+          )}
+        </div>
+
+        <div className="p-5">
+          <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: BLUE }}>
+            Live preview
+          </p>
+          <h3 className="font-bold text-base leading-snug mb-1 truncate" style={{ color: NAVY }}>
+            {formData.title || 'Your property title will appear here'}
+          </h3>
+          <p className="text-slate-400 text-xs flex items-center gap-1 mb-3">
+            <MapPin size={12} className="flex-shrink-0" />
+            <span className="truncate">{formData.location || 'Location not added yet'}</span>
+          </p>
+
+          <p className="text-xl font-bold mb-3" style={{ color: NAVY }}>
+            {formData.price ? `₹${formData.price}` : '₹ —'}
+          </p>
+
+          {(formData.bedrooms || formData.area) && (
+            <div className="flex items-center gap-3 text-xs text-slate-600 mb-4 pb-4 border-b border-slate-100 flex-wrap">
+              {isResidential && formData.bedrooms && (
+                <span className="flex items-center gap-1"><Bed size={13} /> {formData.bedrooms} BHK</span>
+              )}
+              {(isResidential || isCommercialOffice) && formData.bathrooms && (
+                <span className="flex items-center gap-1"><Bath size={13} /> {formData.bathrooms}</span>
+              )}
+              {formData.area && (
+                <span className="flex items-center gap-1"><Maximize size={13} /> {formData.area} {formData.areaUnit}</span>
+              )}
+              {isWarehouseLike && formData.powerLoad && (
+                <span className="flex items-center gap-1"><Gauge size={13} /> {formData.powerLoad}</span>
+              )}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between text-xs mb-1.5">
+            <span className="text-slate-500 font-medium">Listing strength</span>
+            <span className="font-semibold" style={{ color: NAVY }}>{completeness}%</span>
+          </div>
+          <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${completeness}%`, backgroundColor: completeness === 100 ? '#16A34A' : BLUE }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 hidden lg:block">
+        <p className="text-sm font-bold mb-3" style={{ color: NAVY }}>Tips for a stronger listing</p>
+        <div className="space-y-3">
+          {TIPS.map((tip, i) => {
+            const Icon = tip.icon
+            return (
+              <div key={i} className="flex items-start gap-2.5">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${BLUE}12` }}>
+                  <Icon size={14} style={{ color: BLUE }} />
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">{tip.text}</p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+      <style>{`
+        @keyframes stepFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .step-fade { animation: stepFadeIn 0.35s ease-out; }
+        select::-ms-expand { display: none; }
+      `}</style>
+
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <button
@@ -726,102 +1206,131 @@ const PostProperty = () => {
             <ChevronLeft size={20} />
             Back to Dashboard
           </button>
-          <h1 className="text-4xl font-bold mb-2" style={{ color: NAVY }}>Post Your Property</h1>
-          <p className="text-slate-500">Fill in the details to list your property on our platform</p>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h1 className="text-4xl font-bold mb-2" style={{ color: NAVY }}>Post Your Property</h1>
+              <p className="text-slate-500">Fill in the details to list your property on our platform</p>
+            </div>
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{ backgroundColor: `${NAVY}0F`, color: NAVY }}>
+              <ShieldCheck size={14} />
+              Reviewed before it goes live
+            </span>
+          </div>
         </div>
 
-        {/* Progress Steps */}
-        <div className="flex items-center justify-between mb-8 overflow-x-auto pb-4">
-          {[1, 2, 3, 4, 5, 6, 7].map((stepNum) => (
-            <React.Fragment key={stepNum}>
-              <div className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-200 ${
-                    step >= stepNum
-                      ? 'bg-[#193C06] text-white'
-                      : 'bg-slate-200 text-slate-500'
-                  }`}
-                >
-                  {step > stepNum ? <CheckCircle2 size={18} /> : stepNum}
-                </div>
-                <span className="ml-2 text-sm font-medium whitespace-nowrap hidden sm:block">
-                  {stepNum === 1 && 'Type'}
-                  {stepNum === 2 && 'Basic Info'}
-                  {stepNum === 3 && 'Details'}
-                  {stepNum === 4 && 'Images'}
-                  {stepNum === 5 && 'Amenities'}
-                  {stepNum === 6 && 'Contact'}
-                  {stepNum === 7 && 'Review'}
-                </span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main column */}
+          <div className="lg:col-span-2">
+            {/* Progress Steps */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 px-4 sm:px-6 py-5 mb-6 overflow-x-auto">
+              <div className="flex items-center justify-between mb-4 min-w-max sm:min-w-0">
+                <span className="text-sm font-semibold text-slate-700">Step {step} of {STEPS.length} · {STEPS[step - 1].label}</span>
+                <span className="text-sm font-semibold" style={{ color: NAVY }}>{progressPct}% complete</span>
               </div>
-              {stepNum < 7 && (
-                <div className="flex-1 mx-4 h-0.5 bg-slate-200 min-w-[40px]">
-                  <div
-                    className="h-full bg-[#193C06] transition-all duration-300"
-                    style={{ width: step > stepNum ? '100%' : '0%' }}
-                  />
+              <div className="flex items-center min-w-max sm:min-w-0">
+                {STEPS.map((s, i) => {
+                  const stepNum = i + 1
+                  const isDone = step > stepNum
+                  const isActive = step === stepNum
+                  const Icon = s.icon
+                  return (
+                    <React.Fragment key={s.label}>
+                      <div className="flex items-center flex-shrink-0">
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-200 ${
+                            isDone || isActive ? 'text-white shadow-sm' : 'bg-slate-100 text-slate-400'
+                          }`}
+                          style={{ backgroundColor: isDone || isActive ? NAVY : undefined }}
+                        >
+                          {isDone ? <CheckCircle2 size={18} /> : <Icon size={16} />}
+                        </div>
+                        <span
+                          className={`ml-2 text-sm font-medium whitespace-nowrap hidden sm:block ${
+                            isActive ? 'text-slate-800' : 'text-slate-400'
+                          }`}
+                        >
+                          {s.label}
+                        </span>
+                      </div>
+                      {stepNum < STEPS.length && (
+                        <div className="flex-1 mx-4 h-1 bg-slate-100 rounded-full min-w-[32px] overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-300"
+                            style={{ width: step > stepNum ? '100%' : '0%', backgroundColor: NAVY }}
+                          />
+                        </div>
+                      )}
+                    </React.Fragment>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Form Card */}
+            <div className="bg-white rounded-3xl shadow-xl p-6 sm:p-8">
+              {error && (
+                <div className="flex items-center gap-2 p-4 rounded-xl bg-red-50 text-red-600 mb-6">
+                  <AlertCircle size={20} />
+                  {error}
                 </div>
               )}
-            </React.Fragment>
-          ))}
-        </div>
 
-        {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 sm:p-8">
-          {error && (
-            <div className="flex items-center gap-2 p-4 rounded-xl bg-red-50 text-red-600 mb-6">
-              <AlertCircle size={20} />
-              {error}
+              <form onSubmit={handleSubmit}>
+                <div key={step} className="step-fade">
+                  {step === 1 && renderStep1()}
+                  {step === 2 && renderStep2()}
+                  {step === 3 && renderStep3()}
+                  {step === 4 && renderStep4()}
+                  {step === 5 && renderStep5()}
+                  {step === 6 && renderStep6()}
+                  {step === 7 && renderStep7()}
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
+                  {step > 1 ? (
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      className="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition-colors"
+                    >
+                      <ChevronLeft size={20} />
+                      Back
+                    </button>
+                  ) : (
+                    <div />
+                  )}
+
+                  {step < 7 ? (
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                      style={{ backgroundColor: NAVY }}
+                    >
+                      Next
+                      <ArrowRight size={20} />
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="flex items-center gap-2 px-8 py-3 rounded-xl text-white font-semibold transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                      style={{ backgroundColor: NAVY }}
+                    >
+                      {loading ? 'Submitting...' : 'Submit Property'}
+                      {!loading && <CheckCircle2 size={20} />}
+                    </button>
+                  )}
+                </div>
+              </form>
             </div>
-          )}
+          </div>
 
-          <form onSubmit={handleSubmit}>
-            {step === 1 && renderStep1()}
-            {step === 2 && renderStep2()}
-            {step === 3 && renderStep3()}
-            {step === 4 && renderStep4()}
-            {step === 5 && renderStep5()}
-            {step === 6 && renderStep6()}
-            {step === 7 && renderStep7()}
-
-            {/* Navigation Buttons */}
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
-              {step > 1 ? (
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition-colors"
-                >
-                  <ChevronLeft size={20} />
-                  Back
-                </button>
-              ) : (
-                <div />
-              )}
-
-              {step < 7 ? (
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold transition-all duration-200 hover:shadow-lg"
-                  style={{ backgroundColor: NAVY }}
-                >
-                  Next
-                  <ArrowRight size={20} />
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex items-center gap-2 px-8 py-3 rounded-xl text-white font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: NAVY }}
-                >
-                  {loading ? 'Submitting...' : 'Submit Property'}
-                  {!loading && <CheckCircle2 size={20} />}
-                </button>
-              )}
-            </div>
-          </form>
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <PreviewSidebar />
+          </div>
         </div>
       </div>
     </div>

@@ -584,26 +584,41 @@ const Navbar = ({ showNavbar = true }) => {
             <div className="hidden lg:flex items-center gap-7">
               {NAV_LINKS.map((link) => {
                 const hasMenu = !!MEGA_MENUS[link.label]
+                const isInsight = link.label === 'Insights'
                 return (
                   <div key={link.label} className="relative" ref={hasMenu ? (el) => (megaTriggerRefs.current[link.label] = el) : null}>
-                    <button
-                      onClick={() => (hasMenu ? toggleMegaMenu(link.label) : undefined)}
-                      className="relative flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#193C06] transition-colors duration-200"
-                    >
-                      {link.label}
-                      {link.badge && (
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
-                          {link.badge}
-                        </span>
-                      )}
-                      {hasMenu && (
-                        <ChevronDown
-                          size={14}
-                          className="transition-transform duration-200"
-                          style={{ transform: openMegaMenu === link.label ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                        />
-                      )}
-                    </button>
+                    {isInsight ? (
+                      <Link
+                        to="/insight"
+                        className="relative flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#193C06] transition-colors duration-200"
+                      >
+                        {link.label}
+                        {link.badge && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                            {link.badge}
+                          </span>
+                        )}
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={() => (hasMenu ? toggleMegaMenu(link.label) : undefined)}
+                        className="relative flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#193C06] transition-colors duration-200"
+                      >
+                        {link.label}
+                        {link.badge && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                            {link.badge}
+                          </span>
+                        )}
+                        {hasMenu && (
+                          <ChevronDown
+                            size={14}
+                            className="transition-transform duration-200"
+                            style={{ transform: openMegaMenu === link.label ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                          />
+                        )}
+                      </button>
+                    )}
                   </div>
                 )
               })}
@@ -784,24 +799,45 @@ const Navbar = ({ showNavbar = true }) => {
                   style={{ transform: isLocationOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                 />
               </button>
-              {NAV_LINKS.map((link, i) => (
-                <button
-                  key={link.label}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="group flex items-center justify-between text-gray-700 hover:text-[#193C06] font-medium py-3 px-2 rounded-lg hover:bg-white transition-all duration-200 nb-slide-in w-full text-left"
-                  style={{ animationDelay: `${i * 0.05}s` }}
-                >
-                  <span className="flex items-center gap-1.5">
-                    {link.label}
-                    {link.badge && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
-                        {link.badge}
-                      </span>
-                    )}
-                  </span>
-                  <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ color: GREEN }} />
-                </button>
-              ))}
+              {NAV_LINKS.map((link, i) => {
+                const isInsight = link.label === 'Insights'
+                return isInsight ? (
+                  <Link
+                    key={link.label}
+                    to="/insight"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="group flex items-center justify-between text-gray-700 hover:text-[#193C06] font-medium py-3 px-2 rounded-lg hover:bg-white transition-all duration-200 nb-slide-in w-full text-left"
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {link.label}
+                      {link.badge && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                          {link.badge}
+                        </span>
+                      )}
+                    </span>
+                    <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ color: GREEN }} />
+                  </Link>
+                ) : (
+                  <button
+                    key={link.label}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="group flex items-center justify-between text-gray-700 hover:text-[#193C06] font-medium py-3 px-2 rounded-lg hover:bg-white transition-all duration-200 nb-slide-in w-full text-left"
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {link.label}
+                      {link.badge && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                          {link.badge}
+                        </span>
+                      )}
+                    </span>
+                    <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ color: GREEN }} />
+                  </button>
+                )
+              })}
               <div className="pt-3 mt-2 border-t border-gray-200 space-y-2">
                 <button
                   className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-700 hover:border-[#193C06] hover:text-[#193C06] transition-colors duration-200"
