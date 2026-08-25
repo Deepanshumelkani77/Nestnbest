@@ -253,7 +253,7 @@ export default function InsightsPage() {
         .nb-brand{ display:flex; align-items:center; gap:12px; padding:0 24px 22px;
           border-bottom:1px solid rgba(255,255,255,0.09); margin-bottom:14px; }
         .nb-brand-mark{ width:38px; height:38px; border:1px solid var(--brass-light); display:flex;
-          align-items:center; justify-content:center; font-family:'Outfit',sans-serif; font-size:16px;
+          align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:16px;
           color:var(--brass-light); flex:none; }
         .nb-brand-name{ font-family:'Outfit',sans-serif; font-size:17px; letter-spacing:0.01em; line-height:1.15; }
         .nb-brand-sub{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.12em; color:#8B8F98; margin-top:3px; }
@@ -308,7 +308,7 @@ export default function InsightsPage() {
         .nb-root input[type=number]:focus, .nb-root select:focus{ outline:2px solid var(--brass-light); outline-offset:1px; }
 
         .nb-segmented{ display:flex; border:1px solid var(--line); overflow:hidden; }
-        .nb-segmented button{ flex:1; padding:10px 8px; background:#fff; border:none; font-family:'Outfit',sans-serif;
+        .nb-segmented button{ flex:1; padding:10px 8px; background:#fff; border:none; font-family:'Inter',sans-serif;
           font-size:12.5px; color:var(--text-muted); cursor:pointer; border-left:1px solid var(--line); }
         .nb-segmented button:first-child{ border-left:none; }
         .nb-segmented button.active{ background:var(--ink); color:var(--brass-light); font-weight:600; }
@@ -458,7 +458,7 @@ export default function InsightsPage() {
           </div>
         )}
 
-
+       
 
         <div className="nb-foot-disclaimer">
           All figures on this page are indicative estimates generated for planning purposes only, and do not constitute financial, legal, or investment advice. Interest rates, taxes, and construction costs vary by lender, location, and time — please verify current figures with a qualified lender, advisor, or local authority before making a decision.

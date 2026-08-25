@@ -51,10 +51,17 @@ import {
   Gauge,
   Warehouse,
   Truck,
+  Tag,
+  KeyRound,
 } from 'lucide-react'
 
 const NAVY = '#193C06'
 const BLUE = '#1E88E5'
+
+const LISTING_FOR_OPTIONS = [
+  { id: 'sale', label: 'For Sale', icon: Tag, description: 'List this property for outright purchase' },
+  { id: 'rent', label: 'For Rent / Lease', icon: KeyRound, description: 'List this property for rent or lease' },
+]
 
 const PROPERTY_TYPES = [
   { id: 'residential', label: 'Residential', icon: Home, description: 'Apartments, villas, plots' },
@@ -102,7 +109,7 @@ const AMENITIES_OPTIONS = [
 ]
 
 const STEPS = [
-  { label: 'Type', icon: Home },
+  { label: 'Listing', icon: Home },
   { label: 'Basic Info', icon: ClipboardList },
   { label: 'Details', icon: Layers },
   { label: 'Images', icon: Images },
@@ -122,6 +129,15 @@ const Label = ({ children, required }) => (
   <label className="block text-sm font-semibold text-slate-700 mb-2">
     {children}{required && <span className="text-red-500"> *</span>}
   </label>
+)
+
+/* Section-level heading, one notch bigger than a field Label — used to separate
+   "Listing For" and "Property Type" within Step 1 without duplicating StepHeader. */
+const SectionLabel = ({ children, required }) => (
+  <div className="flex items-center gap-1.5 mb-3">
+    <span className="text-base font-bold" style={{ color: NAVY }}>{children}</span>
+    {required && <span className="text-red-500 text-sm">*</span>}
+  </div>
 )
 
 const TextField = ({ label, required, icon: Icon, ...props }) => (
@@ -185,6 +201,7 @@ const PostProperty = () => {
   const navigate = useNavigate()
   const { user } = useAuth()
   const [step, setStep] = useState(1)
+  const [listingFor, setListingFor] = useState('')
   const [selectedType, setSelectedType] = useState('')
   const [images, setImages] = useState([])
   const [selectedAmenities, setSelectedAmenities] = useState([])
@@ -204,6 +221,7 @@ const PostProperty = () => {
     pincode: '',
     price: '',
     pricePerUnit: '',
+    securityDeposit: '',
     priceNegotiable: false,
     maintenance: '',
     ownershipType: '',
@@ -248,6 +266,7 @@ const PostProperty = () => {
     status: 'pending',
   })
 
+  const isRent = listingFor === 'rent'
   const isResidential = selectedType === 'residential'
   const isLand = selectedType === 'land'
   const isWarehouseLike = selectedType === 'industrial' || (selectedType === 'commercial' && WAREHOUSE_SUBTYPES.includes(formData.subType))
@@ -294,6 +313,10 @@ const PostProperty = () => {
 
   const validateStep = () => {
     if (step === 1) {
+      if (!listingFor) {
+        setError('Please select whether this listing is for sale or rent/lease')
+        return false
+      }
       if (!selectedType) {
         setError('Please select a property type')
         return false
@@ -334,7 +357,7 @@ const PostProperty = () => {
     setError('')
 
     setTimeout(() => {
-      console.log('Property submitted:', { ...formData, type: selectedType, images, amenities: selectedAmenities })
+      console.log('Property submitted:', { ...formData, listingFor, type: selectedType, images, amenities: selectedAmenities })
       navigate('/dashboard', { state: { success: true } })
       setLoading(false)
     }, 2000)
@@ -353,6 +376,7 @@ const PostProperty = () => {
   /* Listing completeness score, used for the sidebar meter */
   const completeness = useMemo(() => {
     const checks = [
+      !!listingFor,
       !!selectedType,
       !!formData.title,
       !!formData.subType,
@@ -366,7 +390,7 @@ const PostProperty = () => {
     ]
     const filled = checks.filter(Boolean).length
     return Math.round((filled / checks.length) * 100)
-  }, [selectedType, formData, images, selectedAmenities])
+  }, [listingFor, selectedType, formData, images, selectedAmenities])
 
   const progressPct = Math.round((step / STEPS.length) * 100)
 
@@ -384,38 +408,73 @@ const PostProperty = () => {
 
   const renderStep1 = () => (
     <div>
-      <StepHeader icon={Home} title="Select Property Type" description="Choose the category that best fits your listing" />
+      <StepHeader icon={Home} title="Listing Details" description="Start with what you're listing, and its category" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {PROPERTY_TYPES.map((type) => {
-          const Icon = type.icon
-          const isActive = selectedType === type.id
-          return (
-            <button
-              key={type.id}
-              type="button"
-              onClick={() => {
-                setSelectedType(type.id)
-                setField('areaUnit', type.id === 'land' ? 'acre' : 'sq.ft')
-              }}
-              className={`relative p-6 rounded-2xl border-2 transition-all duration-200 text-left ${
-                isActive ? 'border-[#193C06] bg-[#193C06]/5 shadow-sm' : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
-              }`}
-            >
-              {isActive && (
-                <CheckCircle2 size={20} className="absolute top-4 right-4" style={{ color: NAVY }} />
-              )}
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
-                style={{ backgroundColor: isActive ? NAVY : '#F1F5F9' }}
+      <div className="mb-8">
+        <SectionLabel required>Listing For</SectionLabel>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {LISTING_FOR_OPTIONS.map((opt) => {
+            const Icon = opt.icon
+            const isActive = listingFor === opt.id
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setListingFor(opt.id)}
+                className={`relative p-5 rounded-2xl border-2 transition-all duration-200 text-left ${
+                  isActive ? 'border-[#193C06] bg-[#193C06]/5 shadow-sm' : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
+                }`}
               >
-                <Icon size={22} className={isActive ? 'text-white' : 'text-slate-400'} />
-              </div>
-              <h3 className="font-bold text-lg mb-1" style={{ color: NAVY }}>{type.label}</h3>
-              <p className="text-sm text-slate-500">{type.description}</p>
-            </button>
-          )
-        })}
+                {isActive && (
+                  <CheckCircle2 size={18} className="absolute top-4 right-4" style={{ color: NAVY }} />
+                )}
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+                  style={{ backgroundColor: isActive ? NAVY : '#F1F5F9' }}
+                >
+                  <Icon size={19} className={isActive ? 'text-white' : 'text-slate-400'} />
+                </div>
+                <h3 className="font-bold text-base mb-0.5" style={{ color: NAVY }}>{opt.label}</h3>
+                <p className="text-xs text-slate-500">{opt.description}</p>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div>
+        <SectionLabel required>Property Type</SectionLabel>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {PROPERTY_TYPES.map((type) => {
+            const Icon = type.icon
+            const isActive = selectedType === type.id
+            return (
+              <button
+                key={type.id}
+                type="button"
+                onClick={() => {
+                  setSelectedType(type.id)
+                  setField('areaUnit', type.id === 'land' ? 'acre' : 'sq.ft')
+                }}
+                className={`relative p-6 rounded-2xl border-2 transition-all duration-200 text-left ${
+                  isActive ? 'border-[#193C06] bg-[#193C06]/5 shadow-sm' : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
+                }`}
+              >
+                {isActive && (
+                  <CheckCircle2 size={20} className="absolute top-4 right-4" style={{ color: NAVY }} />
+                )}
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+                  style={{ backgroundColor: isActive ? NAVY : '#F1F5F9' }}
+                >
+                  <Icon size={22} className={isActive ? 'text-white' : 'text-slate-400'} />
+                </div>
+                <h3 className="font-bold text-lg mb-1" style={{ color: NAVY }}>{type.label}</h3>
+                <p className="text-sm text-slate-500">{type.description}</p>
+              </button>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
@@ -502,23 +561,34 @@ const PostProperty = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Expected Price (₹)"
+            label={isRent ? 'Expected Monthly Rent (₹)' : 'Expected Price (₹)'}
             required
             icon={IndianRupee}
             type="text"
             name="price"
             value={formData.price}
             onChange={handleChange}
-            placeholder="E.g., 85,00,000"
+            placeholder={isRent ? 'E.g., 25,000' : 'E.g., 85,00,000'}
           />
-          <TextField
-            label="Price per Unit"
-            type="text"
-            name="pricePerUnit"
-            value={formData.pricePerUnit}
-            onChange={handleChange}
-            placeholder="E.g., ₹12,000/sq.ft"
-          />
+          {isRent ? (
+            <TextField
+              label="Security Deposit (₹)"
+              type="text"
+              name="securityDeposit"
+              value={formData.securityDeposit}
+              onChange={handleChange}
+              placeholder="E.g., 1,00,000"
+            />
+          ) : (
+            <TextField
+              label="Price per Unit"
+              type="text"
+              name="pricePerUnit"
+              value={formData.pricePerUnit}
+              onChange={handleChange}
+              placeholder="E.g., ₹12,000/sq.ft"
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -555,7 +625,7 @@ const PostProperty = () => {
             onChange={handleChange}
             className="hidden"
           />
-          <span className="text-sm font-medium text-slate-700">Price is negotiable</span>
+          <span className="text-sm font-medium text-slate-700">{isRent ? 'Rent is negotiable' : 'Price is negotiable'}</span>
         </label>
 
         <div>
@@ -1044,13 +1114,15 @@ const PostProperty = () => {
       <div className="space-y-6">
         <div className="bg-slate-50 rounded-2xl p-6">
           <h3 className="font-bold text-lg mb-3" style={{ color: NAVY }}>Property Summary</h3>
+          <SummaryRow label="Listing For" value={listingFor && (isRent ? 'Rent / Lease' : 'Sale')} />
           <SummaryRow label="Property Type" value={selectedType && selectedType[0].toUpperCase() + selectedType.slice(1)} />
           <SummaryRow label="Subtype" value={formData.subType} />
           <SummaryRow label="Title" value={formData.title} />
           <SummaryRow label="Location" value={formData.location} />
           {isResidential && <SummaryRow label="Configuration" value={formData.bedrooms && `${formData.bedrooms} BHK`} />}
           {(isResidential || isCommercialOffice) && <SummaryRow label="Furnishing" value={formData.furnishing} />}
-          <SummaryRow label="Price" value={formData.price && `₹${formData.price}${formData.priceNegotiable ? ' (Negotiable)' : ''}`} />
+          <SummaryRow label={isRent ? 'Monthly Rent' : 'Price'} value={formData.price && `₹${formData.price}${formData.priceNegotiable ? ' (Negotiable)' : ''}`} />
+          {isRent && <SummaryRow label="Security Deposit" value={formData.securityDeposit && `₹${formData.securityDeposit}`} />}
           <SummaryRow label="Area" value={formData.area && `${formData.area} ${formData.areaUnit}`} />
           {isLand && <SummaryRow label="Plot Dimensions" value={formData.plotLength && formData.plotBreadth && `${formData.plotLength} x ${formData.plotBreadth}`} />}
           {isLand && <SummaryRow label="Road Width" value={formData.roadWidth} />}
@@ -1108,14 +1180,21 @@ const PostProperty = () => {
               <span className="text-xs mt-2 text-slate-400">No photos yet</span>
             </div>
           )}
-          {selectedType && (
-            <span
-              className="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-xs font-semibold text-white capitalize"
-              style={{ backgroundColor: NAVY }}
-            >
-              {selectedType}
-            </span>
-          )}
+          <div className="absolute top-3 left-3 flex items-center gap-1.5">
+            {selectedType && (
+              <span
+                className="px-2.5 py-1 rounded-lg text-xs font-semibold text-white capitalize"
+                style={{ backgroundColor: NAVY }}
+              >
+                {selectedType}
+              </span>
+            )}
+            {listingFor && (
+              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: BLUE }}>
+                {isRent ? 'For Rent' : 'For Sale'}
+              </span>
+            )}
+          </div>
           {formData.priceNegotiable && (
             <span className="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-xs font-semibold bg-white/95 text-slate-700">
               Negotiable
@@ -1136,7 +1215,7 @@ const PostProperty = () => {
           </p>
 
           <p className="text-xl font-bold mb-3" style={{ color: NAVY }}>
-            {formData.price ? `₹${formData.price}` : '₹ —'}
+            {formData.price ? `₹${formData.price}${isRent ? ' /mo' : ''}` : '₹ —'}
           </p>
 
           {(formData.bedrooms || formData.area) && (

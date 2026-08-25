@@ -40,8 +40,20 @@ const INKTEXT = '#22302A'
 
 const ROLES = [
   { id: 'owner', label: 'Owner', full: 'Property Owner', icon: Home, description: 'List your own properties' },
-  { id: 'agent', label: 'Agent', full: 'Real Estate Agent', icon: Briefcase, description: 'Manage client properties' },
   { id: 'builder', label: 'Builder', full: 'Builder / Developer', icon: Building2, description: 'Showcase your projects' },
+  { id: 'consultant', label: 'Consultant', full: 'Property Consultant', icon: Briefcase, description: 'Provide expert advice' },
+]
+
+const COUNTRY_CODES = [
+  { code: '+91', country: 'India', countryCode: 'in' },
+  { code: '+1', country: 'USA', countryCode: 'us' },
+  { code: '+44', country: 'UK', countryCode: 'gb' },
+  { code: '+86', country: 'China', countryCode: 'cn' },
+  { code: '+971', country: 'UAE', countryCode: 'ae' },
+  { code: '+61', country: 'Australia', countryCode: 'au' },
+  { code: '+65', country: 'Singapore', countryCode: 'sg' },
+  { code: '+974', country: 'Qatar', countryCode: 'qa' },
+  { code: '+966', country: 'Saudi Arabia', countryCode: 'sa' },
 ]
 
 const SPEC_SHEET = [
@@ -112,10 +124,14 @@ const Auth = () => {
   const [emailOtpSent, setEmailOtpSent] = useState(false)
   const [emailOtp, setEmailOtp] = useState('')
   const [emailOtpVerified, setEmailOtpVerified] = useState(false)
+  const [showEmailOtpVerificationModal, setShowEmailOtpVerificationModal] = useState(false)
   const [mobileOtpSent, setMobileOtpSent] = useState(false)
   const [mobileOtp, setMobileOtp] = useState('')
   const [mobileOtpVerified, setMobileOtpVerified] = useState(false)
   const [otpError, setOtpError] = useState('')
+  const [otpMode, setOtpMode] = useState('sms')
+  const [showOtpModeModal, setShowOtpModeModal] = useState(false)
+  const [showOtpVerificationModal, setShowOtpVerificationModal] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -130,8 +146,12 @@ const Auth = () => {
     name: '',
     email: '',
     phone: '',
+    countryCode: '+91',
     password: '',
+    confirmPassword: '',
   })
+
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false)
 
   const passwordStrength = useMemo(() => getPasswordStrength(signupData.password), [signupData.password])
 
@@ -164,6 +184,11 @@ const Auth = () => {
 
     if (signupData.password.length < 6) {
       setError('Password must be at least 6 characters')
+      return
+    }
+
+    if (signupData.password !== signupData.confirmPassword) {
+      setError('Passwords do not match')
       return
     }
 
@@ -220,8 +245,10 @@ const Auth = () => {
       setOtpError('Please enter a valid email address first')
       return
     }
+    setEmailOtp('')
     console.log('Sending OTP to email:', signupData.email)
     setEmailOtpSent(true)
+    setShowEmailOtpVerificationModal(true)
   }
 
   const verifyEmailOtp = () => {
@@ -232,17 +259,22 @@ const Auth = () => {
     }
     console.log('Verifying email OTP:', emailOtp)
     setEmailOtpVerified(true)
+    setShowEmailOtpVerificationModal(false)
   }
 
-  const sendMobileOtp = () => {
+  const sendMobileOtp = (mode) => {
     setOtpError('')
     const phoneRegex = /^\+?[0-9]+$/
     if (!phoneRegex.test(signupData.phone)) {
       setOtpError('Please enter a valid phone number first')
       return
     }
-    console.log('Sending OTP to mobile:', signupData.phone)
+    setOtpMode(mode)
+    setShowOtpModeModal(false)
+    setMobileOtp('')
+    console.log('Sending OTP to mobile via', mode, ':', signupData.phone)
     setMobileOtpSent(true)
+    setShowOtpVerificationModal(true)
   }
 
   const verifyMobileOtp = () => {
@@ -253,6 +285,7 @@ const Auth = () => {
     }
     console.log('Verifying mobile OTP:', mobileOtp)
     setMobileOtpVerified(true)
+    setShowOtpVerificationModal(false)
   }
 
   return (
@@ -543,17 +576,48 @@ const Auth = () => {
                 />
 
                 <div>
+
                   <div className="flex gap-2">
+                    <div className="relative">
+                      <div className="relative flex items-center border-b-2" style={{ borderColor: PAPER_LINE, minWidth: '85px' }}>
+                        <button
+                          type="button"
+                          onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                          className="flex items-center gap-1 px-2 py-3 bg-transparent outline-none text-sm w-full"
+                          style={{ color: INKTEXT }}
+                        >
+                          <span className={`fi fi-${COUNTRY_CODES.find(c => c.code === signupData.countryCode)?.countryCode || 'in'} rounded`}></span>
+                          <span className="text-xs">{signupData.countryCode}</span>
+                        </button>
+                      </div>
+                      {showCountryDropdown && (
+                        <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-200 z-10 max-h-48 overflow-y-auto w-40">
+                          {COUNTRY_CODES.map((country) => (
+                            <button
+                              key={country.code}
+                              type="button"
+                              onClick={() => {
+                                setSignupData({ ...signupData, countryCode: country.code })
+                                setShowCountryDropdown(false)
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-left text-sm"
+                            >
+                              <span className={`fi fi-${country.countryCode} rounded`}></span>
+                              <span>{country.code}</span>
+                              <span className="text-xs text-gray-500">{country.country}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <div className="flex-1">
-                     
                       <div className="relative flex items-center border-b-2" style={{ borderColor: PAPER_LINE }}>
-                        <Phone size={16} className="mr-1 flex-shrink-0" style={{ color: '#A39A85' }} />
                         <input
                           type="tel"
                           name="phone"
                           value={signupData.phone}
                           onChange={handleSignupChange}
-                          placeholder="  Phone number *"
+                          placeholder="Phone number *"
                           required
                           className="w-full bg-transparent py-2.5 pr-8 outline-none text-sm placeholder-[#B2A98F]"
                           style={{ color: INKTEXT }}
@@ -563,7 +627,7 @@ const Auth = () => {
                     {!mobileOtpVerified && (
                       <button
                         type="button"
-                        onClick={sendMobileOtp}
+                        onClick={() => setShowOtpModeModal(true)}
                         disabled={mobileOtpSent}
                         className="px-3 py-2 text-white text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ backgroundColor: INK, marginTop: '1.6rem' }}
@@ -581,27 +645,6 @@ const Auth = () => {
                       </div>
                     )}
                   </div>
-                  {mobileOtpSent && !mobileOtpVerified && (
-                    <div className="mt-2 flex gap-2">
-                      <input
-                        type="text"
-                        value={mobileOtp}
-                        onChange={(e) => setMobileOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
-                        placeholder="Enter 6-digit OTP"
-                        maxLength={6}
-                        className="flex-1 px-3 py-2 border-b-2 text-sm outline-none placeholder-[#B2A98F]"
-                        style={{ borderColor: PAPER_LINE, color: INKTEXT }}
-                      />
-                      <button
-                        type="button"
-                        onClick={verifyMobileOtp}
-                        className="px-3 py-2 text-white text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md transition-all"
-                        style={{ backgroundColor: SAGE }}
-                      >
-                        Verify
-                      </button>
-                    </div>
-                  )}
                   {otpError && <div className="text-[11px] font-semibold mt-1.5" style={{ color: CLAY }}>{otpError}</div>}
                 </div>
 
@@ -644,32 +687,11 @@ const Auth = () => {
                       </div>
                     )}
                   </div>
-                  {emailOtpSent && !emailOtpVerified && (
-                    <div className="mt-2 flex gap-2">
-                      <input
-                        type="text"
-                        value={emailOtp}
-                        onChange={(e) => setEmailOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
-                        placeholder="Enter 6-digit OTP"
-                        maxLength={6}
-                        className="flex-1 px-3 py-2 border-b-2 text-sm outline-none placeholder-[#B2A98F]"
-                        style={{ borderColor: PAPER_LINE, color: INKTEXT }}
-                      />
-                      <button
-                        type="button"
-                        onClick={verifyEmailOtp}
-                        className="px-3 py-2 text-white text-xs font-semibold font-mono-ui uppercase tracking-wide rounded-md transition-all"
-                        style={{ backgroundColor: SAGE }}
-                      >
-                        Verify
-                      </button>
-                    </div>
-                  )}
                   {otpError && <div className="text-[11px] font-semibold mt-1.5" style={{ color: CLAY }}>{otpError}</div>}
                 </div>
 
                 <div>
-                 
+
                   <div className="relative flex items-center border-b-2" style={{ borderColor: PAPER_LINE }}>
                     <Lock size={16} className="mr-3 flex-shrink-0" style={{ color: '#A39A85' }} />
                     <input
@@ -711,6 +733,22 @@ const Auth = () => {
                   )}
                 </div>
 
+                <div>
+                  <div className="relative flex items-center border-b-2" style={{ borderColor: PAPER_LINE }}>
+                    <Lock size={16} className="mr-3 flex-shrink-0" style={{ color: '#A39A85' }} />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="confirmPassword"
+                      value={signupData.confirmPassword}
+                      onChange={handleSignupChange}
+                      placeholder="Confirm password"
+                      required
+                      className="w-full bg-transparent py-2.5 pr-8 outline-none text-sm placeholder-[#B2A98F]"
+                      style={{ color: INKTEXT }}
+                    />
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   disabled={loading}
@@ -722,16 +760,268 @@ const Auth = () => {
                 </button>
               </form>
             )}
-
-            <div className="flex items-center gap-2 justify-center mt-5 pt-4 border-t" style={{ borderColor: PAPER_LINE }}>
-              <ShieldCheck size={13} style={{ color: '#A39A85' }} />
-              <p className="text-[#A39A85] text-xs">
-                By {isLogin ? 'signing in' : 'signing up'}, you agree to our Terms of Service and Privacy Policy
-              </p>
-            </div>
           </div>
         </div>
       </div>
+
+      {/* Email OTP Verification Modal */}
+      {showEmailOtpVerificationModal && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div
+            className="absolute inset-0 backdrop-blur-sm"
+            style={{ backgroundColor: 'rgba(21,36,32,0.6)' }}
+            onClick={() => setShowEmailOtpVerificationModal(false)}
+          />
+          <div
+            className="relative w-full max-w-sm mx-4 bg-white rounded-2xl shadow-2xl p-6 border"
+            style={{ borderColor: PAPER_LINE }}
+          >
+            <button
+              onClick={() => setShowEmailOtpVerificationModal(false)}
+              className="absolute top-4 right-4 text-[#A39A85] hover:text-[#6B6350] transition-colors"
+            >
+              ✕
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(184,134,59,0.15)' }}>
+                <Mail size={24} style={{ color: BRASS }} />
+              </div>
+              <h2 className="font-display text-lg mb-2" style={{ color: INKTEXT, fontWeight: 500 }}>
+                Verify Your Email
+              </h2>
+              <p className="text-sm" style={{ color: '#8A8272' }}>
+                Enter the 6-digit code sent to your email
+              </p>
+              <p className="text-xs mt-1" style={{ color: '#8A8272' }}>
+                {signupData.email}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex gap-2 justify-center">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    maxLength={1}
+                    value={emailOtp[index] || ''}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '')
+                      if (value) {
+                        const newOtp = emailOtp.split('')
+                        newOtp[index] = value
+                        setEmailOtp(newOtp.join(''))
+                        if (index < 5) {
+                          e.target.nextElementSibling?.focus()
+                        }
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Backspace' && !emailOtp[index] && index > 0) {
+                        e.target.previousElementSibling?.focus()
+                      }
+                    }}
+                    className="w-12 h-12 text-center text-xl font-semibold border-2 rounded-lg outline-none transition-all focus:border-opacity-100"
+                    style={{
+                      borderColor: PAPER_LINE,
+                      color: INKTEXT,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {otpError && (
+                <div className="text-[11px] font-semibold text-center" style={{ color: CLAY }}>
+                  {otpError}
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={verifyEmailOtp}
+                className="w-full py-3 text-white text-sm font-semibold font-mono-ui uppercase tracking-wide rounded-xl transition-all hover:opacity-90"
+                style={{ backgroundColor: INK }}
+              >
+                Verify
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowEmailOtpVerificationModal(false)}
+                className="w-full py-2 text-xs font-semibold transition-all hover:opacity-70"
+                style={{ color: '#8A8272' }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* OTP Verification Modal */}
+      {showOtpVerificationModal && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div
+            className="absolute inset-0 backdrop-blur-sm"
+            style={{ backgroundColor: 'rgba(21,36,32,0.6)' }}
+            onClick={() => setShowOtpVerificationModal(false)}
+          />
+          <div
+            className="relative w-full max-w-sm mx-4 bg-white rounded-2xl shadow-2xl p-6 border"
+            style={{ borderColor: PAPER_LINE }}
+          >
+            <button
+              onClick={() => setShowOtpVerificationModal(false)}
+              className="absolute top-4 right-4 text-[#A39A85] hover:text-[#6B6350] transition-colors"
+            >
+              ✕
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: otpMode === 'whatsapp' ? 'rgba(37,211,102,0.15)' : 'rgba(21,36,32,0.1)' }}>
+                {otpMode === 'whatsapp' ? (
+                  <svg viewBox="0 0 24 24" className="w-7 h-7" fill="#25D366">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                ) : (
+                  <Phone size={24} style={{ color: INK }} />
+                )}
+              </div>
+              <h2 className="font-display text-lg mb-2" style={{ color: INKTEXT, fontWeight: 500 }}>
+                Verify Your Number
+              </h2>
+              <p className="text-sm" style={{ color: '#8A8272' }}>
+                Enter the 6-digit code sent to you via {otpMode === 'whatsapp' ? 'WhatsApp' : 'SMS'}
+              </p>
+              <p className="text-xs mt-1" style={{ color: '#8A8272' }}>
+                {signupData.countryCode} {signupData.phone}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex gap-2 justify-center">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    maxLength={1}
+                    value={mobileOtp[index] || ''}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '')
+                      if (value) {
+                        const newOtp = mobileOtp.split('')
+                        newOtp[index] = value
+                        setMobileOtp(newOtp.join(''))
+                        if (index < 5) {
+                          e.target.nextElementSibling?.focus()
+                        }
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Backspace' && !mobileOtp[index] && index > 0) {
+                        e.target.previousElementSibling?.focus()
+                      }
+                    }}
+                    className="w-12 h-12 text-center text-xl font-semibold border-2 rounded-lg outline-none transition-all focus:border-opacity-100"
+                    style={{
+                      borderColor: PAPER_LINE,
+                      color: INKTEXT,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {otpError && (
+                <div className="text-[11px] font-semibold text-center" style={{ color: CLAY }}>
+                  {otpError}
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={verifyMobileOtp}
+                className="w-full py-3 text-white text-sm font-semibold font-mono-ui uppercase tracking-wide rounded-xl transition-all hover:opacity-90"
+                style={{ backgroundColor: INK }}
+              >
+                Verify
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowOtpVerificationModal(false)}
+                className="w-full py-2 text-xs font-semibold transition-all hover:opacity-70"
+                style={{ color: '#8A8272' }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* OTP Mode Selection Modal */}
+      {showOtpModeModal && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div
+            className="absolute inset-0 backdrop-blur-sm"
+            style={{ backgroundColor: 'rgba(21,36,32,0.6)' }}
+            onClick={() => setShowOtpModeModal(false)}
+          />
+          <div
+            className="relative w-full max-w-sm mx-4 bg-white rounded-2xl shadow-2xl p-6 border"
+            style={{ borderColor: PAPER_LINE }}
+          >
+            <button
+              onClick={() => setShowOtpModeModal(false)}
+              className="absolute top-4 right-4 text-[#A39A85] hover:text-[#6B6350] transition-colors"
+            >
+              ✕
+            </button>
+
+            <div className="text-center mb-6">
+              <h2 className="font-display text-lg mb-2" style={{ color: INKTEXT, fontWeight: 500 }}>Choose OTP Method</h2>
+              <p className="text-sm" style={{ color: '#8A8272' }}>
+                How would you like to receive your OTP?
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={() => sendMobileOtp('sms')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all hover:bg-gray-50"
+                style={{ borderColor: otpMode === 'sms' ? INK : PAPER_LINE, backgroundColor: otpMode === 'sms' ? 'rgba(21,36,32,0.05)' : 'transparent' }}
+              >
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(21,36,32,0.1)' }}>
+                  <Phone size={18} style={{ color: INK }} />
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold text-sm" style={{ color: INKTEXT }}>SMS</div>
+                  <div className="text-xs" style={{ color: '#8A8272' }}>Receive via text message</div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => sendMobileOtp('whatsapp')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all hover:bg-gray-50"
+                style={{ borderColor: otpMode === 'whatsapp' ? '#25D366' : PAPER_LINE, backgroundColor: otpMode === 'whatsapp' ? 'rgba(37,211,102,0.05)' : 'transparent' }}
+              >
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(37,211,102,0.1)' }}>
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#25D366">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold text-sm" style={{ color: INKTEXT }}>WhatsApp</div>
+                  <div className="text-xs" style={{ color: '#8A8272' }}>Receive via WhatsApp</div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Forgot Password Modal */}
       {showForgotPassword && (
