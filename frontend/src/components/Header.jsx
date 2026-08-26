@@ -19,6 +19,7 @@ import {
   Sparkles,
   Phone,
   Mail,
+  X,
 } from 'lucide-react'
 import assets from '../assets/assets'
 
@@ -50,6 +51,30 @@ const POPULAR_CITIES = [
 
 const HERO_IMAGES = [assets.header, assets.header2, assets.header3, assets.header4].filter(Boolean)
 
+// ---- Filter options for professional dropdowns ----------------------------
+const BUDGET_RANGE_OPTIONS = ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+']
+const AREA_RANGE_OPTIONS = ['300 sq ft', '500 sq ft', '750 sq ft', '1000 sq ft', '1500 sq ft', '2000 sq ft', '3000 sq ft', '5000 sq ft', '7500 sq ft', '10000 sq ft+']
+const BEDROOM_CHIP_OPTIONS = ['1 RK', '1 BHK', '2 BHK', '3 BHK', '4 BHK', '4+ BHK']
+
+const RANGE_FILTER_OPTIONS = { Budget: BUDGET_RANGE_OPTIONS, Area: AREA_RANGE_OPTIONS }
+const CHIP_FILTER_OPTIONS = { Bedroom: BEDROOM_CHIP_OPTIONS }
+const CHECKBOX_FILTER_OPTIONS = {
+  'Construction Status': ['Under Construction', 'Ready to Move', 'New Launch', 'Pre-Launch'],
+  'Posted By': ['Owner', 'Dealer', 'Builder'],
+  'Possession Status': ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year'],
+  Furnishing: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
+}
+const FILTER_KIND = {
+  Budget: 'range',
+  Area: 'range',
+  Bedroom: 'chips',
+  'Construction Status': 'checkbox',
+  'Posted By': 'checkbox',
+  'Possession Status': 'checkbox',
+  Furnishing: 'checkbox',
+}
+const emptyFilterValue = (f) => (FILTER_KIND[f] === 'range' ? { min: '', max: '' } : [])
+
 // ---- Mega menu content -----------------------------------------------
 // Each top-level nav item -> a left sidebar of categories, and per-category
 // content for column 2 (sub-items) and column 3 (sub-sub / popular items).
@@ -62,20 +87,15 @@ const AD_CARDS = {
     title: 'Insights',
     bullets: ['Understand localities', 'Read Resident Reviews', 'Check Price Trends', 'Tools, Utilities & more'],
   },
-  'For Tenants': {
-    label: 'INTRODUCING',
-    title: 'Verified Listings',
-    bullets: ['Owner-verified only', 'Zero brokerage tags', 'Photo & video tours', 'Instant contact details'],
-  },
-  'For Owners': {
+  'For Sellers': {
     label: 'GROW FASTER',
     title: 'List for Free',
     bullets: ['Reach lakhs of buyers', 'Free property valuation', 'Dedicated relationship manager', 'Priority listing boost'],
   },
-  'For Dealers / Builders': {
-    label: 'PARTNER WITH US',
-    title: 'Dealer Suite',
-    bullets: ['Bulk lead management', 'Project microsites', 'Performance dashboard', 'Verified dealer badge'],
+  'For Tenants': {
+    label: 'INTRODUCING',
+    title: 'Verified Listings',
+    bullets: ['Owner-verified only', 'Zero brokerage tags', 'Photo & video tours', 'Instant contact details'],
   },
 }
 
@@ -130,45 +150,40 @@ const MEGA_MENUS = {
       },
     ],
   },
-  'For Owners': {
+  'For Sellers': {
     categories: [
       {
-        label: 'List Your Property',
-        col2: { heading: 'Post Property', items: ['Post Property for Sale', 'Post Property for Rent', 'Post Commercial Property', 'Post Land / Plot', 'Post Property for Free'] },
+        label: 'Owner',
+        col2: { heading: 'Property Owner', items: ['List Your Property', 'Manage Listings', 'Get Buyer Leads', 'Property Valuation'] },
         col3: null,
       },
       {
-        label: 'Manage Your Property',
-        col2: { heading: 'Property Management', items: ['My Properties', 'Edit Property', 'Update Photos & Videos', 'Update Property Details', 'Property Status', 'Delete / Deactivate Listing'] },
+        label: 'Agent',
+        col2: { heading: 'Real Estate Agent', items: ['Manage Client Properties', 'Bulk Listing Tools', 'Lead Management', 'Agent Dashboard'] },
         col3: null,
       },
       {
-        label: 'Get Leads',
-        col2: { heading: 'Lead Management', items: ['Buyer Enquiries', 'Tenant Enquiries', 'Call Requests', 'Site Visit Requests', 'Messages', 'Lead Management'] },
+        label: 'Builder',
+        col2: { heading: 'Builder / Developer', items: ['Post New Projects', 'Project Inventory', 'Floor Plans', 'Builder Profile'] },
         col3: null,
       },
     ],
   },
-  'For Dealers / Builders': {
+  'Services': {
     categories: [
       {
-        label: 'Manage Properties',
-        col2: { heading: 'Property Management', items: ['Post a Property', 'Manage Listings', 'Edit Property', 'Property Photos & Videos', 'Property Documents', 'Property Status'] },
+        label: 'Legal Services',
+        col2: { heading: 'Legal Assistance', items: ['Property Documentation', 'Title Verification', 'Registration Services', 'Legal Consultation'] },
         col3: null,
       },
       {
-        label: 'For Builders',
-        col2: { heading: 'Builder Solutions', items: ['Post New Projects', 'Manage Projects', 'Project Inventory', 'Floor Plans', 'Project Brochure', 'Construction Updates', 'Builder Profile'] },
+        label: 'Financial Services',
+        col2: { heading: 'Financial Help', items: ['Home Loan Assistance', 'Loan Comparison', 'EMI Calculator', 'Credit Score Check'] },
         col3: null,
       },
       {
-        label: 'Lead Management',
-        col2: { heading: 'Lead Tracking', items: ['Buyer Leads', 'Tenant Leads', 'Enquiries', 'Contact Requests', 'Schedule Site Visits', 'Lead Dashboard'] },
-        col3: null,
-      },
-      {
-        label: 'Promote Properties',
-        col2: { heading: 'Advertising', items: ['Featured Listings', 'Premium Listings', 'Boost Property', 'Project Promotion', 'Banner Advertising', 'Advertising Plans'] },
+        label: 'Property Services',
+        col2: { heading: 'Property Management', items: ['Property Valuation', 'Interior Design', 'Vastu Consultation', 'Property Management'] },
         col3: null,
       },
     ],
@@ -177,9 +192,9 @@ const MEGA_MENUS = {
 
 const NAV_LINKS = [
   { label: 'For Buyers' },
+  { label: 'For Sellers' },
   { label: 'For Tenants' },
-  { label: 'For Owners' },
-  { label: 'For Dealers / Builders' },
+  { label: 'Services' },
   { label: 'Insights', badge: 'NEW' },
 ]
 
@@ -498,14 +513,22 @@ const RadioRow = ({ label, selected, onSelect }) => (
   </button>
 )
 
-const FilterPill = ({ label }) => (
-  <button
-    type="button"
-    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm font-medium text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-colors duration-200"
-  >
-    {label}
-    <ChevronDown size={15} className="text-slate-400" />
-  </button>
+const FilterPill = ({ label, selectedValue, onClick, isOpen, triggerRef }) => (
+  <div className="relative">
+    <button
+      type="button"
+      onClick={onClick}
+      ref={triggerRef}
+      className={`flex items-center gap-1.5 px-4 py-2 rounded-full border text-sm font-medium transition-colors duration-200 ${
+        selectedValue
+          ? 'border-[#1E88E5] bg-[rgba(30,136,229,0.05)] text-[#1E88E5]'
+          : 'border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+      }`}
+    >
+      {selectedValue || label}
+      <ChevronDown size={15} className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+    </button>
+  </div>
 )
 
 const CrossLinkRow = ({ text, className = '' }) => (
@@ -590,6 +613,39 @@ const Header = () => {
   const userDropdownRef = useRef(null)
   const userTriggerRef = useRef(null)
   const [userDropdownPosition, setUserDropdownPosition] = useState({ top: 0, left: 0 })
+
+  // Neighbourhood dropdown state
+  const [isNeighbourhoodDropdownOpen, setIsNeighbourhoodDropdownOpen] = useState(false)
+  const [selectedNeighbourhood, setSelectedNeighbourhood] = useState('')
+  const neighbourhoodDropdownRef = useRef(null)
+  const neighbourhoodTriggerRef = useRef(null)
+  const [neighbourhoodDropdownPosition, setNeighbourhoodDropdownPosition] = useState({ top: 0, left: 0 })
+
+  const NEIGHBOURHOODS = [
+    'Connaught Place', 'Karol Bagh', 'Rajouri Garden', 'Dwarka', 'Vasant Kunj',
+    'Saket', 'Greater Kailash', 'Defence Colony', 'Lajpat Nagar', 'South Extension',
+    'Hauz Khas', 'Green Park', 'Mayur Vihar', 'Patparganj', 'Laxmi Nagar',
+    'Preet Vihar', 'Nehru Place', 'Kalkaji', 'Okhla', 'Nehru Vihar'
+  ]
+
+  // Smart search state
+  const [isSmartSearchEnabled, setIsSmartSearchEnabled] = useState(false)
+
+  // Bottom filter dropdowns state
+  const [openFilterDropdown, setOpenFilterDropdown] = useState(null)
+  const [selectedFilters, setSelectedFilters] = useState({
+    Budget: { min: '', max: '' },
+    Bedroom: [],
+    'Construction Status': [],
+    'Posted By': [],
+    'Possession Status': [],
+    Furnishing: [],
+    Area: { min: '', max: '' },
+  })
+  const [pendingFilterValue, setPendingFilterValue] = useState(null)
+  const filterDropdownRef = useRef(null)
+  const filterTriggerRefs = useRef({})
+  const [filterDropdownPosition, setFilterDropdownPosition] = useState({ top: 0, left: 0 })
 
   // Menu dropdown state
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
@@ -694,6 +750,21 @@ const Header = () => {
         setIsUserDropdownOpen(false)
       }
       if (
+        neighbourhoodTriggerRef.current &&
+        !neighbourhoodTriggerRef.current.contains(e.target) &&
+        neighbourhoodDropdownRef.current &&
+        !neighbourhoodDropdownRef.current.contains(e.target)
+      ) {
+        setIsNeighbourhoodDropdownOpen(false)
+      }
+      if (
+        openFilterDropdown &&
+        filterDropdownRef.current &&
+        !filterDropdownRef.current.contains(e.target)
+      ) {
+        setOpenFilterDropdown(null)
+      }
+      if (
         menuTriggerRef.current &&
         !menuTriggerRef.current.contains(e.target) &&
         menuDropdownRef.current &&
@@ -718,6 +789,7 @@ const Header = () => {
         setIsSearchCityDropdownOpen(false)
         setIsProjectStatusDropdownOpen(false)
         setIsUserDropdownOpen(false)
+        setIsNeighbourhoodDropdownOpen(false)
         setIsMenuDropdownOpen(false)
         setOpenMegaMenu(null)
       }
@@ -795,11 +867,75 @@ const Header = () => {
   }, [isUserDropdownOpen])
 
   useEffect(() => {
+    if (isNeighbourhoodDropdownOpen && neighbourhoodTriggerRef.current) {
+      const rect = neighbourhoodTriggerRef.current.getBoundingClientRect()
+      setNeighbourhoodDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+    }
+  }, [isNeighbourhoodDropdownOpen])
+
+  useEffect(() => {
+    if (openFilterDropdown && filterTriggerRefs.current[openFilterDropdown]) {
+      const rect = filterTriggerRefs.current[openFilterDropdown].getBoundingClientRect()
+      setFilterDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+    }
+  }, [openFilterDropdown])
+
+  // Update filter dropdown position on scroll
+  useEffect(() => {
+    if (openFilterDropdown && filterTriggerRefs.current[openFilterDropdown]) {
+      const handleScroll = () => {
+        const rect = filterTriggerRefs.current[openFilterDropdown]?.getBoundingClientRect()
+        if (rect) {
+          setFilterDropdownPosition({ top: rect.bottom + 8, left: rect.left })
+        }
+      }
+      window.addEventListener('scroll', handleScroll, true)
+      return () => window.removeEventListener('scroll', handleScroll, true)
+    }
+  }, [openFilterDropdown])
+
+  useEffect(() => {
     if (isMenuDropdownOpen && menuTriggerRef.current) {
       const rect = menuTriggerRef.current.getBoundingClientRect()
       setMenuDropdownPosition({ top: rect.bottom + 8, left: rect.right - 160 })
     }
   }, [isMenuDropdownOpen])
+
+  // Filter dropdown handlers
+  const openFilterPanel = (f) => {
+    setPendingFilterValue(selectedFilters[f])
+    setOpenFilterDropdown((prev) => (prev === f ? null : f))
+  }
+
+  const togglePendingItem = (value) => {
+    setPendingFilterValue((prev) => {
+      const list = prev || []
+      return list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
+    })
+  }
+
+  const applyFilter = (f) => {
+    setSelectedFilters((prev) => ({ ...prev, [f]: pendingFilterValue }))
+    setOpenFilterDropdown(null)
+  }
+
+  const clearFilter = (f) => {
+    const empty = emptyFilterValue(f)
+    setPendingFilterValue(empty)
+    setSelectedFilters((prev) => ({ ...prev, [f]: empty }))
+  }
+
+  const getFilterLabel = (f) => {
+    const val = selectedFilters[f]
+    if (FILTER_KIND[f] === 'range') {
+      if (!val?.min && !val?.max) return ''
+      if (val.min && val.max) return `${val.min} - ${val.max}`
+      return val.min ? `Above ${val.min}` : `Under ${val.max}`
+    }
+    if (!val || val.length === 0) return ''
+    if (val.length === 1) return val[0]
+    return `${val[0]} +${val.length - 1}`
+  }
 
   const toggleMegaMenu = (label) => {
     setIsLocationOpen(false)
@@ -1076,19 +1212,15 @@ const Header = () => {
                         style={{ top: `${userDropdownPosition.top}px`, left: `${userDropdownPosition.left}px` }}
                       >
                         <div className="py-2">
-                          <button onClick={() => { setIsUserDropdownOpen(false); openSignup('login') }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
-                            Sign In
-                          </button>
-                          <button onClick={() => { setIsUserDropdownOpen(false); openSignup('signup') }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                            Signin as User
+                          </Link>
+                          <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
-                            Register
-                          </button>
+                            Register as User 
+                          </Link>
                           <div className="my-2 border-t border-slate-100" />
-                          <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                            <Headphones size={16} className="text-slate-400" />
-                            Support
-                          </button>
                         </div>
                       </div>,
                       document.body
@@ -1452,6 +1584,57 @@ const Header = () => {
                   )}
               </div>
 
+              <div className="relative" ref={neighbourhoodTriggerRef}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenMegaMenu(null)
+                    setIsNeighbourhoodDropdownOpen((open) => !open)
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
+                  style={{ color: NAVY }}
+                >
+                  {selectedNeighbourhood || 'Neighbourhood'}
+                  <ChevronDown
+                    size={16}
+                    className="text-slate-400 transition-transform duration-200"
+                    style={{ transform: isNeighbourhoodDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+
+                {isNeighbourhoodDropdownOpen &&
+                  createPortal(
+                    <div
+                      ref={neighbourhoodDropdownRef}
+                      className="fixed w-64 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      style={{ top: `${neighbourhoodDropdownPosition.top}px`, left: `${neighbourhoodDropdownPosition.left}px`, maxHeight: '400px' }}
+                    >
+                      <div className="p-4 pb-4">
+                        <h3 className="text-lg font-bold mb-3" style={{ color: NAVY }}>
+                          Select Neighbourhood
+                        </h3>
+                        <div className="space-y-1 max-h-[320px] overflow-y-auto pr-2">
+                          {NEIGHBOURHOODS.map((neighbourhood) => (
+                            <button
+                              key={neighbourhood}
+                              onClick={() => {
+                                setSelectedNeighbourhood(neighbourhood)
+                                setIsNeighbourhoodDropdownOpen(false)
+                              }}
+                              className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors duration-200 rounded-lg ${
+                                selectedNeighbourhood === neighbourhood ? 'bg-slate-50 text-[#1E88E5]' : 'text-slate-700 hover:bg-slate-50'
+                              }`}
+                            >
+                              {neighbourhood}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>,
+                    document.body
+                  )}
+              </div>
+
               <div className="flex items-center gap-3 flex-1 px-4 sm:px-5">
                 <Search size={18} className="text-slate-400 flex-shrink-0" />
                 <input
@@ -1461,6 +1644,23 @@ const Header = () => {
                   placeholder="Enter locality"
                   className="w-full bg-transparent text-sm sm:text-base text-slate-700 placeholder-slate-400 focus:outline-none"
                 />
+              </div>
+
+              <div className="flex items-center gap-2 flex-shrink-0 px-4 sm:px-5 sm:border-r border-slate-200">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={isSmartSearchEnabled}
+                      onChange={(e) => setIsSmartSearchEnabled(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div className={`w-11 h-6 rounded-full transition-colors duration-200 ${isSmartSearchEnabled ? 'bg-[#1E88E5]' : 'bg-slate-200'}`}>
+                      <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${isSmartSearchEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+                    </div>
+                  </div>
+                  <span className="text-sm font-medium text-slate-700">Smart Search</span>
+                </label>
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0 justify-end sm:pr-2">
@@ -1608,7 +1808,128 @@ const Header = () => {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-3">
                   {tabConfig.bottomFilters.map((f) => (
-                    <FilterPill key={f} label={f} />
+                    <div key={f} className="relative">
+                      <FilterPill
+                        label={f}
+                        selectedValue={getFilterLabel(f)}
+                        onClick={() => openFilterPanel(f)}
+                        isOpen={openFilterDropdown === f}
+                        triggerRef={(el) => (filterTriggerRefs.current[f] = el)}
+                      />
+
+                      {openFilterDropdown === f && createPortal(
+                        <div
+                          ref={filterDropdownRef}
+                          className="fixed w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-50 border border-slate-100"
+                          style={{ top: `${filterDropdownPosition.top}px`, left: `${filterDropdownPosition.left}px` }}
+                        >
+                          {/* Header */}
+                          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                            <h4 className="text-sm font-bold" style={{ color: NAVY }}>{f}</h4>
+                            <button type="button" onClick={() => setOpenFilterDropdown(null)} className="text-slate-400 hover:text-slate-600">
+                              <X size={16} />
+                            </button>
+                          </div>
+
+                          {/* Body */}
+                          <div className="p-5 max-h-80 overflow-y-auto">
+                            {FILTER_KIND[f] === 'range' && (
+                              <div>
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className="flex-1">
+                                    <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Min</label>
+                                    <select
+                                      value={pendingFilterValue?.min || ''}
+                                      onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, min: e.target.value }))}
+                                      className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                                    >
+                                      <option value="">No Min</option>
+                                      {RANGE_FILTER_OPTIONS[f].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                                    </select>
+                                  </div>
+                                  <span className="text-slate-300 mt-5">—</span>
+                                  <div className="flex-1">
+                                    <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Max</label>
+                                    <select
+                                      value={pendingFilterValue?.max || ''}
+                                      onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, max: e.target.value }))}
+                                      className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                                    >
+                                      <option value="">No Max</option>
+                                      {RANGE_FILTER_OPTIONS[f].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                                    </select>
+                                  </div>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {RANGE_FILTER_OPTIONS[f].slice(0, 6).map((opt) => (
+                                    <button
+                                      key={opt}
+                                      type="button"
+                                      onClick={() => setPendingFilterValue({ min: '', max: opt })}
+                                      className="px-3 py-1.5 rounded-full border border-slate-200 text-xs font-medium text-slate-600 hover:border-[#1E88E5] hover:text-[#1E88E5] transition-colors duration-150"
+                                    >
+                                      Under {opt}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {FILTER_KIND[f] === 'chips' && (
+                              <div className="flex flex-wrap gap-2">
+                                {CHIP_FILTER_OPTIONS[f].map((opt) => {
+                                  const isSelected = pendingFilterValue?.includes(opt)
+                                  return (
+                                    <button
+                                      key={opt}
+                                      type="button"
+                                      onClick={() => togglePendingItem(opt)}
+                                      className="px-4 py-2 rounded-full border text-sm font-medium transition-colors duration-150"
+                                      style={{
+                                        borderColor: isSelected ? BLUE : '#E2E8F0',
+                                        backgroundColor: isSelected ? 'rgba(30,136,229,0.08)' : '#fff',
+                                        color: isSelected ? BLUE : '#475569',
+                                      }}
+                                    >
+                                      {opt}
+                                    </button>
+                                  )
+                                })}
+                              </div>
+                            )}
+
+                            {FILTER_KIND[f] === 'checkbox' && (
+                              <div className="space-y-3.5">
+                                {CHECKBOX_FILTER_OPTIONS[f].map((opt) => (
+                                  <CheckboxRow
+                                    key={opt}
+                                    label={opt}
+                                    checked={!!pendingFilterValue?.includes(opt)}
+                                    onToggle={() => togglePendingItem(opt)}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Footer */}
+                          <div className="flex items-center justify-between px-5 py-4 border-t border-slate-100 bg-slate-50">
+                            <button type="button" onClick={() => clearFilter(f)} className="text-sm font-semibold text-slate-500 hover:text-slate-700">
+                              Clear
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => applyFilter(f)}
+                              className="px-6 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                              style={{ backgroundColor: BLUE }}
+                            >
+                              Apply
+                            </button>
+                          </div>
+                        </div>,
+                        document.body
+                      )}
+                    </div>
                   ))}
                 </div>
                 <button

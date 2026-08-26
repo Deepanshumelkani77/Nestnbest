@@ -27,9 +27,9 @@ const BLUE = '#1E88E5'
 
 const NAV_LINKS = [
   { label: 'For Buyers' },
+  { label: 'For Sellers' },
   { label: 'For Tenants' },
-  { label: 'For Owners' },
-  { label: 'For Dealers / Builders' },
+  { label: 'Services' },
   { label: 'Insights', badge: 'NEW' },
 ]
 
@@ -39,20 +39,15 @@ const AD_CARDS = {
     title: 'Insights',
     bullets: ['Understand localities', 'Read Resident Reviews', 'Check Price Trends', 'Tools, Utilities & more'],
   },
-  'For Tenants': {
-    label: 'INTRODUCING',
-    title: 'Verified Listings',
-    bullets: ['Owner-verified only', 'Zero brokerage tags', 'Photo & video tours', 'Instant contact details'],
-  },
-  'For Owners': {
+  'For Sellers': {
     label: 'GROW FASTER',
     title: 'List for Free',
     bullets: ['Reach lakhs of buyers', 'Free property valuation', 'Dedicated relationship manager', 'Priority listing boost'],
   },
-  'For Dealers / Builders': {
-    label: 'PARTNER WITH US',
-    title: 'Dealer Suite',
-    bullets: ['Bulk lead management', 'Project microsites', 'Performance dashboard', 'Verified dealer badge'],
+  'For Tenants': {
+    label: 'INTRODUCING',
+    title: 'Verified Listings',
+    bullets: ['Owner-verified only', 'Zero brokerage tags', 'Photo & video tours', 'Instant contact details'],
   },
 }
 
@@ -120,45 +115,40 @@ const MEGA_MENUS = {
       },
     ],
   },
-  'For Owners': {
+  'For Sellers': {
     categories: [
       {
-        label: 'List Your Property',
-        col2: { heading: 'Post Property', items: ['Post Property for Sale', 'Post Property for Rent', 'Post Commercial Property', 'Post Land / Plot', 'Post Property for Free'] },
+        label: 'Owner',
+        col2: { heading: 'Property Owner', items: ['List Your Property', 'Manage Listings', 'Get Buyer Leads', 'Property Valuation'] },
         col3: null,
       },
       {
-        label: 'Manage Your Property',
-        col2: { heading: 'Property Management', items: ['My Properties', 'Edit Property', 'Update Photos & Videos', 'Update Property Details', 'Property Status', 'Delete / Deactivate Listing'] },
+        label: 'Agent',
+        col2: { heading: 'Real Estate Agent', items: ['Manage Client Properties', 'Bulk Listing Tools', 'Lead Management', 'Agent Dashboard'] },
         col3: null,
       },
       {
-        label: 'Get Leads',
-        col2: { heading: 'Lead Management', items: ['Buyer Enquiries', 'Tenant Enquiries', 'Call Requests', 'Site Visit Requests', 'Messages', 'Lead Management'] },
+        label: 'Builder',
+        col2: { heading: 'Builder / Developer', items: ['Post New Projects', 'Project Inventory', 'Floor Plans', 'Builder Profile'] },
         col3: null,
       },
     ],
   },
-  'For Dealers / Builders': {
+  'Services': {
     categories: [
       {
-        label: 'Manage Properties',
-        col2: { heading: 'Property Management', items: ['Post a Property', 'Manage Listings', 'Edit Property', 'Property Photos & Videos', 'Property Documents', 'Property Status'] },
+        label: 'Legal Services',
+        col2: { heading: 'Legal Assistance', items: ['Property Documentation', 'Title Verification', 'Registration Services', 'Legal Consultation'] },
         col3: null,
       },
       {
-        label: 'For Builders',
-        col2: { heading: 'Builder Solutions', items: ['Post New Projects', 'Manage Projects', 'Project Inventory', 'Floor Plans', 'Project Brochure', 'Construction Updates', 'Builder Profile'] },
+        label: 'Financial Services',
+        col2: { heading: 'Financial Help', items: ['Home Loan Assistance', 'Loan Comparison', 'EMI Calculator', 'Credit Score Check'] },
         col3: null,
       },
       {
-        label: 'Lead Management',
-        col2: { heading: 'Lead Tracking', items: ['Buyer Leads', 'Tenant Leads', 'Enquiries', 'Contact Requests', 'Schedule Site Visits', 'Lead Dashboard'] },
-        col3: null,
-      },
-      {
-        label: 'Promote Properties',
-        col2: { heading: 'Advertising', items: ['Featured Listings', 'Premium Listings', 'Boost Property', 'Project Promotion', 'Banner Advertising', 'Advertising Plans'] },
+        label: 'Property Services',
+        col2: { heading: 'Property Management', items: ['Property Valuation', 'Interior Design', 'Vastu Consultation', 'Property Management'] },
         col3: null,
       },
     ],
@@ -699,17 +689,14 @@ const Navbar = ({ showNavbar = true }) => {
                         <div className="py-2">
                           <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
-                            Sign In
+                            Signin as User
                           </Link>
                           <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
-                            Register
+                            Register as User 
                           </Link>
                           <div className="my-2 border-t border-slate-100" />
-                          <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                            <Headphones size={16} className="text-slate-400" />
-                            Support
-                          </button>
+
                         </div>
                       )}
                     </div>,
