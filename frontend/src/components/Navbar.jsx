@@ -687,14 +687,14 @@ const Navbar = ({ showNavbar = true }) => {
                         </div>
                       ) : (
                         <div className="py-2">
-                          <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          <button onClick={() => { setIsUserDropdownOpen(false); openSignup() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
                             Signin as User
-                          </Link>
-                          <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          </button>
+                          <button onClick={() => { setIsUserDropdownOpen(false); openSignup() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
-                            Register as User 
-                          </Link>
+                            Register as User
+                          </button>
                           <div className="my-2 border-t border-slate-100" />
 
                         </div>

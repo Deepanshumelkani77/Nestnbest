@@ -1212,14 +1212,14 @@ const Header = () => {
                         style={{ top: `${userDropdownPosition.top}px`, left: `${userDropdownPosition.left}px` }}
                       >
                         <div className="py-2">
-                          <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          <button onClick={() => { setIsUserDropdownOpen(false); openSignup() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
                             Signin as User
-                          </Link>
-                          <Link to="/auth" onClick={() => setIsUserDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          </button>
+                          <button onClick={() => { setIsUserDropdownOpen(false); openSignup() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
-                            Register as User 
-                          </Link>
+                            Register as User
+                          </button>
                           <div className="my-2 border-t border-slate-100" />
                         </div>
                       </div>,
@@ -1538,16 +1538,16 @@ const Header = () => {
                   createPortal(
                     <div
                       ref={searchCityDropdownRef}
-                      className="fixed w-[450px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
-                      style={{ top: `${searchCityDropdownPosition.top}px`, left: `${searchCityDropdownPosition.left}px`, maxHeight: '450px' }}
+                      className="fixed w-[320px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      style={{ top: `${searchCityDropdownPosition.top}px`, left: `${searchCityDropdownPosition.left}px`, maxHeight: '350px' }}
                     >
-                      <div className="p-5 pb-4">
-                        <h3 className="text-xl font-bold mb-4" style={{ color: NAVY }}>
+                      <div className="p-4 pb-3">
+                        <h3 className="text-lg font-bold mb-3" style={{ color: NAVY }}>
                           Select City
                         </h3>
 
-                        <div className="flex items-center gap-2 border border-slate-200 rounded-xl px-4 py-3 shadow-sm mb-5 bg-slate-50">
-                          <Search size={18} className="text-slate-400 flex-shrink-0" />
+                        <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2.5 shadow-sm mb-4 bg-slate-50">
+                          <Search size={16} className="text-slate-400 flex-shrink-0" />
                           <input
                             type="text"
                             value={cityQuery}
@@ -1557,7 +1557,7 @@ const Header = () => {
                           />
                         </div>
 
-                        <div className="grid grid-cols-3 gap-3 max-h-[320px] overflow-y-auto pr-2">
+                        <div className="grid grid-cols-4 gap-2 max-h-[220px] overflow-y-auto pr-2">
                           {POPULAR_CITIES.filter(city =>
                             city.name.toLowerCase().includes(cityQuery.toLowerCase()) ||
                             city.state.toLowerCase().includes(cityQuery.toLowerCase())
@@ -1569,12 +1569,12 @@ const Header = () => {
                                 setCityQuery(city.name)
                                 setIsSearchCityDropdownOpen(false)
                               }}
-                              className="flex flex-col items-center justify-start p-4 rounded-xl border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-center group"
+                              className="flex flex-col items-center justify-start p-2 rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-center group"
                             >
-                              <div className="font-semibold text-sm group-hover:text-[#1E88E5] transition-colors duration-200" style={{ color: NAVY }}>
+                              <div className="font-semibold text-[11px] group-hover:text-[#1E88E5] transition-colors duration-200" style={{ color: NAVY }}>
                                 {city.name}
                               </div>
-                              
+
                             </button>
                           ))}
                         </div>
@@ -1718,7 +1718,7 @@ const Header = () => {
                       <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
                         {categoryConfig.propertyTypesHeading}
                       </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-12 gap-y-3.5">
                         {categoryConfig.checkboxGroups.map((group, gi) => (
                           <div key={gi} className="space-y-3.5">
                             {group.map((item) => (
@@ -1748,7 +1748,7 @@ const Header = () => {
                     </>
                   ) : categoryConfig.checkboxGroups ? (
                     <>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-10 gap-y-3.5">
                         {categoryConfig.checkboxGroups.map((group, gi) => (
                           <div key={gi} className="space-y-3.5">
                             {group.map((item) => (
