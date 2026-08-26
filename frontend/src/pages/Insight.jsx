@@ -458,7 +458,268 @@ export default function InsightsPage() {
           </div>
         )}
 
-       
+        {tool === "rates" && (
+          <div className="nb-panel" key="rates">
+            <h1 className="nb-title">Rates &amp; Market Trends</h1>
+            <p className="nb-desc">
+              A snapshot of prevailing lending rates and how home loan interest rates have moved over the past year.
+            </p>
+            <div className="nb-card">
+              <table>
+                <thead>
+                  <tr><th>Loan category</th><th>Indicative rate</th><th>12-mo trend</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Home loan — floating</td><td className="mono">8.35% – 9.10%</td><td><span className="nb-tag">↓ easing</span></td></tr>
+                  <tr><td>Home loan — fixed</td><td className="mono">9.25% – 10.00%</td><td><span className="nb-tag">flat</span></td></tr>
+                  <tr><td>Loan against property</td><td className="mono">9.50% – 11.25%</td><td><span className="nb-tag down">↑ firming</span></td></tr>
+                  <tr><td>Top-up loan</td><td className="mono">9.75% – 11.50%</td><td><span className="nb-tag">flat</span></td></tr>
+                </tbody>
+              </table>
+              <div className="nb-note">Sample data for illustration — connect your live rate feed to keep this table current automatically.</div>
+            </div>
+
+            <div className="nb-card">
+              <div className="field-label" style={{ marginBottom: 2 }}>
+                <span>Average floating home loan rate — last 12 months</span>
+              </div>
+              <div className="nb-chart-wrap">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={RATE_CHART_DATA} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                    <CartesianGrid stroke="#E4E2D8" vertical={false} />
+                    <XAxis dataKey="month" tick={{ fontFamily: "Inter", fontSize: 11, fill: "#6B6F76" }} axisLine={{ stroke: "#DAD7CB" }} tickLine={false} />
+                    <YAxis
+                      domain={["dataMin - 0.1", "dataMax + 0.1"]}
+                      tickFormatter={(v) => v + "%"}
+                      tick={{ fontFamily: "IBM Plex Mono", fontSize: 11, fill: "#6B6F76" }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Tooltip formatter={(v) => v + "%"} contentStyle={{ fontFamily: "IBM Plex Mono", fontSize: 12, border: "1px solid #DAD7CB" }} />
+                    <Line type="monotone" dataKey="rate" stroke="#B4874A" strokeWidth={2} dot={{ r: 3, fill: "#B4874A" }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tool === "rentbuy" && (
+          <div className="nb-panel" key="rentbuy">
+            <h1 className="nb-title">Rent vs Buy Calculator</h1>
+            <p className="nb-desc">
+              Compare the true cost of renting against buying over a chosen time horizon, accounting for appreciation and rent escalation.
+            </p>
+            <div className="nb-card">
+              <div className="nb-card-row">
+                <div>
+                  <Field label="Current monthly rent" value={fmtINR(rbRent)}>
+                    <Range min={5000} max={150000} step={1000} value={rbRent} onChange={(e) => setRbRent(+e.target.value)} />
+                  </Field>
+                  <Field label="Home price" value={fmtINR(rbPrice)}>
+                    <Range min={1500000} max={50000000} step={100000} value={rbPrice} onChange={(e) => setRbPrice(+e.target.value)} />
+                  </Field>
+                  <Field label="Down payment" value={rbDp + "%"}>
+                    <Range min={10} max={50} step={5} value={rbDp} onChange={(e) => setRbDp(+e.target.value)} />
+                  </Field>
+                  <Field label="Loan interest rate" value={rbRate + "%"}>
+                    <Range min={6} max={14} step={0.1} value={rbRate} onChange={(e) => setRbRate(+e.target.value)} />
+                  </Field>
+                </div>
+                <div>
+                  <Field label="Years to compare" value={rbYears + " years"}>
+                    <Range min={3} max={25} step={1} value={rbYears} onChange={(e) => setRbYears(+e.target.value)} />
+                  </Field>
+                  <Field label="Annual home appreciation" value={rbApprec + "%"}>
+                    <Range min={0} max={12} step={0.5} value={rbApprec} onChange={(e) => setRbApprec(+e.target.value)} />
+                  </Field>
+                  <Field label="Annual rent escalation" value={rbRentEsc + "%"}>
+                    <Range min={0} max={12} step={0.5} value={rbRentEsc} onChange={(e) => setRbRentEsc(+e.target.value)} />
+                  </Field>
+                  <div className="ledger" style={{ marginTop: 24, paddingTop: 0, borderTop: "none" }}>
+                    <LedgerRow k="Total outflow — buying" v={fmtINR(rentBuy.buyOutflow)} />
+                    <LedgerRow k="Total outflow — renting" v={fmtINR(rentBuy.rentOutflow)} />
+                    <LedgerRow k="Est. property value gain" v={fmtINR(rentBuy.gain)} />
+                  </div>
+                </div>
+              </div>
+              <div className={"nb-verdict" + (rentBuy.buyingWins ? "" : " warn")}>
+                {rentBuy.buyingWins
+                  ? `Over ${rbYears} years, buying looks favourable — net cost after estimated appreciation is roughly ${fmtINR(rentBuy.rentOutflow - rentBuy.netBuyCost)} lower than renting.`
+                  : `Over ${rbYears} years, renting looks lighter on cash outflow by roughly ${fmtINR(rentBuy.netBuyCost - rentBuy.rentOutflow)} — though buying builds equity in an owned asset.`}
+              </div>
+              <div className="nb-note">
+                Buying outflow includes down payment, EMIs and 1% p.a. maintenance. Property gain is the estimated appreciation in home value over the horizon. This is a simplified model — it excludes taxes, transaction costs, and returns on investing the down payment elsewhere.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tool === "eligibility" && (
+          <div className="nb-panel" key="eligibility">
+            <h1 className="nb-title">Loan Eligibility Calculator</h1>
+            <p className="nb-desc">
+              Estimate how much you may be able to borrow, based on your income, existing obligations, and a typical lender affordability ratio.
+            </p>
+            <div className="nb-card">
+              <div className="nb-card-row">
+                <div>
+                  <Field label="Net monthly income" value={fmtINR(elIncome)}>
+                    <Range min={20000} max={1000000} step={5000} value={elIncome} onChange={(e) => setElIncome(+e.target.value)} />
+                  </Field>
+                  <Field label="Existing monthly EMIs" value={fmtINR(elExisting)}>
+                    <Range min={0} max={200000} step={1000} value={elExisting} onChange={(e) => setElExisting(+e.target.value)} />
+                  </Field>
+                  <Field label="Affordability ratio (FOIR)" value={elFoir + "%"}>
+                    <Range min={30} max={65} step={5} value={elFoir} onChange={(e) => setElFoir(+e.target.value)} />
+                  </Field>
+                </div>
+                <div>
+                  <Field label="Interest rate (p.a.)" value={elRate + "%"}>
+                    <Range min={6} max={14} step={0.1} value={elRate} onChange={(e) => setElRate(+e.target.value)} />
+                  </Field>
+                  <Field label="Tenure" value={elTenure + " years"}>
+                    <Range min={1} max={30} step={1} value={elTenure} onChange={(e) => setElTenure(+e.target.value)} />
+                  </Field>
+                  <div className="nb-hero" style={{ marginTop: 20 }}>
+                    <span className="k">Est. eligible loan</span>
+                    <span className="v mono"><span>₹</span> {fmtINRshort(eligibility.loan)}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="ledger">
+                <LedgerRow k="Maximum usable EMI" v={fmtINR(eligibility.maxEMI)} />
+              </div>
+              <div className="nb-note">
+                FOIR (Fixed Obligation to Income Ratio) is the share of income lenders typically allow toward all EMIs combined; it varies by lender, income slab, and credit profile.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tool === "interior" && (
+          <div className="nb-panel" key="interior">
+            <h1 className="nb-title">Interior Budget Estimator</h1>
+            <p className="nb-desc">
+              Get a category-wise budget estimate for interiors, based on carpet area and the finish level you're planning.
+            </p>
+            <div className="nb-card">
+              <Field label="Carpet area" value={inArea.toLocaleString("en-IN") + " sq ft"}>
+                <Range min={300} max={5000} step={50} value={inArea} onChange={(e) => setInArea(+e.target.value)} />
+              </Field>
+              <div className="field">
+                <div className="field-label"><span>Finish level</span></div>
+                <div className="nb-segmented">
+                  {INTERIOR_LEVELS.map((l) => (
+                    <button key={l.key} className={inLevel === l.key ? "active" : ""} onClick={() => setInLevel(l.key)}>
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="nb-hero" style={{ marginTop: 24 }}>
+                <span className="k">Estimated total budget</span>
+                <span className="v mono"><span>₹</span> {fmtINRshort(interior.total)}</span>
+              </div>
+
+              <div className="ledger">
+                {interior.rows.map((c) => (
+                  <LedgerRow
+                    key={c.name}
+                    k={<><i style={{ display: "inline-block", width: 8, height: 8, background: c.color, marginRight: 8 }} />{c.name} · {c.pct}%</>}
+                    v={fmtINR(c.amount)}
+                  />
+                ))}
+              </div>
+              <div className="nb-note">Rates are illustrative averages (₹/sq ft, all-inclusive of material and labour) and vary by city, brand choice, and site conditions.</div>
+            </div>
+          </div>
+        )}
+
+        {tool === "stamp" && (
+          <div className="nb-panel" key="stamp">
+            <h1 className="nb-title">Stamp Duty &amp; Registration Calculator</h1>
+            <p className="nb-desc">Estimate the stamp duty and registration charges payable on a property transaction.</p>
+            <div className="nb-card">
+              <div className="nb-card-row">
+                <div>
+                  <Field label="Property value" value={fmtINR(sdPrice)}>
+                    <Range min={1000000} max={50000000} step={100000} value={sdPrice} onChange={(e) => setSdPrice(+e.target.value)} />
+                  </Field>
+                  <div className="field">
+                    <div className="field-label"><span>State</span></div>
+                    <select value={sdStateName} onChange={(e) => setSdStateName(e.target.value)}>
+                      {Object.keys(STAMP_STATES).map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="field">
+                    <div className="field-label"><span>Owner</span></div>
+                    <div className="nb-segmented">
+                      <button className={sdGender === "male" ? "active" : ""} onClick={() => setSdGender("male")}>Male</button>
+                      <button className={sdGender === "female" ? "active" : ""} onClick={() => setSdGender("female")}>Female</button>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="ledger">
+                    <LedgerRow k="Stamp duty" v={fmtINR(stamp.duty) + `  (${stamp.dutyPct}%)`} />
+                    <LedgerRow k="Registration fee (1%)" v={fmtINR(stamp.reg)} />
+                    <LedgerRow k="Total payable" v={fmtINR(stamp.total)} strong />
+                  </div>
+                </div>
+              </div>
+              <div className="nb-note">
+                Rates shown are indicative and commonly-cited state averages — actual stamp duty depends on property type, location within the state, and current notifications. Confirm with your local sub-registrar office before transacting.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tool === "area" && (
+          <div className="nb-panel" key="area">
+            <h1 className="nb-title">Area Unit Converter</h1>
+            <p className="nb-desc">Convert between the area units commonly used across property listings and paperwork.</p>
+            <div className="nb-card">
+              <div className="nb-card-row">
+                <div>
+                  <div className="field">
+                    <div className="field-label"><span>Value</span></div>
+                    <input type="number" value={acValue} onChange={(e) => setAcValue(e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <div className="field-label"><span>From</span></div>
+                    <select value={acFrom} onChange={(e) => setAcFrom(e.target.value)}>
+                      {Object.keys(AREA_LABELS).map((u) => (
+                        <option key={u} value={u}>{AREA_LABELS[u]}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <div className="field" style={{ marginTop: 2 }}>
+                    <div className="field-label"><span>&nbsp;</span></div>
+                    <div className="nb-hero" style={{ borderBottom: "none", paddingBottom: 6 }}>
+                      <span className="k">Result</span>
+                      <span className="v mono" style={{ fontSize: 30 }}>{acResult}</span>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <div className="field-label"><span>To</span></div>
+                    <select value={acTo} onChange={(e) => setAcTo(e.target.value)}>
+                      {Object.keys(AREA_LABELS).map((u) => (
+                        <option key={u} value={u}>{AREA_LABELS[u]}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="nb-note">1 sq yd = 9 sq ft · 1 acre = 43,560 sq ft · 1 hectare = 107,639.1 sq ft · 1 guntha = 1,089 sq ft.</div>
+            </div>
+          </div>
+        )}
 
         <div className="nb-foot-disclaimer">
           All figures on this page are indicative estimates generated for planning purposes only, and do not constitute financial, legal, or investment advice. Interest rates, taxes, and construction costs vary by lender, location, and time — please verify current figures with a qualified lender, advisor, or local authority before making a decision.
