@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { AppContext } from '../context/AppContext'
 import { useAuth } from '../context/AuthContext'
+import assets from '../assets/assets'
 import {
   Menu,
   X,
@@ -498,9 +499,7 @@ const Navbar = ({ showNavbar = true }) => {
             {/* Logo + location, matching Header */}
             <div className="flex items-center gap-4 flex-shrink-0">
               <Link to="/" className="group flex items-center space-x-2.5">
-                <span className="text-2xl font-bold transition-colors duration-300" style={{ color: GREEN }}>
-                  Nestnbest
-                </span>
+                <img src={assets.logo} alt="Nestnbest" className="h-10 w-auto transition-transform duration-300 group-hover:scale-105" />
               </Link>
               <div className="relative" ref={locationRef}>
                 <button
@@ -689,7 +688,7 @@ const Navbar = ({ showNavbar = true }) => {
                         <div className="py-2">
                           <button onClick={() => { setIsUserDropdownOpen(false); openSignup() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
-                            Signin as User
+                            Sign In as User
                           </button>
                           <button onClick={() => { setIsUserDropdownOpen(false); openSignup() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />

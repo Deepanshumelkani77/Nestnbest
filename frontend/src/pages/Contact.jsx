@@ -22,20 +22,20 @@ const CONTACT_CARDS = [
   {
     icon: Phone,
     title: 'Call Us',
-    lines: ['1800 41 99099', '+91 9355544664'],
+    lines: [ '+91 9999-122-522'],
     note: 'Mon–Sat, 9 AM – 11 PM IST',
   },
   {
     icon: Mail,
     title: 'Email Us',
-    lines: ['services@nestnbest.com', 'support@nestnbest.com'],
+    lines: [ 'support@nestnbest.com'],
     note: 'We reply within 24 hours',
   },
   {
     icon: MapPin,
     title: 'Visit Us',
     lines: ['FF 05, Rise Retailia 1, Plot No. SC 01, Sector 1, Greater Noida West, Gautam Buddha Nagar, Uttar Pradesh - 201306'],
-    note: 'Head office',
+    note: '',
   },
   {
     icon: Clock,
@@ -133,15 +133,19 @@ const Contact = () => {
       <div className="relative z-10 max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 -translate-y-10">
           {CONTACT_CARDS.map(({ icon: Icon, title, lines, note }) => (
-            <div key={title} className="bg-white rounded-2xl shadow-xl border border-slate-100 p-6">
-              <span className="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(30,136,229,0.1)' }}>
+            <div key={title} className="bg-white flex rounded-2xl shadow-xl border border-slate-100 p-6">
+              <span className="w-11 h-11 rounded-xl flex  items-center justify-center mb-4" style={{ backgroundColor: 'rgba(30,136,229,0.1)' }}>
                 <Icon size={20} style={{ color: BLUE }} />
               </span>
-              <h3 className="font-bold text-sm mb-2" style={{ color: NAVY }}>{title}</h3>
+              
+              <div className="ml-5"> 
+                <h3 className="font-bold text-sm mb-2" style={{ color: NAVY }}>{title}</h3>
               {lines.map((line) => (
                 <p key={line} className="text-slate-600 text-sm leading-snug">{line}</p>
               ))}
               <p className="text-slate-400 text-xs mt-2">{note}</p>
+              </div>
+            
             </div>
           ))}
         </div>

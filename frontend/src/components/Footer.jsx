@@ -129,7 +129,7 @@ const Footer = () => {
               </div>
               <a href="tel:+919876543210" className="flex items-center gap-2.5 text-slate-600 hover:text-[#1E88E5] transition-colors duration-200 w-fit">
                 <Phone size={16} className="text-slate-400 flex-shrink-0" />
-                <span className="text-sm">+91 9355544664</span>
+                <span className="text-sm">+91 9999-122-522</span>
               </a>
               <a href="mailto:info@nestnbest.com" className="flex items-center gap-2.5 text-slate-600 hover:text-[#1E88E5] transition-colors duration-200 w-fit">
                 <Mail size={16} className="text-slate-400 flex-shrink-0" />
@@ -193,7 +193,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-3">
             <p className="text-slate-500 text-sm text-center md:text-left">
-              © {new Date().getFullYear()} Nestnbest Realty Pvt. Ltd. All rights reserved. &nbsp;|&nbsp; RERA Reg. No. HRERA-GGM-2024-XXXX
+              © {new Date().getFullYear()} Nest N Best  Pvt. Ltd. All rights reserved. &nbsp;|&nbsp; RERA Reg. No. HRERA-GGM-2024-XXXX
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
               {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'Sitemap'].map((label) => (

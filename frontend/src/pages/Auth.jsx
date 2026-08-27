@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import assets from '../assets/assets'
 import {
   User,
   Lock,
@@ -576,13 +577,7 @@ const Auth = () => {
         <div className="relative z-10 flex flex-col justify-between p-10 xl:p-14 text-white w-full">
           {/* Mark */}
           <div className={`flex items-center gap-2.5 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`}>
-            <span
-              className="w-8 h-8 flex items-center justify-center border"
-              style={{ borderColor: BRASS, color: BRASS_LIGHT }}
-            >
-              <KeyRound size={15} />
-            </span>
-            <span className="font-display text-lg tracking-tight">Nestnbest</span>
+            <img src={assets.logo} alt="Nestnbest" className="h-10 w-auto" />
           </div>
 
           {/* Headline + blueprint illustration */}

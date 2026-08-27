@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { AppContext } from '../context/AppContext'
+import assets from '../assets/assets'
 import {
   Search,
   ChevronDown,
@@ -21,10 +22,11 @@ import {
   Mail,
   X,
 } from 'lucide-react'
-import assets from '../assets/assets'
+
 
 const NAVY = '#193C06'
 const BLUE = '#1E88E5'
+const INK = '#152020'
 
 const TABS = [
   { label: 'Buy' },
@@ -54,12 +56,27 @@ const HERO_IMAGES = [assets.header, assets.header2, assets.header3, assets.heade
 // ---- Filter options for professional dropdowns ----------------------------
 const BUDGET_RANGE_OPTIONS = ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+']
 const AREA_RANGE_OPTIONS = ['300 sq ft', '500 sq ft', '750 sq ft', '1000 sq ft', '1500 sq ft', '2000 sq ft', '3000 sq ft', '5000 sq ft', '7500 sq ft', '10000 sq ft+']
-const BEDROOM_CHIP_OPTIONS = ['1 RK', '1 BHK', '2 BHK', '3 BHK', '4 BHK', '4+ BHK']
+const BEDROOM_CHIP_OPTIONS = [
+  '1 RK', 
+  '1 BHK', 
+  '1 BHK + Servant Room', 
+  '1 BHK + Pooja Room', 
+  '2 BHK', 
+  '2 BHK + Servant Room', 
+  '2 BHK + Pooja Room', 
+  '3 BHK', 
+  '3 BHK + Servant Room', 
+  '3 BHK + Pooja Room', 
+  '4 BHK', 
+  '4 BHK + Servant Room', 
+  '4 BHK + Pooja Room', 
+  '4+ BHK'
+]
 
 const RANGE_FILTER_OPTIONS = { Budget: BUDGET_RANGE_OPTIONS, Area: AREA_RANGE_OPTIONS }
 const CHIP_FILTER_OPTIONS = { Bedroom: BEDROOM_CHIP_OPTIONS }
 const CHECKBOX_FILTER_OPTIONS = {
-  'Construction Status': ['Under Construction', 'Ready to Move', 'New Launch', 'Pre-Launch'],
+  'Construction Status': ['Under Construction', 'Ready to Move', 'New Launch', 'Pre-Launch', 'Resale/Secondary Sale'],
   'Posted By': ['Owner', 'Dealer', 'Builder'],
   'Possession Status': ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year'],
   Furnishing: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
@@ -109,7 +126,7 @@ const MEGA_MENUS = {
   'For Buyers': {
     categories: [
       {
-        label: 'Apartments',
+        label: 'Buy a Home',
         col2: { heading: 'Properties in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Penthouses', 'Farmhouses'] },
         col3: { heading: 'Popular Searches', items: ['Property in Delhi', 'Verified Property in Delhi', 'New Projects'] },
       },
@@ -134,7 +151,7 @@ const MEGA_MENUS = {
   'For Tenants': {
     categories: [
       {
-        label: 'Apartments',
+        label: 'Rent a Home',
         col2: { heading: 'Rentals in Delhi', items: ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments', 'Penthouses', 'Farmhouses'] },
         col3: { heading: 'Popular Searches', items: ['1 BHK for Rent', '2 BHK for Rent', 'Pet-Friendly Rentals'] },
       },
@@ -208,7 +225,7 @@ const PROPERTY_CATEGORIES = {
         ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments'],
         ['Duplex Homes', 'Penthouse', 'Residential Plots', 'Gated Community', 'Farm Houses'],
       ],
-      bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
+      bottomFilters: ['Bedroom', 'Construction Status', 'Posted By'],
     },
     Rent: {
       placeholder: 'Search "Hyderabad"',
@@ -217,7 +234,7 @@ const PROPERTY_CATEGORIES = {
         ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments'],
         ['Furnished Flats', 'Semi-Furnished Flats', 'Unfurnished Flats'],
       ],
-      bottomFilters: ['Budget', 'Bedroom', 'Posted By', 'Furnishing'],
+      bottomFilters: ['Bedroom', 'Posted By', 'Furnishing'],
     },
     'New Launch': {
       placeholder: 'Search "New launch projects in Gurgaon"',
@@ -226,7 +243,7 @@ const PROPERTY_CATEGORIES = {
         ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Studio Apartments'],
         ['Luxury Homes', 'Residential Plots', 'Township Projects'],
       ],
-      bottomFilters: ['Budget', 'Bedroom', 'Possession Status', 'Posted By'],
+      bottomFilters: ['Bedroom', 'Possession Status', 'Posted By'],
     },
     Projects: {
       placeholder: 'Search "Residential projects in Hyderabad"',
@@ -236,7 +253,7 @@ const PROPERTY_CATEGORIES = {
         ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Luxury Projects'],
         ['Affordable Housing', 'Township Projects'],
       ],
-      bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
+      bottomFilters: ['Bedroom', 'Construction Status', 'Posted By'],
     },
   },
   'PG / Co-Living': {
@@ -247,7 +264,7 @@ const PROPERTY_CATEGORIES = {
         ['Boys PG', 'Girls PG', 'Co-Living Spaces', 'Single Room', 'Shared Room'],
         ['Student Accommodation', 'Working Professionals'],
       ],
-      bottomFilters: ['Budget', 'Posted By', 'Furnishing'],
+      bottomFilters: ['Posted By', 'Furnishing'],
     },
   },
   Commercial: {
@@ -256,10 +273,10 @@ const PROPERTY_CATEGORIES = {
       showLocation: true,
       propertyTypesHeading: 'Property Types',
       checkboxGroups: [
-        ['Office Space', 'Commercial Shops', 'Showrooms', 'Retail Spaces', 'Commercial Buildings'],
-        ['Commercial Plots', 'Co-working Spaces', 'Food Court / Restaurant Space', 'Hotels & Hospitality', 'Commercial Complexes'],
+        ['Office Space', 'Commercial Shops', 'Showrooms', 'Retail Spaces', 'Commercial Buildings',"Hospital"],
+        ['Commercial Plots', 'Co-working Spaces', 'Food Court / Restaurant Space', 'Hotels & Resorts', 'Commercial Complexes'],
       ],
-      bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+      bottomFilters: ['Area', 'Construction Status', 'Posted By'],
     },
     Rent: {
       placeholder: 'Search "Hyderabad"',
@@ -269,7 +286,7 @@ const PROPERTY_CATEGORIES = {
         ['Office Space', 'Shops', 'Showrooms', 'Commercial Buildings', 'Co-working Spaces'],
         ['Business Centres'],
       ],
-      bottomFilters: ['Budget', 'Area', 'Posted By'],
+      bottomFilters: ['Area', 'Posted By'],
     },
     'New Launch': {
       placeholder: 'Search "New launch projects in Gurgaon"',
@@ -279,7 +296,7 @@ const PROPERTY_CATEGORIES = {
         ['Office Spaces', 'Shops', 'Showrooms', 'Commercial Buildings', 'Commercial Plots'],
         ['Co-working Spaces', 'Business Parks'],
       ],
-      bottomFilters: ['Budget', 'Area', 'Possession Status', 'Posted By'],
+      bottomFilters: ['Area', 'Possession Status', 'Posted By'],
     },
     Projects: {
       placeholder: 'Search "Commercial projects in Hyderabad"',
@@ -289,7 +306,7 @@ const PROPERTY_CATEGORIES = {
         ['Office Projects', 'Retail Projects', 'Shopping Complexes', 'Commercial Buildings'],
         ['Business Parks', 'Mixed-Use Projects'],
       ],
-      bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+      bottomFilters: ['Area', 'Construction Status', 'Posted By'],
     },
   },
   Industrial: {
@@ -301,7 +318,7 @@ const PROPERTY_CATEGORIES = {
         ['Industrial Plots', 'Factory / Manufacturing Units', 'Industrial Sheds', 'Warehouses', 'Logistics & Distribution Centers'],
         ['Cold Storage', 'Industrial Buildings', 'Godowns', 'Workshop Units', 'Industrial Land'],
       ],
-      bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+      bottomFilters: ['Area', 'Construction Status', 'Posted By'],
     },
     Rent: {
       placeholder: 'Search "Industrial rent in Hyderabad"',
@@ -311,7 +328,7 @@ const PROPERTY_CATEGORIES = {
         ['Warehouses', 'Industrial Sheds', 'Factory Units', 'Godowns', 'Industrial Buildings'],
         ['Logistics Spaces'],
       ],
-      bottomFilters: ['Budget', 'Area', 'Posted By'],
+      bottomFilters: ['Area', 'Posted By'],
     },
     'New Launch': {
       placeholder: 'Search "New launch projects in Gurgaon"',
@@ -321,7 +338,7 @@ const PROPERTY_CATEGORIES = {
         ['Industrial Plots', 'Industrial Sheds', 'Warehouses', 'Factories', 'Manufacturing Units'],
         ['Logistics Parks', 'Industrial Buildings'],
       ],
-      bottomFilters: ['Budget', 'Area', 'Possession Status', 'Posted By'],
+      bottomFilters: ['Area', 'Possession Status', 'Posted By'],
     },
     Projects: {
       placeholder: 'Search "Industrial projects in Hyderabad"',
@@ -331,7 +348,29 @@ const PROPERTY_CATEGORIES = {
         ['Industrial Parks', 'Warehousing Projects', 'Logistics Parks', 'Manufacturing Projects'],
         ['Industrial Sheds', 'Factory Projects'],
       ],
-      bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+      bottomFilters: ['Area', 'Construction Status', 'Posted By'],
+    },
+  },
+  'Farming land': {
+    Buy: {
+      placeholder: 'Search "Agricultural land in Punjab"',
+      showLocation: true,
+      propertyTypesHeading: 'Land Types',
+      checkboxGroups: [
+        ['Agricultural Land', 'Farm Land', 'Orchard', 'Plantation', 'Dairy Farm'],
+        ['Poultry Farm', 'Fish Farm', 'Horticulture Land', 'Vineyard', 'Other Farming'],
+      ],
+      bottomFilters: ['Area', 'Posted By'],
+    },
+    Rent: {
+      placeholder: 'Search "Farm land on rent"',
+      showLocation: true,
+      propertyTypesHeading: 'Land Types',
+      checkboxGroups: [
+        ['Agricultural Land', 'Farm Land', 'Orchard', 'Plantation'],
+        ['Dairy Farm', 'Poultry Farm', 'Fish Farm'],
+      ],
+      bottomFilters: ['Area', 'Posted By'],
     },
   },
 }
@@ -345,7 +384,7 @@ const TAB_CONFIG = {
       ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments'],
       ['Duplex Homes', 'Penthouse', 'Residential Plots', 'Gated Community', 'Farm Houses'],
     ],
-    bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
+    bottomFilters: ['Bedroom', 'Construction Status', 'Posted By'],
   },
   Rent: {
     selector: 'Residential Rent',
@@ -355,7 +394,7 @@ const TAB_CONFIG = {
       ['Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments'],
       ['Furnished Flats', 'Semi-Furnished Flats', 'Unfurnished Flats'],
     ],
-    bottomFilters: ['Budget', 'Bedroom', 'Posted By', 'Furnishing'],
+    bottomFilters: ['Bedroom', 'Posted By', 'Furnishing'],
   },
   'New Launch': {
     selector: 'Residential',
@@ -365,7 +404,7 @@ const TAB_CONFIG = {
       ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Studio Apartments'],
       ['Luxury Homes', 'Residential Plots', 'Township Projects'],
     ],
-    bottomFilters: ['Budget', 'Bedroom', 'Possession Status', 'Posted By'],
+    bottomFilters: ['Bedroom', 'Possession Status', 'Posted By'],
   },
   Commercial: {
     selector: 'All Commercial',
@@ -376,7 +415,7 @@ const TAB_CONFIG = {
       ['Office Space', 'Commercial Shops', 'Showrooms', 'Retail Spaces', 'Commercial Buildings'],
       ['Commercial Plots', 'Co-working Spaces', 'Food Court / Restaurant Space', 'Hotels & Hospitality', 'Commercial Complexes'],
     ],
-    bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+    bottomFilters: ['Area', 'Construction Status', 'Posted By'],
   },
   Industrial: {
     selector: 'Industrial',
@@ -387,7 +426,7 @@ const TAB_CONFIG = {
       ['Industrial Plots', 'Factory / Manufacturing Units', 'Industrial Sheds', 'Warehouses', 'Logistics & Distribution Centers'],
       ['Cold Storage', 'Industrial Buildings', 'Godowns', 'Workshop Units', 'Industrial Land'],
     ],
-    bottomFilters: ['Budget', 'Area', 'Construction Status', 'Posted By'],
+    bottomFilters: ['Area', 'Construction Status', 'Posted By'],
   },
   Projects: {
     selector: 'Residential Projects',
@@ -398,7 +437,7 @@ const TAB_CONFIG = {
       ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Luxury Projects'],
       ['Affordable Housing', 'Township Projects'],
     ],
-    bottomFilters: ['Budget', 'Bedroom', 'Construction Status', 'Posted By'],
+    bottomFilters: ['Bedroom', 'Construction Status', 'Posted By'],
   },
 }
 
@@ -451,7 +490,7 @@ const MenuColumn = ({ heading, items, menuLabel, categoryLabel }) => {
     }
 
     // Set category based on category label
-    if (categoryLabel === 'Apartments') {
+    if (categoryLabel === 'Buy a Home' || categoryLabel === 'Rent a Home') {
       params.set('category', item)
     } else if (categoryLabel === 'Land/Plot') {
       params.set('type', 'land')
@@ -630,6 +669,16 @@ const Header = () => {
 
   // Smart search state
   const [isSmartSearchEnabled, setIsSmartSearchEnabled] = useState(false)
+  const [smartSearchQuery, setSmartSearchQuery] = useState('')
+
+  // Advanced dropdown state
+  const [isAdvancedDropdownOpen, setIsAdvancedDropdownOpen] = useState(false)
+  const [advancedSelectedCategory, setAdvancedSelectedCategory] = useState(null)
+  const advancedDropdownRef = useRef(null)
+  const advancedTriggerRef = useRef(null)
+  const [advancedDropdownPosition, setAdvancedDropdownPosition] = useState({ top: 0, left: 0 })
+
+  const ADVANCED_CATEGORIES = ['Bedroom', 'Construction Status', 'Posted By', 'Neighbourhood']
 
   // Bottom filter dropdowns state
   const [openFilterDropdown, setOpenFilterDropdown] = useState(null)
@@ -641,6 +690,7 @@ const Header = () => {
     'Possession Status': [],
     Furnishing: [],
     Area: { min: '', max: '' },
+    Neighbourhood: [],
   })
   const [pendingFilterValue, setPendingFilterValue] = useState(null)
   const filterDropdownRef = useRef(null)
@@ -758,6 +808,14 @@ const Header = () => {
         setIsNeighbourhoodDropdownOpen(false)
       }
       if (
+        advancedTriggerRef.current &&
+        !advancedTriggerRef.current.contains(e.target) &&
+        advancedDropdownRef.current &&
+        !advancedDropdownRef.current.contains(e.target)
+      ) {
+        setIsAdvancedDropdownOpen(false)
+      }
+      if (
         openFilterDropdown &&
         filterDropdownRef.current &&
         !filterDropdownRef.current.contains(e.target)
@@ -790,6 +848,7 @@ const Header = () => {
         setIsProjectStatusDropdownOpen(false)
         setIsUserDropdownOpen(false)
         setIsNeighbourhoodDropdownOpen(false)
+        setIsAdvancedDropdownOpen(false)
         setIsMenuDropdownOpen(false)
         setOpenMegaMenu(null)
       }
@@ -872,6 +931,45 @@ const Header = () => {
       setNeighbourhoodDropdownPosition({ top: rect.bottom + 8, left: rect.left })
     }
   }, [isNeighbourhoodDropdownOpen])
+
+  useEffect(() => {
+    if (isAdvancedDropdownOpen && advancedTriggerRef.current) {
+      const rect = advancedTriggerRef.current.getBoundingClientRect()
+      const dropdownWidth = 500
+      const viewportWidth = window.innerWidth
+      let left = rect.left
+      
+      // Adjust if dropdown would go outside right edge
+      if (left + dropdownWidth > viewportWidth) {
+        left = viewportWidth - dropdownWidth - 16
+      }
+      
+      setAdvancedDropdownPosition({ top: rect.bottom + 8, left })
+    }
+  }, [isAdvancedDropdownOpen])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isAdvancedDropdownOpen && advancedTriggerRef.current) {
+        const rect = advancedTriggerRef.current.getBoundingClientRect()
+        const dropdownWidth = 500
+        const viewportWidth = window.innerWidth
+        let left = rect.left
+        
+        // Adjust if dropdown would go outside right edge
+        if (left + dropdownWidth > viewportWidth) {
+          left = viewportWidth - dropdownWidth - 16
+        }
+        
+        setAdvancedDropdownPosition({ top: rect.bottom + 8, left })
+      }
+    }
+
+    if (isAdvancedDropdownOpen) {
+      window.addEventListener('scroll', handleScroll, true)
+      return () => window.removeEventListener('scroll', handleScroll, true)
+    }
+  }, [isAdvancedDropdownOpen])
 
   useEffect(() => {
     if (openFilterDropdown && filterTriggerRefs.current[openFilterDropdown]) {
@@ -1054,8 +1152,8 @@ const Header = () => {
             <div className="flex items-center justify-between h-16">
               {/* Logo + location */}
               <div className="flex items-center gap-4">
-                <Link to="/" className="text-2xl font-bold text-white">
-                  Nestnbest
+                <Link to="/" className="flex items-center">
+                  <img src={assets.logo} alt="Nestnbest" className="h-10 w-auto" />
                 </Link>
 
                 <div className="relative" ref={locationRef}>
@@ -1214,7 +1312,7 @@ const Header = () => {
                         <div className="py-2">
                           <button onClick={() => { setIsUserDropdownOpen(false); openSignup() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
-                            Signin as User
+                            Sign In as User
                           </button>
                           <button onClick={() => { setIsUserDropdownOpen(false); openSignup() }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                             <User size={16} className="text-slate-400" />
@@ -1516,6 +1614,105 @@ const Header = () => {
                 </div>
               )}
 
+              <div className="relative" ref={(el) => (filterTriggerRefs.current['Budget'] = el)}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenMegaMenu(null)
+                    openFilterPanel('Budget')
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
+                  style={{ color: NAVY }}
+                >
+                  {getFilterLabel('Budget') || 'Budget'}
+                  <ChevronDown
+                    size={16}
+                    className="text-slate-400 transition-transform duration-200"
+                    style={{ transform: openFilterDropdown === 'Budget' ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+
+                {openFilterDropdown === 'Budget' && createPortal(
+                  <div
+                    ref={filterDropdownRef}
+                    className="fixed w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-50 border border-slate-100"
+                    style={{ top: `${filterDropdownPosition.top}px`, left: `${filterDropdownPosition.left}px` }}
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                      <h4 className="text-sm font-bold" style={{ color: NAVY }}>Budget</h4>
+                      <button type="button" onClick={() => setOpenFilterDropdown(null)} className="text-slate-400 hover:text-slate-600">
+                        <X size={16} />
+                      </button>
+                    </div>
+
+                    {/* Body */}
+                    <div className="p-5 max-h-80 overflow-y-auto">
+                      <div>
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="flex-1">
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Min</label>
+                            <select
+                              value={pendingFilterValue?.min || ''}
+                              onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, min: e.target.value }))}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                            >
+                              <option value="">No Min</option>
+                              {BUDGET_RANGE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                            </select>
+                          </div>
+                          <div className="flex-1">
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Max</label>
+                            <select
+                              value={pendingFilterValue?.max || ''}
+                              onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, max: e.target.value }))}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                            >
+                              <option value="">No Max</option>
+                              {BUDGET_RANGE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                            </select>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {BUDGET_RANGE_OPTIONS.slice(0, 6).map((opt) => (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setPendingFilterValue({ min: '', max: opt })}
+                              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all"
+                              style={{ color: NAVY }}
+                            >
+                              Under {opt}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center gap-3 px-5 py-4 border-t border-slate-100 bg-slate-50">
+                      <button
+                        type="button"
+                        onClick={() => clearFilter('Budget')}
+                        className="flex-1 py-2.5 text-xs font-semibold uppercase tracking-wide rounded-lg border border-slate-300 hover:bg-slate-100 transition-colors"
+                        style={{ color: '#6B7280' }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyFilter('Budget')}
+                        className="flex-1 py-2.5 text-xs font-semibold uppercase tracking-wide rounded-lg text-white transition-all hover:opacity-90"
+                        style={{ backgroundColor: INK }}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>,
+                  document.body
+                )}
+              </div>
+
               <div className="relative" ref={searchCityTriggerRef}>
                 <button
                   type="button"
@@ -1538,7 +1735,7 @@ const Header = () => {
                   createPortal(
                     <div
                       ref={searchCityDropdownRef}
-                      className="fixed w-[320px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                      className="fixed w-[400px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
                       style={{ top: `${searchCityDropdownPosition.top}px`, left: `${searchCityDropdownPosition.left}px`, maxHeight: '350px' }}
                     >
                       <div className="p-4 pb-3">
@@ -1557,7 +1754,7 @@ const Header = () => {
                           />
                         </div>
 
-                        <div className="grid grid-cols-4 gap-2 max-h-[220px] overflow-y-auto pr-2">
+                        <div className="grid grid-cols-3 gap-2 max-h-[220px] overflow-y-auto pr-2">
                           {POPULAR_CITIES.filter(city =>
                             city.name.toLowerCase().includes(cityQuery.toLowerCase()) ||
                             city.state.toLowerCase().includes(cityQuery.toLowerCase())
@@ -1569,12 +1766,11 @@ const Header = () => {
                                 setCityQuery(city.name)
                                 setIsSearchCityDropdownOpen(false)
                               }}
-                              className="flex flex-col items-center justify-start p-2 rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-center group"
+                              className="flex items-center justify-center p-3 rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-center group min-h-[60px]"
                             >
-                              <div className="font-semibold text-[11px] group-hover:text-[#1E88E5] transition-colors duration-200" style={{ color: NAVY }}>
+                              <div className="font-semibold text-xs group-hover:text-[#1E88E5] transition-colors duration-200 leading-tight" style={{ color: NAVY }}>
                                 {city.name}
                               </div>
-
                             </button>
                           ))}
                         </div>
@@ -1584,58 +1780,7 @@ const Header = () => {
                   )}
               </div>
 
-              <div className="relative" ref={neighbourhoodTriggerRef}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpenMegaMenu(null)
-                    setIsNeighbourhoodDropdownOpen((open) => !open)
-                  }}
-                  className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
-                  style={{ color: NAVY }}
-                >
-                  {selectedNeighbourhood || 'Neighbourhood'}
-                  <ChevronDown
-                    size={16}
-                    className="text-slate-400 transition-transform duration-200"
-                    style={{ transform: isNeighbourhoodDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                  />
-                </button>
-
-                {isNeighbourhoodDropdownOpen &&
-                  createPortal(
-                    <div
-                      ref={neighbourhoodDropdownRef}
-                      className="fixed w-64 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
-                      style={{ top: `${neighbourhoodDropdownPosition.top}px`, left: `${neighbourhoodDropdownPosition.left}px`, maxHeight: '400px' }}
-                    >
-                      <div className="p-4 pb-4">
-                        <h3 className="text-lg font-bold mb-3" style={{ color: NAVY }}>
-                          Select Neighbourhood
-                        </h3>
-                        <div className="space-y-1 max-h-[320px] overflow-y-auto pr-2">
-                          {NEIGHBOURHOODS.map((neighbourhood) => (
-                            <button
-                              key={neighbourhood}
-                              onClick={() => {
-                                setSelectedNeighbourhood(neighbourhood)
-                                setIsNeighbourhoodDropdownOpen(false)
-                              }}
-                              className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors duration-200 rounded-lg ${
-                                selectedNeighbourhood === neighbourhood ? 'bg-slate-50 text-[#1E88E5]' : 'text-slate-700 hover:bg-slate-50'
-                              }`}
-                            >
-                              {neighbourhood}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>,
-                    document.body
-                  )}
-              </div>
-
-              <div className="flex items-center gap-3 flex-1 px-4 sm:px-5">
+              <div className="flex items-center gap-3 flex-1 lex-1 px-4 sm:px-5">
                 <Search size={18} className="text-slate-400 flex-shrink-0" />
                 <input
                   type="text"
@@ -1644,6 +1789,162 @@ const Header = () => {
                   placeholder="Enter locality"
                   className="w-full bg-transparent text-sm sm:text-base text-slate-700 placeholder-slate-400 focus:outline-none"
                 />
+              </div>
+
+              <div className="relative" ref={advancedTriggerRef}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenMegaMenu(null)
+                    setIsAdvancedDropdownOpen((open) => !open)
+                    setAdvancedSelectedCategory(null)
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
+                  style={{ color: NAVY }}
+                >
+                  Advanced
+                  <ChevronDown
+                    size={16}
+                    className="text-slate-400 transition-transform duration-200"
+                    style={{ transform: isAdvancedDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+
+                {isAdvancedDropdownOpen &&
+                  createPortal(
+                    <div
+                      ref={advancedDropdownRef}
+                      className="fixed w-[500px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-50 border border-slate-100"
+                      style={{ top: `${advancedDropdownPosition.top}px`, left: `${advancedDropdownPosition.left}px`, maxHeight: '450px' }}
+                    >
+                      <div className="flex h-full">
+                        {/* Left column - Categories */}
+                        <div className="w-48 border-r border-slate-100 bg-slate-50">
+                          <div className="p-4 pb-3">
+                            <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-3">Filters</h4>
+                            <div className="space-y-1">
+                              {ADVANCED_CATEGORIES.map((category) => (
+                                <button
+                                  key={category}
+                                  onClick={() => setAdvancedSelectedCategory(category)}
+                                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors duration-200 rounded-lg ${
+                                    advancedSelectedCategory === category ? 'bg-white text-[#1E88E5] shadow-sm' : 'text-slate-700 hover:bg-white hover:shadow-sm'
+                                  }`}
+                                >
+                                  {category}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right column - Options */}
+                        <div className="flex-1 p-5 max-h-[450px] overflow-y-auto">
+                          {!advancedSelectedCategory ? (
+                            <div className="flex items-center justify-center h-full text-slate-400 text-sm">
+                              Select a category to view options
+                            </div>
+                          ) : advancedSelectedCategory === 'Bedroom' ? (
+                            <div>
+                              <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Bedroom</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {BEDROOM_CHIP_OPTIONS.map((opt) => (
+                                  <button
+                                    key={opt}
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedFilters(prev => ({
+                                        ...prev,
+                                        Bedroom: prev.Bedroom.includes(opt) 
+                                          ? prev.Bedroom.filter(item => item !== opt)
+                                          : [...prev.Bedroom, opt]
+                                      }))
+                                    }}
+                                    className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all ${
+                                      selectedFilters.Bedroom.includes(opt)
+                                        ? 'border-[#1E88E5] bg-[rgba(30,136,229,0.08)] text-[#1E88E5]'
+                                        : 'border-slate-200 text-slate-700 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)]'
+                                    }`}
+                                  >
+                                    {opt}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          ) : advancedSelectedCategory === 'Construction Status' ? (
+                            <div>
+                              <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Construction Status</h4>
+                              <div className="space-y-3">
+                                {CHECKBOX_FILTER_OPTIONS['Construction Status'].map((opt) => (
+                                  <CheckboxRow
+                                    key={opt}
+                                    label={opt}
+                                    checked={selectedFilters['Construction Status'].includes(opt)}
+                                    onToggle={() => {
+                                      setSelectedFilters(prev => ({
+                                        ...prev,
+                                        'Construction Status': prev['Construction Status'].includes(opt)
+                                          ? prev['Construction Status'].filter(item => item !== opt)
+                                          : [...prev['Construction Status'], opt]
+                                      }))
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ) : advancedSelectedCategory === 'Posted By' ? (
+                            <div>
+                              <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Posted By</h4>
+                              <div className="space-y-3">
+                                {CHECKBOX_FILTER_OPTIONS['Posted By'].map((opt) => (
+                                  <CheckboxRow
+                                    key={opt}
+                                    label={opt}
+                                    checked={selectedFilters['Posted By'].includes(opt)}
+                                    onToggle={() => {
+                                      setSelectedFilters(prev => ({
+                                        ...prev,
+                                        'Posted By': prev['Posted By'].includes(opt)
+                                          ? prev['Posted By'].filter(item => item !== opt)
+                                          : [...prev['Posted By'], opt]
+                                      }))
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ) : advancedSelectedCategory === 'Neighbourhood' ? (
+                            <div>
+                              <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Neighbourhood</h4>
+                              <div className="space-y-1 max-h-[350px] overflow-y-auto pr-2">
+                                {NEIGHBOURHOODS.map((neighbourhood) => (
+                                  <button
+                                    key={neighbourhood}
+                                    onClick={() => {
+                                      setSelectedFilters(prev => ({
+                                        ...prev,
+                                        Neighbourhood: prev.Neighbourhood?.includes(neighbourhood)
+                                          ? prev.Neighbourhood.filter(item => item !== neighbourhood)
+                                          : [...(prev.Neighbourhood || []), neighbourhood]
+                                      }))
+                                    }}
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors duration-200 rounded-lg ${
+                                      selectedFilters.Neighbourhood?.includes(neighbourhood) 
+                                        ? 'bg-slate-50 text-[#1E88E5]' 
+                                        : 'text-slate-700 hover:bg-slate-50'
+                                    }`}
+                                  >
+                                    {neighbourhood}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>,
+                    document.body
+                  )}
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0 px-4 sm:px-5 sm:border-r border-slate-200">
@@ -1664,14 +1965,6 @@ const Header = () => {
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0 justify-end sm:pr-2">
-                {categoryConfig.showLocation && (
-                  <button className="w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 transition-colors duration-200 hover:bg-slate-50" aria-label="Use current location">
-                    <LocateFixed size={18} style={{ color: BLUE }} />
-                  </button>
-                )}
-                <button className="w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 transition-colors duration-200 hover:bg-slate-50" aria-label="Search by voice">
-                  <Mic size={18} style={{ color: BLUE }} />
-                </button>
                 <button 
                   onClick={handleSearch}
                   className="px-8 py-2.5 rounded-lg text-white text-sm sm:text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg" 
@@ -1681,6 +1974,20 @@ const Header = () => {
                 </button>
               </div>
             </div>
+
+            {/* Smart Search Input Row */}
+            {isSmartSearchEnabled && (
+              <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-t border-slate-100 bg-slate-50 animate-fade-in">
+                <Sparkles size={18} className="text-[#1E88E5] flex-shrink-0" />
+                <input
+                  type="text"
+                  value={smartSearchQuery}
+                  onChange={(e) => setSmartSearchQuery(e.target.value)}
+                  placeholder="Describe your ideal property (e.g., '3 BHK near metro with parking')"
+                  className="flex-1 bg-white border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#1E88E5] focus:ring-2 focus:ring-[rgba(30,136,229,0.1)] transition-all"
+                />
+              </div>
+            )}
 
             {/* Expandable filter panel — content driven by categoryConfig, opens on selector click */}
             {isFilterOpen && (
@@ -1718,7 +2025,7 @@ const Header = () => {
                       <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
                         {categoryConfig.propertyTypesHeading}
                       </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-12 gap-y-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-12 gap-y-3.5">
                         {categoryConfig.checkboxGroups.map((group, gi) => (
                           <div key={gi} className="space-y-3.5">
                             {group.map((item) => (
@@ -1748,7 +2055,7 @@ const Header = () => {
                     </>
                   ) : categoryConfig.checkboxGroups ? (
                     <>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-10 gap-y-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-10 gap-y-3.5">
                         {categoryConfig.checkboxGroups.map((group, gi) => (
                           <div key={gi} className="space-y-3.5">
                             {group.map((item) => (
@@ -1801,145 +2108,6 @@ const Header = () => {
                     </>
                   )}
                 </div>
-              </div>
-
-              <div className="h-px bg-slate-100 my-5" />
-
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-3">
-                  {tabConfig.bottomFilters.map((f) => (
-                    <div key={f} className="relative">
-                      <FilterPill
-                        label={f}
-                        selectedValue={getFilterLabel(f)}
-                        onClick={() => openFilterPanel(f)}
-                        isOpen={openFilterDropdown === f}
-                        triggerRef={(el) => (filterTriggerRefs.current[f] = el)}
-                      />
-
-                      {openFilterDropdown === f && createPortal(
-                        <div
-                          ref={filterDropdownRef}
-                          className="fixed w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-50 border border-slate-100"
-                          style={{ top: `${filterDropdownPosition.top}px`, left: `${filterDropdownPosition.left}px` }}
-                        >
-                          {/* Header */}
-                          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-                            <h4 className="text-sm font-bold" style={{ color: NAVY }}>{f}</h4>
-                            <button type="button" onClick={() => setOpenFilterDropdown(null)} className="text-slate-400 hover:text-slate-600">
-                              <X size={16} />
-                            </button>
-                          </div>
-
-                          {/* Body */}
-                          <div className="p-5 max-h-80 overflow-y-auto">
-                            {FILTER_KIND[f] === 'range' && (
-                              <div>
-                                <div className="flex items-center gap-3 mb-4">
-                                  <div className="flex-1">
-                                    <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Min</label>
-                                    <select
-                                      value={pendingFilterValue?.min || ''}
-                                      onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, min: e.target.value }))}
-                                      className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
-                                    >
-                                      <option value="">No Min</option>
-                                      {RANGE_FILTER_OPTIONS[f].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                                    </select>
-                                  </div>
-                                  <span className="text-slate-300 mt-5">—</span>
-                                  <div className="flex-1">
-                                    <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Max</label>
-                                    <select
-                                      value={pendingFilterValue?.max || ''}
-                                      onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, max: e.target.value }))}
-                                      className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
-                                    >
-                                      <option value="">No Max</option>
-                                      {RANGE_FILTER_OPTIONS[f].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                                    </select>
-                                  </div>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                  {RANGE_FILTER_OPTIONS[f].slice(0, 6).map((opt) => (
-                                    <button
-                                      key={opt}
-                                      type="button"
-                                      onClick={() => setPendingFilterValue({ min: '', max: opt })}
-                                      className="px-3 py-1.5 rounded-full border border-slate-200 text-xs font-medium text-slate-600 hover:border-[#1E88E5] hover:text-[#1E88E5] transition-colors duration-150"
-                                    >
-                                      Under {opt}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {FILTER_KIND[f] === 'chips' && (
-                              <div className="flex flex-wrap gap-2">
-                                {CHIP_FILTER_OPTIONS[f].map((opt) => {
-                                  const isSelected = pendingFilterValue?.includes(opt)
-                                  return (
-                                    <button
-                                      key={opt}
-                                      type="button"
-                                      onClick={() => togglePendingItem(opt)}
-                                      className="px-4 py-2 rounded-full border text-sm font-medium transition-colors duration-150"
-                                      style={{
-                                        borderColor: isSelected ? BLUE : '#E2E8F0',
-                                        backgroundColor: isSelected ? 'rgba(30,136,229,0.08)' : '#fff',
-                                        color: isSelected ? BLUE : '#475569',
-                                      }}
-                                    >
-                                      {opt}
-                                    </button>
-                                  )
-                                })}
-                              </div>
-                            )}
-
-                            {FILTER_KIND[f] === 'checkbox' && (
-                              <div className="space-y-3.5">
-                                {CHECKBOX_FILTER_OPTIONS[f].map((opt) => (
-                                  <CheckboxRow
-                                    key={opt}
-                                    label={opt}
-                                    checked={!!pendingFilterValue?.includes(opt)}
-                                    onToggle={() => togglePendingItem(opt)}
-                                  />
-                                ))}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Footer */}
-                          <div className="flex items-center justify-between px-5 py-4 border-t border-slate-100 bg-slate-50">
-                            <button type="button" onClick={() => clearFilter(f)} className="text-sm font-semibold text-slate-500 hover:text-slate-700">
-                              Clear
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => applyFilter(f)}
-                              className="px-6 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-                              style={{ backgroundColor: BLUE }}
-                            >
-                              Apply
-                            </button>
-                          </div>
-                        </div>,
-                        document.body
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsFilterOpen(false)}
-                  className="px-6 py-2.5 rounded-lg text-white text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-                  style={{ backgroundColor: BLUE }}
-                >
-                  Done
-                </button>
               </div>
             </div>
             )}
