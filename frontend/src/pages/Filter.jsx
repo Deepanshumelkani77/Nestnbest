@@ -19,6 +19,14 @@ import {
   Star,
   Clock,
   Check,
+  ShieldCheck,
+  BadgeCheck,
+  Award,
+  Users,
+  Camera,
+  Video,
+  Info,
+  Globe,
 } from 'lucide-react'
 
 const NAVY = '#193C06'
@@ -118,12 +126,14 @@ const AREA_RANGES = [
   { label: 'Above 3000 sqft', min: 3000, max: null },
 ]
 
-const POSSESSION_STATUS = [
-  'Ready to Move',
+// Listing / possession status. "Under Expression of Interest (EOI)" is used
+// in place of "Pre Launch" per business requirement.
+const LISTING_STATUS = [
+  'Under Expression of Interest (EOI)',
   'Under Construction',
-  'New Launch',
-  'Possession in 6 Months',
-  'Possession in 1 Year',
+  'Under Possession',
+  'Ready to Move',
+  'Registry',
 ]
 
 const AMENITIES = [
@@ -139,6 +149,26 @@ const AMENITIES = [
   'Fire Safety',
 ]
 
+// Trust / quality tags shown as filters and as badges on each listing.
+const TAGS = [
+  { id: 'rera', label: 'RERA Compliant', icon: ShieldCheck },
+  { id: 'preferred', label: 'Preferred', icon: Award },
+  { id: 'verified', label: 'Verified', icon: BadgeCheck },
+  { id: 'preferredAgent', label: 'Preferred Agent', icon: Users },
+]
+
+const SALE_TYPES = [
+  'Primary Sale / No Brokerage',
+  'Secondary Sale / Resale',
+]
+
+const TAG_STYLES = {
+  rera: { text: '#047857', bg: '#ECFDF5', icon: ShieldCheck, label: 'RERA Compliant' },
+  preferred: { text: '#B45309', bg: '#FFFBEB', icon: Award, label: 'Preferred' },
+  verified: { text: '#1D4ED8', bg: '#EFF6FF', icon: BadgeCheck, label: 'Verified' },
+  preferredAgent: { text: '#7C3AED', bg: '#F5F3FF', icon: Users, label: 'Preferred Agent' },
+}
+
 const SAMPLE_PROPERTIES = [
   {
     id: 1,
@@ -153,6 +183,12 @@ const SAMPLE_PROPERTIES = [
     posted: '2 days ago',
     image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop',
     featured: true,
+    tags: ['rera', 'verified'],
+    listingStatus: 'Ready to Move',
+    saleType: 'Secondary Sale / Resale',
+    nri: false,
+    photos: 18,
+    videos: 2,
   },
   {
     id: 2,
@@ -167,6 +203,12 @@ const SAMPLE_PROPERTIES = [
     posted: '5 days ago',
     image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop',
     featured: false,
+    tags: ['verified'],
+    listingStatus: 'Registry',
+    saleType: 'Secondary Sale / Resale',
+    nri: true,
+    photos: 9,
+    videos: 0,
   },
   {
     id: 3,
@@ -181,6 +223,12 @@ const SAMPLE_PROPERTIES = [
     posted: '1 week ago',
     image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop',
     featured: true,
+    tags: ['rera', 'preferred', 'preferredAgent'],
+    listingStatus: 'Under Construction',
+    saleType: 'Primary Sale / No Brokerage',
+    nri: false,
+    photos: 24,
+    videos: 3,
   },
   {
     id: 4,
@@ -195,6 +243,12 @@ const SAMPLE_PROPERTIES = [
     posted: '3 days ago',
     image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop',
     featured: false,
+    tags: ['rera'],
+    listingStatus: 'Under Expression of Interest (EOI)',
+    saleType: 'Primary Sale / No Brokerage',
+    nri: false,
+    photos: 12,
+    videos: 1,
   },
   {
     id: 5,
@@ -209,16 +263,32 @@ const SAMPLE_PROPERTIES = [
     posted: '4 days ago',
     image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop',
     featured: false,
+    tags: [],
+    listingStatus: 'Under Possession',
+    saleType: 'Secondary Sale / Resale',
+    nri: true,
+    photos: 6,
+    videos: 0,
   },
 ]
 
-const FilterSection = ({ title, children, isOpen, onToggle }) => (
+const FilterSection = ({ title, children, isOpen, onToggle, badge }) => (
   <div className="border-b border-slate-100 last:border-b-0">
     <button
       onClick={onToggle}
       className="w-full flex items-center justify-between py-4 px-5 text-left hover:bg-slate-50 transition-colors duration-200"
     >
-      <span className="font-semibold text-sm" style={{ color: NAVY }}>{title}</span>
+      <span className="flex items-center gap-2 font-semibold text-sm" style={{ color: NAVY }}>
+        {title}
+        {badge > 0 && (
+          <span
+            className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold text-white"
+            style={{ backgroundColor: BLUE }}
+          >
+            {badge}
+          </span>
+        )}
+      </span>
       <ChevronRight
         size={18}
         className="transition-transform duration-200"
@@ -229,7 +299,7 @@ const FilterSection = ({ title, children, isOpen, onToggle }) => (
   </div>
 )
 
-const CheckboxOption = ({ label, checked, onChange }) => (
+const CheckboxOption = ({ label, checked, onChange, icon: Icon }) => (
   <label className="flex items-center gap-3 cursor-pointer group">
     <div className="relative">
       <input
@@ -246,8 +316,20 @@ const CheckboxOption = ({ label, checked, onChange }) => (
         {checked && <Check size={12} className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
       </div>
     </div>
+    {Icon && <Icon size={15} className="text-slate-400 group-hover:text-slate-500 flex-shrink-0" />}
     <span className="text-sm text-slate-700">{label}</span>
   </label>
+)
+
+// Small pill used both in the property card badges and could be reused elsewhere.
+const Pill = ({ text, bg, color, icon: Icon }) => (
+  <span
+    className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-semibold"
+    style={{ backgroundColor: bg, color }}
+  >
+    {Icon && <Icon size={11} />}
+    {text}
+  </span>
 )
 
 const Filter = () => {
@@ -259,17 +341,23 @@ const Filter = () => {
   const [selectedBedrooms, setSelectedBedrooms] = useState([])
   const [selectedBathrooms, setSelectedBathrooms] = useState([])
   const [selectedArea, setSelectedArea] = useState([])
-  const [selectedPossession, setSelectedPossession] = useState([])
+  const [selectedListingStatus, setSelectedListingStatus] = useState([])
   const [selectedAmenities, setSelectedAmenities] = useState([])
+  const [selectedTags, setSelectedTags] = useState([])
+  const [selectedSaleType, setSelectedSaleType] = useState([])
+  const [nriOnly, setNriOnly] = useState(false)
+  const [showNriInfo, setShowNriInfo] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   const [openSections, setOpenSections] = useState({
     category: true,
     price: true,
+    tags: true,
     bedrooms: false,
     bathrooms: false,
     area: false,
-    possession: false,
+    listingStatus: false,
+    saleType: false,
     amenities: false,
   })
 
@@ -283,7 +371,10 @@ const Filter = () => {
     const bedrooms = searchParams.get('bedrooms')
     const bathrooms = searchParams.get('bathrooms')
     const area = searchParams.get('area')
-    const possession = searchParams.get('possession')
+    const status = searchParams.get('status')
+    const tags = searchParams.get('tags')
+    const saleType = searchParams.get('saleType')
+    const nri = searchParams.get('nri')
 
     if (type && PROPERTY_TYPES.find((t) => t.id === type)) {
       setSelectedType(type)
@@ -317,8 +408,17 @@ const Filter = () => {
       }).filter(Boolean)
       setSelectedArea(areaRanges)
     }
-    if (possession) {
-      setSelectedPossession(possession.split(','))
+    if (status) {
+      setSelectedListingStatus(status.split(','))
+    }
+    if (tags) {
+      setSelectedTags(tags.split(','))
+    }
+    if (saleType) {
+      setSelectedSaleType(saleType.split(','))
+    }
+    if (nri === '1') {
+      setNriOnly(true)
     }
   }, [searchParams])
 
@@ -340,13 +440,42 @@ const Filter = () => {
     )
   }
 
+  const handleTagToggle = (tagId) => {
+    setSelectedTags((prev) =>
+      prev.includes(tagId) ? prev.filter((t) => t !== tagId) : [...prev, tagId]
+    )
+  }
+
+  const handleSaleTypeToggle = (value) => {
+    setSelectedSaleType((prev) =>
+      prev.includes(value) ? prev.filter((s) => s !== value) : [...prev, value]
+    )
+  }
+
   const filteredProperties = SAMPLE_PROPERTIES.filter((property) => {
     if (selectedType && property.type !== selectedType) return false
     if (selectedCategory.length > 0 && !selectedCategory.includes(property.category)) return false
     if (selectedCity && property.location !== selectedCity) return false
     if (searchQuery && !property.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
+    if (selectedListingStatus.length > 0 && !selectedListingStatus.includes(property.listingStatus)) return false
+    if (selectedSaleType.length > 0 && !selectedSaleType.includes(property.saleType)) return false
+    if (selectedTags.length > 0 && !selectedTags.every((t) => property.tags.includes(t))) return false
+    if (nriOnly && !property.nri) return false
     return true
   })
+
+  const activeFilterCount =
+    selectedCategory.length +
+    selectedPriceRange.length +
+    selectedBedrooms.length +
+    selectedBathrooms.length +
+    selectedArea.length +
+    selectedListingStatus.length +
+    selectedAmenities.length +
+    selectedTags.length +
+    selectedSaleType.length +
+    (nriOnly ? 1 : 0) +
+    (selectedCity ? 1 : 0)
 
   const clearAllFilters = () => {
     setSelectedCategory([])
@@ -355,8 +484,11 @@ const Filter = () => {
     setSelectedBedrooms([])
     setSelectedBathrooms([])
     setSelectedArea([])
-    setSelectedPossession([])
+    setSelectedListingStatus([])
     setSelectedAmenities([])
+    setSelectedTags([])
+    setSelectedSaleType([])
+    setNriOnly(false)
     setSearchQuery('')
   }
 
@@ -375,6 +507,11 @@ const Filter = () => {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              {activeFilterCount > 0 && (
+                <span className="hidden sm:inline text-xs font-medium text-slate-500">
+                  {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied
+                </span>
+              )}
               <button
                 onClick={clearAllFilters}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors duration-200"
@@ -428,6 +565,7 @@ const Filter = () => {
                   title="Property Category"
                   isOpen={openSections.category}
                   onToggle={() => toggleSection('category')}
+                  badge={selectedCategory.length}
                 >
                   <div className="space-y-3">
                     {PROPERTY_CATEGORIES[selectedType]?.map((category) => (
@@ -445,6 +583,7 @@ const Filter = () => {
                   title="Price Range"
                   isOpen={openSections.price}
                   onToggle={() => toggleSection('price')}
+                  badge={selectedPriceRange.length}
                 >
                   <div className="space-y-3">
                     {PRICE_RANGES[selectedType]?.map((range) => (
@@ -458,10 +597,31 @@ const Filter = () => {
                   </div>
                 </FilterSection>
 
+                {/* Trust & Quality Tags */}
+                <FilterSection
+                  title="Tags"
+                  isOpen={openSections.tags}
+                  onToggle={() => toggleSection('tags')}
+                  badge={selectedTags.length}
+                >
+                  <div className="space-y-3">
+                    {TAGS.map((tag) => (
+                      <CheckboxOption
+                        key={tag.id}
+                        label={tag.label}
+                        icon={tag.icon}
+                        checked={selectedTags.includes(tag.id)}
+                        onChange={() => handleTagToggle(tag.id)}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
                 <FilterSection
                   title="Bedrooms"
                   isOpen={openSections.bedrooms}
                   onToggle={() => toggleSection('bedrooms')}
+                  badge={selectedBedrooms.length}
                 >
                   <div className="space-y-3">
                     {BEDROOMS.map((bed) => (
@@ -481,6 +641,7 @@ const Filter = () => {
                   title="Bathrooms"
                   isOpen={openSections.bathrooms}
                   onToggle={() => toggleSection('bathrooms')}
+                  badge={selectedBathrooms.length}
                 >
                   <div className="space-y-3">
                     {BATHROOMS.map((bath) => (
@@ -500,6 +661,7 @@ const Filter = () => {
                   title="Area"
                   isOpen={openSections.area}
                   onToggle={() => toggleSection('area')}
+                  badge={selectedArea.length}
                 >
                   <div className="space-y-3">
                     {AREA_RANGES.map((area) => (
@@ -518,19 +680,38 @@ const Filter = () => {
                 </FilterSection>
 
                 <FilterSection
-                  title="Possession Status"
-                  isOpen={openSections.possession}
-                  onToggle={() => toggleSection('possession')}
+                  title="Listing Status"
+                  isOpen={openSections.listingStatus}
+                  onToggle={() => toggleSection('listingStatus')}
+                  badge={selectedListingStatus.length}
                 >
                   <div className="space-y-3">
-                    {POSSESSION_STATUS.map((status) => (
+                    {LISTING_STATUS.map((status) => (
                       <CheckboxOption
                         key={status}
                         label={status}
-                        checked={selectedPossession.includes(status)}
-                        onChange={() => setSelectedPossession((prev) =>
+                        checked={selectedListingStatus.includes(status)}
+                        onChange={() => setSelectedListingStatus((prev) =>
                           prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
                         )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Sale Type"
+                  isOpen={openSections.saleType}
+                  onToggle={() => toggleSection('saleType')}
+                  badge={selectedSaleType.length}
+                >
+                  <div className="space-y-3">
+                    {SALE_TYPES.map((type) => (
+                      <CheckboxOption
+                        key={type}
+                        label={type}
+                        checked={selectedSaleType.includes(type)}
+                        onChange={() => handleSaleTypeToggle(type)}
                       />
                     ))}
                   </div>
@@ -540,6 +721,7 @@ const Filter = () => {
                   title="Amenities"
                   isOpen={openSections.amenities}
                   onToggle={() => toggleSection('amenities')}
+                  badge={selectedAmenities.length}
                 >
                   <div className="space-y-3">
                     {AMENITIES.map((amenity) => (
@@ -554,6 +736,44 @@ const Filter = () => {
                     ))}
                   </div>
                 </FilterSection>
+
+                {/* NRI Property — separate toggle since it is a single flag, not a multi-select list */}
+                <div className="border-b border-slate-100 last:border-b-0 px-5 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <Globe size={16} style={{ color: NAVY }} />
+                      <span className="font-semibold text-sm" style={{ color: NAVY }}>NRI Property</span>
+                      <button
+                        type="button"
+                        onMouseEnter={() => setShowNriInfo(true)}
+                        onMouseLeave={() => setShowNriInfo(false)}
+                        onClick={() => setShowNriInfo((v) => !v)}
+                        className="relative text-slate-400 hover:text-slate-600"
+                      >
+                        <Info size={14} />
+                        {showNriInfo && (
+                          <div className="absolute z-10 left-1/2 -translate-x-1/2 bottom-6 w-56 p-2.5 rounded-lg bg-slate-800 text-white text-[11px] leading-snug shadow-lg">
+                            NRI properties attract a higher rate of TDS (Tax Deducted at Source) on transactions.
+                          </div>
+                        )}
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => setNriOnly((v) => !v)}
+                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
+                        nriOnly ? 'bg-blue-500' : 'bg-slate-300'
+                      }`}
+                      role="switch"
+                      aria-checked={nriOnly}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
+                          nriOnly ? 'translate-x-5' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -634,10 +854,43 @@ const Filter = () => {
                           {property.posted}
                         </span>
                       </div>
+                      {/* Photo / video counts */}
+                      <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+                        {property.photos > 0 && (
+                          <span className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-black/60 text-white">
+                            <Camera size={12} />
+                            {property.photos}
+                          </span>
+                        )}
+                        {property.videos > 0 && (
+                          <span className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-black/60 text-white">
+                            <Video size={12} />
+                            {property.videos}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 p-5">
+                      {/* Tag badges + listing status + sale type + NRI */}
+                      <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
+                        {property.tags.map((tagId) => {
+                          const t = TAG_STYLES[tagId]
+                          if (!t) return null
+                          return <Pill key={tagId} text={t.label} bg={t.bg} color={t.text} icon={t.icon} />
+                        })}
+                        <Pill text={property.listingStatus} bg="#F1F5F9" color="#334155" icon={Clock} />
+                        <Pill
+                          text={property.saleType.includes('Primary') ? 'Primary / No Brokerage' : 'Resale'}
+                          bg="#F1F5F9"
+                          color="#334155"
+                        />
+                        {property.nri && (
+                          <Pill text="NRI Property" bg="#FFF1F2" color="#BE123C" icon={Globe} />
+                        )}
+                      </div>
+
                       <div className="flex items-start justify-between gap-4 mb-3">
                         <div>
                           <h3 className="font-bold text-lg mb-1" style={{ color: NAVY }}>{property.title}</h3>

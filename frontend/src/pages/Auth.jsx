@@ -577,7 +577,7 @@ const Auth = () => {
         <div className="relative z-10 flex flex-col justify-between p-10 xl:p-14 text-white w-full">
           {/* Mark */}
           <div className={`flex items-center gap-2.5 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`}>
-            <img src={assets.logo} alt="Nestnbest" className="h-10 w-auto" />
+            <img src={assets.logo2} alt="Nestnbest" className="h-10 w-auto" />
           </div>
 
           {/* Headline + blueprint illustration */}

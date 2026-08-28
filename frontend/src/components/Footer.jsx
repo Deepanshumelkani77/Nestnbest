@@ -1,5 +1,6 @@
 import React from 'react'
 import { Mail, Phone, MapPin, ArrowRight, ArrowUpRight, Building2, Users, ShieldCheck, Award, Send } from 'lucide-react'
+import assets from '../assets/assets'
 
 const NAVY = '#193C06'
 const BLUE = '#1E88E5'
@@ -116,8 +117,7 @@ const Footer = () => {
           {/* Brand + contact */}
           <div className="space-y-5">
             <div>
-              <h3 className="text-2xl font-bold mb-2" style={{ color: NAVY }}>Nestnbest</h3>
-             
+              <img src={assets.logo} alt="Nestnbest" className="h-10 w-auto mb-2" />
             </div>
 
             <div className="space-y-2.5">

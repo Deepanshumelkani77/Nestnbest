@@ -31,8 +31,7 @@ const INK = '#152020'
 const TABS = [
   { label: 'Buy' },
   { label: 'New Launch', dot: true },
-  { label: 'Projects' },
-    { label: 'Rent' },
+  { label: 'Rent' },
 ]
 
 const LOCATION_TABS = ['Buy', 'Rent / Lease', 'Plots/Land', 'PG / Co-living']
@@ -57,27 +56,27 @@ const HERO_IMAGES = [assets.header, assets.header2, assets.header3, assets.heade
 const BUDGET_RANGE_OPTIONS = ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+']
 const AREA_RANGE_OPTIONS = ['300 sq ft', '500 sq ft', '750 sq ft', '1000 sq ft', '1500 sq ft', '2000 sq ft', '3000 sq ft', '5000 sq ft', '7500 sq ft', '10000 sq ft+']
 const BEDROOM_CHIP_OPTIONS = [
-  '1 RK', 
-  '1 BHK', 
-  '1 BHK + Servant Room', 
-  '1 BHK + Pooja Room', 
-  '2 BHK', 
-  '2 BHK + Servant Room', 
-  '2 BHK + Pooja Room', 
-  '3 BHK', 
-  '3 BHK + Servant Room', 
-  '3 BHK + Pooja Room', 
-  '4 BHK', 
-  '4 BHK + Servant Room', 
-  '4 BHK + Pooja Room', 
+  '1 RK',
+  '1 BHK',
+  '1 BHK + Servant Room',
+  '1 BHK + Pooja Room',
+  '2 BHK',
+  '2 BHK + Servant Room',
+  '2 BHK + Pooja Room',
+  '3 BHK',
+  '3 BHK + Servant Room',
+  '3 BHK + Pooja Room',
+  '4 BHK',
+  '4 BHK + Servant Room',
+  '4 BHK + Pooja Room',
   '4+ BHK'
 ]
 
 const RANGE_FILTER_OPTIONS = { Budget: BUDGET_RANGE_OPTIONS, Area: AREA_RANGE_OPTIONS }
 const CHIP_FILTER_OPTIONS = { Bedroom: BEDROOM_CHIP_OPTIONS }
 const CHECKBOX_FILTER_OPTIONS = {
-  'Construction Status': ['Under Construction', 'Ready to Move', 'New Launch', 'Pre-Launch', 'Resale/Secondary Sale'],
-  'Posted By': ['Owner', 'Dealer', 'Builder'],
+  'Construction Status': ['Under Expression of Interest (EOI)', 'New Launch', 'Under Construction', 'Ready to Move/Registry', 'Ready to Move (Registry Pending)', 'Resale/Secondary Sale'],
+  'Posted By': ['Owner', 'Agent', 'Builder'],
   'Possession Status': ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year'],
   Furnishing: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
 }
@@ -93,11 +92,6 @@ const FILTER_KIND = {
 const emptyFilterValue = (f) => (FILTER_KIND[f] === 'range' ? { min: '', max: '' } : [])
 
 // ---- Mega menu content -----------------------------------------------
-// Each top-level nav item -> a left sidebar of categories, and per-category
-// content for column 2 (sub-items) and column 3 (sub-sub / popular items).
-// If a category has no column-3 data, the ad card automatically spans
-// columns 3-4 instead of just column 4.
-
 const AD_CARDS = {
   'For Buyers': {
     label: 'INTRODUCING',
@@ -245,16 +239,6 @@ const PROPERTY_CATEGORIES = {
       ],
       bottomFilters: ['Bedroom', 'Possession Status', 'Posted By'],
     },
-    Projects: {
-      placeholder: 'Search "Residential projects in Hyderabad"',
-      showLocation: true,
-      propertyTypesHeading: 'Project Types',
-      checkboxGroups: [
-        ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Luxury Projects'],
-        ['Affordable Housing', 'Township Projects'],
-      ],
-      bottomFilters: ['Bedroom', 'Construction Status', 'Posted By'],
-    },
   },
   'PG / Co-Living': {
     Rent: {
@@ -273,7 +257,7 @@ const PROPERTY_CATEGORIES = {
       showLocation: true,
       propertyTypesHeading: 'Property Types',
       checkboxGroups: [
-        ['Office Space', 'Commercial Shops', 'Showrooms', 'Retail Spaces', 'Commercial Buildings',"Hospital"],
+        ['Office Space', 'Commercial Shops', 'Showrooms', 'Retail Spaces', 'Commercial Buildings', 'Hospital'],
         ['Commercial Plots', 'Co-working Spaces', 'Food Court / Restaurant Space', 'Hotels & Resorts', 'Commercial Complexes'],
       ],
       bottomFilters: ['Area', 'Construction Status', 'Posted By'],
@@ -297,16 +281,6 @@ const PROPERTY_CATEGORIES = {
         ['Co-working Spaces', 'Business Parks'],
       ],
       bottomFilters: ['Area', 'Possession Status', 'Posted By'],
-    },
-    Projects: {
-      placeholder: 'Search "Commercial projects in Hyderabad"',
-      showLocation: true,
-      propertyTypesHeading: 'Project Types',
-      checkboxGroups: [
-        ['Office Projects', 'Retail Projects', 'Shopping Complexes', 'Commercial Buildings'],
-        ['Business Parks', 'Mixed-Use Projects'],
-      ],
-      bottomFilters: ['Area', 'Construction Status', 'Posted By'],
     },
   },
   Industrial: {
@@ -339,16 +313,6 @@ const PROPERTY_CATEGORIES = {
         ['Logistics Parks', 'Industrial Buildings'],
       ],
       bottomFilters: ['Area', 'Possession Status', 'Posted By'],
-    },
-    Projects: {
-      placeholder: 'Search "Industrial projects in Hyderabad"',
-      showLocation: true,
-      propertyTypesHeading: 'Project Types',
-      checkboxGroups: [
-        ['Industrial Parks', 'Warehousing Projects', 'Logistics Parks', 'Manufacturing Projects'],
-        ['Industrial Sheds', 'Factory Projects'],
-      ],
-      bottomFilters: ['Area', 'Construction Status', 'Posted By'],
     },
   },
   'Farming land': {
@@ -428,17 +392,6 @@ const TAB_CONFIG = {
     ],
     bottomFilters: ['Area', 'Construction Status', 'Posted By'],
   },
-  Projects: {
-    selector: 'Residential Projects',
-    placeholder: 'Search "Residential projects in Hyderabad"',
-    showLocation: true,
-    propertyTypesHeading: 'Project Types',
-    checkboxGroups: [
-      ['Apartments / Flats', 'Villas', 'Independent Houses', 'Builder Floors', 'Luxury Projects'],
-      ['Affordable Housing', 'Township Projects'],
-    ],
-    bottomFilters: ['Bedroom', 'Construction Status', 'Posted By'],
-  },
 }
 
 const AdCard = ({ menuLabel, spanFull }) => {
@@ -479,8 +432,7 @@ const MenuColumn = ({ heading, items, menuLabel, categoryLabel }) => {
 
   const getFilterParams = (item) => {
     const params = new URLSearchParams()
-    
-    // Set property type based on menu label
+
     if (menuLabel === 'For Buyers') {
       params.set('type', 'buy')
     } else if (menuLabel === 'For Tenants') {
@@ -489,7 +441,6 @@ const MenuColumn = ({ heading, items, menuLabel, categoryLabel }) => {
       params.set('type', 'commercial')
     }
 
-    // Set category based on category label
     if (categoryLabel === 'Buy a Home' || categoryLabel === 'Rent a Home') {
       params.set('category', item)
     } else if (categoryLabel === 'Land/Plot') {
@@ -580,6 +531,79 @@ const NewBadge = () => (
   <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-500 text-white leading-none flex-shrink-0">NEW</span>
 )
 
+// ---------------------------------------------------------------------------
+// Positioning hooks
+//
+// Every floating panel below is rendered through a React portal into
+// document.body (so it can escape overflow/z-index issues), and its
+// position is calculated from the trigger element's viewport-relative
+// bounding box. Because portaled panels use `position: fixed`, they do NOT
+// move when the page scrolls — but the *trigger button* does move (since it
+// scrolls with the rest of the page). If we only calculate position once,
+// on open, the panel visually "detaches" from its trigger the moment the
+// user scrolls. These two hooks keep every dropdown's position locked to
+// its trigger for as long as it stays open, on scroll and on resize.
+// ---------------------------------------------------------------------------
+
+// For a dropdown with a single, fixed trigger ref.
+function useDropdownPosition(isOpen, triggerRef, getPosition) {
+  const [position, setPosition] = useState({ top: 0, left: 0 })
+  const getPositionRef = useRef(getPosition)
+  getPositionRef.current = getPosition
+
+  useEffect(() => {
+    if (!isOpen || !triggerRef.current) return undefined
+
+    const update = () => {
+      if (!triggerRef.current) return
+      const rect = triggerRef.current.getBoundingClientRect()
+      setPosition(getPositionRef.current(rect))
+    }
+
+    update()
+    window.addEventListener('scroll', update, true)
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update, true)
+      window.removeEventListener('resize', update)
+    }
+  }, [isOpen, triggerRef])
+
+  return position
+}
+
+// For a dropdown whose trigger changes at runtime (e.g. one Budget/Area
+// popup anchored to whichever pill button opened it, or the mega menu
+// anchored to whichever nav link opened it), keyed by name.
+function useKeyedDropdownPosition(openKey, refsMap, getPosition) {
+  const [position, setPosition] = useState({ top: 0, left: 0 })
+  const getPositionRef = useRef(getPosition)
+  getPositionRef.current = getPosition
+
+  useEffect(() => {
+    if (!openKey) return undefined
+    const node = refsMap.current[openKey]
+    if (!node) return undefined
+
+    const update = () => {
+      const el = refsMap.current[openKey]
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      setPosition(getPositionRef.current(rect))
+    }
+
+    update()
+    window.addEventListener('scroll', update, true)
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update, true)
+      window.removeEventListener('resize', update)
+    }
+  }, [openKey, refsMap])
+
+  return position
+}
+
 const Header = () => {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('Buy')
@@ -592,13 +616,11 @@ const Header = () => {
   const [cityQuery, setCityQuery] = useState('')
   const locationRef = useRef(null)
   const dropdownRef = useRef(null)
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
 
   const [openMegaMenu, setOpenMegaMenu] = useState(null)
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0)
   const megaTriggerRefs = useRef({})
   const megaPanelRef = useRef(null)
-  const [megaPosition, setMegaPosition] = useState({ top: 0, left: 0 })
 
   // Filter-panel state: per-tab checkbox selections + plots/land radio choice
   const [checkedByTab, setCheckedByTab] = useState(() => {
@@ -631,34 +653,23 @@ const Header = () => {
   const [isSubCategoryDropdownOpen, setIsSubCategoryDropdownOpen] = useState(false)
   const subCategoryDropdownRef = useRef(null)
   const subCategoryTriggerRef = useRef(null)
-  const [subCategoryDropdownPosition, setSubCategoryDropdownPosition] = useState({ top: 0, left: 0 })
 
   // Search city dropdown state
   const [isSearchCityDropdownOpen, setIsSearchCityDropdownOpen] = useState(false)
   const [selectedCity, setSelectedCity] = useState('')
   const searchCityDropdownRef = useRef(null)
   const searchCityTriggerRef = useRef(null)
-  const [searchCityDropdownPosition, setSearchCityDropdownPosition] = useState({ top: 0, left: 0 })
-
-  // Project status dropdown state
-  const [isProjectStatusDropdownOpen, setIsProjectStatusDropdownOpen] = useState(false)
-  const [selectedProjectStatus, setSelectedProjectStatus] = useState('')
-  const projectStatusDropdownRef = useRef(null)
-  const projectStatusTriggerRef = useRef(null)
-  const [projectStatusDropdownPosition, setProjectStatusDropdownPosition] = useState({ top: 0, left: 0 })
 
   // User dropdown state
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
   const userDropdownRef = useRef(null)
   const userTriggerRef = useRef(null)
-  const [userDropdownPosition, setUserDropdownPosition] = useState({ top: 0, left: 0 })
 
   // Neighbourhood dropdown state
   const [isNeighbourhoodDropdownOpen, setIsNeighbourhoodDropdownOpen] = useState(false)
   const [selectedNeighbourhood, setSelectedNeighbourhood] = useState('')
   const neighbourhoodDropdownRef = useRef(null)
   const neighbourhoodTriggerRef = useRef(null)
-  const [neighbourhoodDropdownPosition, setNeighbourhoodDropdownPosition] = useState({ top: 0, left: 0 })
 
   const NEIGHBOURHOODS = [
     'Connaught Place', 'Karol Bagh', 'Rajouri Garden', 'Dwarka', 'Vasant Kunj',
@@ -676,7 +687,22 @@ const Header = () => {
   const [advancedSelectedCategory, setAdvancedSelectedCategory] = useState(null)
   const advancedDropdownRef = useRef(null)
   const advancedTriggerRef = useRef(null)
-  const [advancedDropdownPosition, setAdvancedDropdownPosition] = useState({ top: 0, left: 0 })
+
+  const [isBedroomDropdownOpen, setIsBedroomDropdownOpen] = useState(false)
+  const bedroomDropdownRef = useRef(null)
+  const bedroomTriggerRef = useRef(null)
+
+  const [isBHKDropdownOpen, setIsBHKDropdownOpen] = useState(false)
+  const bhkDropdownRef = useRef(null)
+  const bhkTriggerRef = useRef(null)
+
+  const [isToiletDropdownOpen, setIsToiletDropdownOpen] = useState(false)
+  const toiletDropdownRef = useRef(null)
+  const toiletTriggerRef = useRef(null)
+
+  const [isAdvancedNeighbourhoodDropdownOpen, setIsAdvancedNeighbourhoodDropdownOpen] = useState(false)
+  const advancedNeighbourhoodDropdownRef = useRef(null)
+  const advancedNeighbourhoodTriggerRef = useRef(null)
 
   const ADVANCED_CATEGORIES = ['Bedroom', 'Construction Status', 'Posted By', 'Neighbourhood']
 
@@ -685,6 +711,10 @@ const Header = () => {
   const [selectedFilters, setSelectedFilters] = useState({
     Budget: { min: '', max: '' },
     Bedroom: [],
+    BHK: [],
+    Toilet: [],
+    'Servant Room': [],
+    'Pooja Room': [],
     'Construction Status': [],
     'Posted By': [],
     'Possession Status': [],
@@ -695,19 +725,53 @@ const Header = () => {
   const [pendingFilterValue, setPendingFilterValue] = useState(null)
   const filterDropdownRef = useRef(null)
   const filterTriggerRefs = useRef({})
-  const [filterDropdownPosition, setFilterDropdownPosition] = useState({ top: 0, left: 0 })
 
   // Menu dropdown state
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
   const menuDropdownRef = useRef(null)
   const menuTriggerRef = useRef(null)
-  const [menuDropdownPosition, setMenuDropdownPosition] = useState({ top: 0, left: 0 })
 
   const PROJECT_STATUS_OPTIONS = ['New Launch', 'Pre-Launch', 'Under Construction', 'Ready to Move']
 
   // Dynamic text animation for New Launch tab
   const [dynamicTabText, setDynamicTabText] = useState('New Launch')
   const [isAnimating, setIsAnimating] = useState(false)
+
+  // ---------------------------------------------------------------------
+  // Dropdown exclusivity helpers.
+  //
+  // Only one *top-level* floating menu should ever be open at once
+  // (location picker, mega menu, user menu, hamburger menu, search-bar
+  // filter panel, Advanced panel, Budget/Area popups). Opening any of
+  // these now always closes every other one first, so you never end up
+  // with two panels stacked on top of each other.
+  //
+  // Small dropdowns nested *inside* the Advanced panel (Bedroom, BHK,
+  // Toilet, Neighbourhood) are left independent — closing them doesn't
+  // need to tear down their parent panel.
+  // ---------------------------------------------------------------------
+  const closeAllDropdowns = () => {
+    setIsLocationOpen(false)
+    setIsSubCategoryDropdownOpen(false)
+    setIsSearchCityDropdownOpen(false)
+    setIsUserDropdownOpen(false)
+    setIsNeighbourhoodDropdownOpen(false)
+    setIsAdvancedDropdownOpen(false)
+    setIsBedroomDropdownOpen(false)
+    setIsBHKDropdownOpen(false)
+    setIsToiletDropdownOpen(false)
+    setIsAdvancedNeighbourhoodDropdownOpen(false)
+    setOpenFilterDropdown(null)
+    setIsMenuDropdownOpen(false)
+    setOpenMegaMenu(null)
+    setIsFilterOpen(false)
+  }
+
+  const openExclusive = (isOpen, setOpen) => {
+    const next = !isOpen
+    closeAllDropdowns()
+    setOpen(next)
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -721,13 +785,7 @@ const Header = () => {
     return () => clearInterval(interval)
   }, [])
 
-  const toggleFilterPanel = () => {
-    setIsLocationOpen(false)
-    setIsSearchCityDropdownOpen(false)
-    setIsProjectStatusDropdownOpen(false)
-    setOpenMegaMenu(null)
-    setIsFilterOpen((open) => !open)
-  }
+  const toggleFilterPanel = () => openExclusive(isFilterOpen, setIsFilterOpen)
 
   const toggleCheckbox = (tab, item) => {
     setCheckedByTab((prev) => ({ ...prev, [tab]: { ...prev[tab], [item]: !prev[tab][item] } }))
@@ -751,258 +809,207 @@ const Header = () => {
     investScrollRef.current?.scrollBy({ top: dir * 90, behavior: 'smooth' })
   }
 
+  // Switching tabs closes any open menus/panels — avoids a stale panel
+  // (positioned for the previous tab's layout) staying visible.
   useEffect(() => {
-    setIsFilterOpen(false)
-    setIsSearchCityDropdownOpen(false)
-    setIsProjectStatusDropdownOpen(false)
+    closeAllDropdowns()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab])
 
+  // Single outside-click / Escape handler for every floating panel.
   useEffect(() => {
+    const dropdownRefPairs = [
+      [locationRef, dropdownRef],
+      [subCategoryTriggerRef, subCategoryDropdownRef],
+      [searchCityTriggerRef, searchCityDropdownRef],
+      [userTriggerRef, userDropdownRef],
+      [neighbourhoodTriggerRef, neighbourhoodDropdownRef],
+      [advancedTriggerRef, advancedDropdownRef],
+      [bedroomTriggerRef, bedroomDropdownRef],
+      [bhkTriggerRef, bhkDropdownRef],
+      [toiletTriggerRef, toiletDropdownRef],
+      [advancedNeighbourhoodTriggerRef, advancedNeighbourhoodDropdownRef],
+      [menuTriggerRef, menuDropdownRef],
+    ]
+
     const onClickOutside = (e) => {
-      if (
-        locationRef.current &&
-        !locationRef.current.contains(e.target) &&
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target)
-      ) {
-        setIsLocationOpen(false)
-      }
-      if (
-        subCategoryTriggerRef.current &&
-        !subCategoryTriggerRef.current.contains(e.target) &&
-        subCategoryDropdownRef.current &&
-        !subCategoryDropdownRef.current.contains(e.target)
-      ) {
-        setIsSubCategoryDropdownOpen(false)
-      }
-      if (
-        searchCityTriggerRef.current &&
-        !searchCityTriggerRef.current.contains(e.target) &&
-        searchCityDropdownRef.current &&
-        !searchCityDropdownRef.current.contains(e.target)
-      ) {
-        setIsSearchCityDropdownOpen(false)
-      }
-      if (
-        projectStatusTriggerRef.current &&
-        !projectStatusTriggerRef.current.contains(e.target) &&
-        projectStatusDropdownRef.current &&
-        !projectStatusDropdownRef.current.contains(e.target)
-      ) {
-        setIsProjectStatusDropdownOpen(false)
-      }
-      if (
-        userTriggerRef.current &&
-        !userTriggerRef.current.contains(e.target) &&
-        userDropdownRef.current &&
-        !userDropdownRef.current.contains(e.target)
-      ) {
-        setIsUserDropdownOpen(false)
-      }
-      if (
-        neighbourhoodTriggerRef.current &&
-        !neighbourhoodTriggerRef.current.contains(e.target) &&
-        neighbourhoodDropdownRef.current &&
-        !neighbourhoodDropdownRef.current.contains(e.target)
-      ) {
-        setIsNeighbourhoodDropdownOpen(false)
-      }
-      if (
-        advancedTriggerRef.current &&
-        !advancedTriggerRef.current.contains(e.target) &&
-        advancedDropdownRef.current &&
-        !advancedDropdownRef.current.contains(e.target)
-      ) {
-        setIsAdvancedDropdownOpen(false)
-      }
-      if (
-        openFilterDropdown &&
-        filterDropdownRef.current &&
-        !filterDropdownRef.current.contains(e.target)
-      ) {
-        setOpenFilterDropdown(null)
-      }
-      if (
-        menuTriggerRef.current &&
-        !menuTriggerRef.current.contains(e.target) &&
-        menuDropdownRef.current &&
-        !menuDropdownRef.current.contains(e.target)
-      ) {
-        setIsMenuDropdownOpen(false)
-      }
-      const currentTrigger = openMegaMenu ? megaTriggerRefs.current[openMegaMenu] : null
-      if (
-        currentTrigger &&
-        !currentTrigger.contains(e.target) &&
-        megaPanelRef.current &&
-        !megaPanelRef.current.contains(e.target)
-      ) {
-        setOpenMegaMenu(null)
+      const target = e.target
+
+      const insideKnownPair = dropdownRefPairs.some(
+        ([triggerRef, panelRef]) =>
+          (triggerRef.current && triggerRef.current.contains(target)) ||
+          (panelRef.current && panelRef.current.contains(target))
+      )
+
+      const insideFilterDropdown =
+        (filterDropdownRef.current && filterDropdownRef.current.contains(target)) ||
+        (openFilterDropdown && filterTriggerRefs.current[openFilterDropdown]?.contains(target))
+
+      const insideMegaMenu =
+        (megaPanelRef.current && megaPanelRef.current.contains(target)) ||
+        (openMegaMenu && megaTriggerRefs.current[openMegaMenu]?.contains(target))
+
+      // The search card contains the Budget / Advanced / category triggers
+      // plus the inline expandable filter panel — clicks anywhere inside it
+      // (e.g. a checkbox in the filter panel) should never be treated as
+      // "outside".
+      const insideSearchCard = searchCardRef.current && searchCardRef.current.contains(target)
+
+      if (!insideKnownPair && !insideFilterDropdown && !insideMegaMenu && !insideSearchCard) {
+        closeAllDropdowns()
       }
     }
+
     const onEscape = (e) => {
-      if (e.key === 'Escape') {
-        setIsLocationOpen(false)
-        setIsSubCategoryDropdownOpen(false)
-        setIsSearchCityDropdownOpen(false)
-        setIsProjectStatusDropdownOpen(false)
-        setIsUserDropdownOpen(false)
-        setIsNeighbourhoodDropdownOpen(false)
-        setIsAdvancedDropdownOpen(false)
-        setIsMenuDropdownOpen(false)
-        setOpenMegaMenu(null)
-      }
+      if (e.key === 'Escape') closeAllDropdowns()
     }
+
     document.addEventListener('mousedown', onClickOutside)
     document.addEventListener('keydown', onEscape)
     return () => {
       document.removeEventListener('mousedown', onClickOutside)
       document.removeEventListener('keydown', onEscape)
     }
-  }, [openMegaMenu, isFilterOpen])
+  }, [openFilterDropdown, openMegaMenu])
 
+  // ---- Floating panel positions — recomputed on open, on scroll, and on resize ----
+  const dropdownPosition = useDropdownPosition(isLocationOpen, locationRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.left,
+  }))
+
+  const subCategoryDropdownPosition = useDropdownPosition(isSubCategoryDropdownOpen, subCategoryTriggerRef, (rect) => ({
+    top: rect.top,
+    left: rect.right + 8,
+  }))
+
+  const searchCityDropdownPosition = useDropdownPosition(isSearchCityDropdownOpen, searchCityTriggerRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.left,
+  }))
+
+  const userDropdownPosition = useDropdownPosition(isUserDropdownOpen, userTriggerRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.right - 200,
+  }))
+
+  const neighbourhoodDropdownPosition = useDropdownPosition(isNeighbourhoodDropdownOpen, neighbourhoodTriggerRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.left,
+  }))
+
+  // Close Neighbourhood dropdown on page scroll
   useEffect(() => {
-    if (isLocationOpen && locationRef.current) {
-      const rect = locationRef.current.getBoundingClientRect()
-      setDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-    }
-  }, [isLocationOpen])
+    if (!isNeighbourhoodDropdownOpen) return
 
-
-  useEffect(() => {
-    if (isSubCategoryDropdownOpen && subCategoryTriggerRef.current) {
-      const rect = subCategoryTriggerRef.current.getBoundingClientRect()
-      setSubCategoryDropdownPosition({ top: rect.top, left: rect.right + 8 })
-    }
-  }, [isSubCategoryDropdownOpen])
-
-  useEffect(() => {
-    if (isSearchCityDropdownOpen && searchCityTriggerRef.current) {
-      const rect = searchCityTriggerRef.current.getBoundingClientRect()
-      setSearchCityDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-    }
-  }, [isSearchCityDropdownOpen])
-
-  useEffect(() => {
     const handleScroll = () => {
-      if (isSearchCityDropdownOpen && searchCityTriggerRef.current) {
-        const rect = searchCityTriggerRef.current.getBoundingClientRect()
-        setSearchCityDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-      }
+      setIsNeighbourhoodDropdownOpen(false)
     }
 
-    if (isSearchCityDropdownOpen) {
-      window.addEventListener('scroll', handleScroll, true)
-      return () => window.removeEventListener('scroll', handleScroll, true)
-    }
-  }, [isSearchCityDropdownOpen])
-
-  useEffect(() => {
-    if (isProjectStatusDropdownOpen && projectStatusTriggerRef.current) {
-      const rect = projectStatusTriggerRef.current.getBoundingClientRect()
-      setProjectStatusDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-    }
-  }, [isProjectStatusDropdownOpen])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isProjectStatusDropdownOpen && projectStatusTriggerRef.current) {
-        const rect = projectStatusTriggerRef.current.getBoundingClientRect()
-        setProjectStatusDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-      }
-    }
-
-    if (isProjectStatusDropdownOpen) {
-      window.addEventListener('scroll', handleScroll, true)
-      return () => window.removeEventListener('scroll', handleScroll, true)
-    }
-  }, [isProjectStatusDropdownOpen])
-
-  useEffect(() => {
-    if (isUserDropdownOpen && userTriggerRef.current) {
-      const rect = userTriggerRef.current.getBoundingClientRect()
-      setUserDropdownPosition({ top: rect.bottom + 8, left: rect.right - 200 })
-    }
-  }, [isUserDropdownOpen])
-
-  useEffect(() => {
-    if (isNeighbourhoodDropdownOpen && neighbourhoodTriggerRef.current) {
-      const rect = neighbourhoodTriggerRef.current.getBoundingClientRect()
-      setNeighbourhoodDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-    }
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
   }, [isNeighbourhoodDropdownOpen])
 
-  useEffect(() => {
-    if (isAdvancedDropdownOpen && advancedTriggerRef.current) {
-      const rect = advancedTriggerRef.current.getBoundingClientRect()
-      const dropdownWidth = 500
-      const viewportWidth = window.innerWidth
-      let left = rect.left
-      
-      // Adjust if dropdown would go outside right edge
-      if (left + dropdownWidth > viewportWidth) {
-        left = viewportWidth - dropdownWidth - 16
-      }
-      
-      setAdvancedDropdownPosition({ top: rect.bottom + 8, left })
-    }
-  }, [isAdvancedDropdownOpen])
+  const advancedDropdownPosition = useDropdownPosition(isAdvancedDropdownOpen, advancedTriggerRef, (rect) => {
+    const dropdownWidth = 700
+    const viewportWidth = window.innerWidth
+    let left = rect.left
+    if (left + dropdownWidth > viewportWidth - 16) left = viewportWidth - dropdownWidth - 16
+    if (left < 16) left = 16
+    return { top: rect.bottom + 8, left }
+  })
 
+  const bedroomDropdownPosition = useDropdownPosition(isBedroomDropdownOpen, bedroomTriggerRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.left,
+  }))
+
+  // Close Bedroom dropdown on page scroll
   useEffect(() => {
+    if (!isBedroomDropdownOpen) return
+
     const handleScroll = () => {
-      if (isAdvancedDropdownOpen && advancedTriggerRef.current) {
-        const rect = advancedTriggerRef.current.getBoundingClientRect()
-        const dropdownWidth = 500
-        const viewportWidth = window.innerWidth
-        let left = rect.left
-        
-        // Adjust if dropdown would go outside right edge
-        if (left + dropdownWidth > viewportWidth) {
-          left = viewportWidth - dropdownWidth - 16
-        }
-        
-        setAdvancedDropdownPosition({ top: rect.bottom + 8, left })
-      }
+      setIsBedroomDropdownOpen(false)
     }
 
-    if (isAdvancedDropdownOpen) {
-      window.addEventListener('scroll', handleScroll, true)
-      return () => window.removeEventListener('scroll', handleScroll, true)
-    }
-  }, [isAdvancedDropdownOpen])
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isBedroomDropdownOpen])
 
+  const bhkDropdownPosition = useDropdownPosition(isBHKDropdownOpen, bhkTriggerRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.left,
+  }))
+
+  // Close BHK dropdown on page scroll
   useEffect(() => {
-    if (openFilterDropdown && filterTriggerRefs.current[openFilterDropdown]) {
-      const rect = filterTriggerRefs.current[openFilterDropdown].getBoundingClientRect()
-      setFilterDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-    }
-  }, [openFilterDropdown])
+    if (!isBHKDropdownOpen) return
 
-  // Update filter dropdown position on scroll
-  useEffect(() => {
-    if (openFilterDropdown && filterTriggerRefs.current[openFilterDropdown]) {
-      const handleScroll = () => {
-        const rect = filterTriggerRefs.current[openFilterDropdown]?.getBoundingClientRect()
-        if (rect) {
-          setFilterDropdownPosition({ top: rect.bottom + 8, left: rect.left })
-        }
-      }
-      window.addEventListener('scroll', handleScroll, true)
-      return () => window.removeEventListener('scroll', handleScroll, true)
+    const handleScroll = () => {
+      setIsBHKDropdownOpen(false)
     }
-  }, [openFilterDropdown])
 
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isBHKDropdownOpen])
+
+  const toiletDropdownPosition = useDropdownPosition(isToiletDropdownOpen, toiletTriggerRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.left,
+  }))
+
+  // Close Toilet dropdown on page scroll
   useEffect(() => {
-    if (isMenuDropdownOpen && menuTriggerRef.current) {
-      const rect = menuTriggerRef.current.getBoundingClientRect()
-      setMenuDropdownPosition({ top: rect.bottom + 8, left: rect.right - 160 })
+    if (!isToiletDropdownOpen) return
+
+    const handleScroll = () => {
+      setIsToiletDropdownOpen(false)
     }
-  }, [isMenuDropdownOpen])
+
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isToiletDropdownOpen])
+
+  const advancedNeighbourhoodDropdownPosition = useDropdownPosition(
+    isAdvancedNeighbourhoodDropdownOpen,
+    advancedNeighbourhoodTriggerRef,
+    (rect) => ({ top: rect.bottom + 8, left: rect.left - 100 })
+  )
+
+  // Close Advanced Neighbourhood dropdown on page scroll
+  useEffect(() => {
+    if (!isAdvancedNeighbourhoodDropdownOpen) return
+
+    const handleScroll = () => {
+      setIsAdvancedNeighbourhoodDropdownOpen(false)
+    }
+
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isAdvancedNeighbourhoodDropdownOpen])
+
+  const filterDropdownPosition = useKeyedDropdownPosition(openFilterDropdown, filterTriggerRefs, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.left,
+  }))
+
+  const menuDropdownPosition = useDropdownPosition(isMenuDropdownOpen, menuTriggerRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.right - 160,
+  }))
+
+  const megaPosition = useKeyedDropdownPosition(openMegaMenu, megaTriggerRefs, (rect) => {
+    const panelWidth = 1100
+    const left = Math.max(16, (window.innerWidth - panelWidth) / 2)
+    return { top: rect.bottom + 12, left }
+  })
 
   // Filter dropdown handlers
   const openFilterPanel = (f) => {
-    setPendingFilterValue(selectedFilters[f])
-    setOpenFilterDropdown((prev) => (prev === f ? null : f))
+    const next = openFilterDropdown === f ? null : f
+    closeAllDropdowns()
+    setOpenFilterDropdown(next)
+    if (next) setPendingFilterValue(selectedFilters[f])
   }
 
   const togglePendingItem = (value) => {
@@ -1036,21 +1043,10 @@ const Header = () => {
   }
 
   const toggleMegaMenu = (label) => {
-    setIsLocationOpen(false)
+    const next = openMegaMenu === label ? null : label
+    closeAllDropdowns()
     setActiveCategoryIndex(0)
-    setOpenMegaMenu((current) => {
-      const next = current === label ? null : label
-      if (next) {
-        const trigger = megaTriggerRefs.current[label]
-        if (trigger) {
-          const rect = trigger.getBoundingClientRect()
-          const panelWidth = 1100
-          const left = Math.max(16, (window.innerWidth - panelWidth) / 2)
-          setMegaPosition({ top: rect.bottom + 12, left })
-        }
-      }
-      return next
-    })
+    setOpenMegaMenu(next)
   }
 
   // Image slideshow effect
@@ -1066,30 +1062,27 @@ const Header = () => {
   const goToNextImage = () => setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length)
 
   const handleSearch = () => {
+    closeAllDropdowns()
     const params = new URLSearchParams()
-    
-    // Set property type based on active tab
+
     if (activeTab === 'Buy') {
       params.set('type', 'buy')
     } else if (activeTab === 'Rent') {
       params.set('type', 'rent')
     } else if (activeTab === 'Commercial') {
       params.set('type', 'commercial')
-    } else if (activeTab === 'New Launch' || activeTab === 'Projects') {
+    } else if (activeTab === 'New Launch') {
       params.set('type', 'buy')
     }
 
-    // Set search query if present
     if (query.trim()) {
       params.set('q', query.trim())
     }
 
-    // Set city if selected
     if (selectedCity) {
       params.set('city', selectedCity)
     }
 
-    // Navigate to filter page with parameters
     navigate(`/filter?${params.toString()}`)
   }
 
@@ -1106,10 +1099,7 @@ const Header = () => {
       {(isLocationOpen || openMegaMenu) && (
         <div
           className="fixed inset-0 bg-black/15 backdrop-blur-[2px] z-20 transition-opacity duration-200"
-          onClick={() => {
-            setIsLocationOpen(false)
-            setOpenMegaMenu(null)
-          }}
+          onClick={closeAllDropdowns}
         />
       )}
 
@@ -1153,15 +1143,12 @@ const Header = () => {
               {/* Logo + location */}
               <div className="flex items-center gap-4">
                 <Link to="/" className="flex items-center">
-                  <img src={assets.logo} alt="Nestnbest" className="h-10 w-auto" />
+                  <img src={assets.logo2} alt="Nestnbest" className="h-10 w-auto" />
                 </Link>
 
                 <div className="relative" ref={locationRef}>
                   <button
-                    onClick={() => {
-                      setOpenMegaMenu(null)
-                      setIsLocationOpen((open) => !open)
-                    }}
+                    onClick={() => openExclusive(isLocationOpen, setIsLocationOpen)}
                     className="hidden sm:flex items-center gap-1 text-white/90 text-sm font-medium border-l border-white/30 pl-4 hover:text-white transition-colors duration-200"
                   >
                  Select City
@@ -1284,11 +1271,7 @@ const Header = () => {
 
                 <div className="relative" ref={userTriggerRef}>
                   <button
-                    onClick={() => {
-                      setIsLocationOpen(false)
-                      setOpenMegaMenu(null)
-                      setIsUserDropdownOpen((open) => !open)
-                    }}
+                    onClick={() => openExclusive(isUserDropdownOpen, setIsUserDropdownOpen)}
                     className="relative flex items-center gap-1 text-white hover:text-white/80 transition-colors duration-200"
                   >
                     <span className="relative">
@@ -1327,12 +1310,7 @@ const Header = () => {
 
                 <div className="relative" ref={menuTriggerRef}>
                   <button
-                    onClick={() => {
-                      setIsLocationOpen(false)
-                      setOpenMegaMenu(null)
-                      setIsUserDropdownOpen(false)
-                      setIsMenuDropdownOpen((open) => !open)
-                    }}
+                    onClick={() => openExclusive(isMenuDropdownOpen, setIsMenuDropdownOpen)}
                     className="text-white hover:text-white/80 transition-colors duration-200"
                   >
                     <Menu size={22} />
@@ -1519,14 +1497,10 @@ const Header = () => {
                     style={{ transform: isFilterOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                   />
                 </button>
-              ) : activeTab === 'Buy' || activeTab === 'Rent' || activeTab === 'New Launch' || activeTab === 'Projects' ? (
+              ) : activeTab === 'Buy' || activeTab === 'Rent' || activeTab === 'New Launch' ? (
                 <button
                   type="button"
-                  onClick={() => {
-                    setIsLocationOpen(false)
-                    setOpenMegaMenu(null)
-                    setIsFilterOpen((open) => !open)
-                  }}
+                  onClick={toggleFilterPanel}
                   className="flex items-center gap-1.5 px-4 py-3 sm:pr-5 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
                   style={{ color: NAVY }}
                 >
@@ -1547,6 +1521,7 @@ const Header = () => {
                         if (isFilterOpen && selectedCategory === category) {
                           setIsFilterOpen(false)
                         } else {
+                          closeAllDropdowns()
                           setSelectedCategory(category)
                           setIsFilterOpen(true)
                         }
@@ -1565,62 +1540,10 @@ const Header = () => {
                 </div>
               )}
 
-              {activeTab === 'Projects' && (
-                <div className="relative" ref={projectStatusTriggerRef}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsSearchCityDropdownOpen(false)
-                      setOpenMegaMenu(null)
-                      setIsProjectStatusDropdownOpen((open) => !open)
-                    }}
-                    className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
-                    style={{ color: NAVY }}
-                  >
-                    {selectedProjectStatus || 'Project Status'}
-                    <ChevronDown
-                      size={16}
-                      className="text-slate-400 transition-transform duration-200"
-                      style={{ transform: isProjectStatusDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                    />
-                  </button>
-
-                  {isProjectStatusDropdownOpen &&
-                    createPortal(
-                      <div
-                        ref={projectStatusDropdownRef}
-                        className="fixed w-48 bg-white rounded-xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
-                        style={{ top: `${projectStatusDropdownPosition.top}px`, left: `${projectStatusDropdownPosition.left}px` }}
-                      >
-                        <div className="py-2">
-                          {PROJECT_STATUS_OPTIONS.map((status) => (
-                            <button
-                              key={status}
-                              onClick={() => {
-                                setSelectedProjectStatus(status)
-                                setIsProjectStatusDropdownOpen(false)
-                              }}
-                              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
-                                selectedProjectStatus === status ? 'bg-slate-50 text-[#1E88E5]' : 'text-slate-700 hover:bg-slate-50'
-                              }`}
-                            >
-                              {status}
-                            </button>
-                          ))}
-                        </div>
-                      </div>,
-                      document.body
-                    )}
-                </div>
-              )}
-
               <div className="relative" ref={(el) => (filterTriggerRefs.current['Budget'] = el)}>
                 <button
                   type="button"
-                  onClick={() => {
-                    setOpenMegaMenu(null)
-                    openFilterPanel('Budget')
-                  }}
+                  onClick={() => openFilterPanel('Budget')}
                   className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
                   style={{ color: NAVY }}
                 >
@@ -1635,7 +1558,7 @@ const Header = () => {
                 {openFilterDropdown === 'Budget' && createPortal(
                   <div
                     ref={filterDropdownRef}
-                    className="fixed w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-50 border border-slate-100"
+                    className="fixed w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                     style={{ top: `${filterDropdownPosition.top}px`, left: `${filterDropdownPosition.left}px` }}
                   >
                     {/* Header */}
@@ -1651,29 +1574,29 @@ const Header = () => {
                       <div>
                         <div className="flex items-center gap-3 mb-4">
                           <div className="flex-1">
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Min</label>
+
                             <select
                               value={pendingFilterValue?.min || ''}
                               onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, min: e.target.value }))}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                              className="w-full border border-slate-200 rounded-lg px-8 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
                             >
-                              <option value="">No Min</option>
+                              <option value=""> Min</option>
                               {BUDGET_RANGE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                             </select>
                           </div>
                           <div className="flex-1">
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Max</label>
+
                             <select
                               value={pendingFilterValue?.max || ''}
                               onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, max: e.target.value }))}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                              className="w-full border border-slate-200 rounded-lg px-8 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
                             >
-                              <option value="">No Max</option>
+                              <option value=""> Max</option>
                               {BUDGET_RANGE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                             </select>
                           </div>
                         </div>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="grid grid-cols-2 gap-2">
                           {BUDGET_RANGE_OPTIONS.slice(0, 6).map((opt) => (
                             <button
                               key={opt}
@@ -1716,10 +1639,7 @@ const Header = () => {
               <div className="relative" ref={searchCityTriggerRef}>
                 <button
                   type="button"
-                  onClick={() => {
-                    setOpenMegaMenu(null)
-                    setIsSearchCityDropdownOpen((open) => !open)
-                  }}
+                  onClick={() => openExclusive(isSearchCityDropdownOpen, setIsSearchCityDropdownOpen)}
                   className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
                   style={{ color: NAVY }}
                 >
@@ -1795,8 +1715,7 @@ const Header = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setOpenMegaMenu(null)
-                    setIsAdvancedDropdownOpen((open) => !open)
+                    openExclusive(isAdvancedDropdownOpen, setIsAdvancedDropdownOpen)
                     setAdvancedSelectedCategory(null)
                   }}
                   className="flex items-center gap-1.5 px-4 py-3 sm:border-r border-slate-200 text-sm font-semibold flex-shrink-0 hover:text-[#1E88E5] transition-colors duration-150"
@@ -1814,132 +1733,259 @@ const Header = () => {
                   createPortal(
                     <div
                       ref={advancedDropdownRef}
-                      className="fixed w-[500px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-50 border border-slate-100"
-                      style={{ top: `${advancedDropdownPosition.top}px`, left: `${advancedDropdownPosition.left}px`, maxHeight: '450px' }}
+                      className="fixed w-[700px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                      style={{ top: `${advancedDropdownPosition.top}px`, left: `${advancedDropdownPosition.left}px` }}
                     >
-                      <div className="flex h-full">
-                        {/* Left column - Categories */}
-                        <div className="w-48 border-r border-slate-100 bg-slate-50">
-                          <div className="p-4 pb-3">
-                            <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-3">Filters</h4>
-                            <div className="space-y-1">
-                              {ADVANCED_CATEGORIES.map((category) => (
-                                <button
-                                  key={category}
-                                  onClick={() => setAdvancedSelectedCategory(category)}
-                                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors duration-200 rounded-lg ${
-                                    advancedSelectedCategory === category ? 'bg-white text-[#1E88E5] shadow-sm' : 'text-slate-700 hover:bg-white hover:shadow-sm'
-                                  }`}
-                                >
-                                  {category}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
+                      <div className="p-5">
+                        <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Advanced Filters</h4>
+                        <div className="grid grid-cols-4 gap-4">
+                          {/* Bedroom */}
+                          <div className="relative" ref={bedroomTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Bedroom</label>
+                            <button
+                              type="button"
+                              onClick={() => setIsBedroomDropdownOpen((open) => !open)}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                            >
+                              <span>{selectedFilters.BHK?.[0] || selectedFilters.Toilet?.[0] || selectedFilters['Servant Room']?.[0] || selectedFilters['Pooja Room']?.[0] ? 'Selected' : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isBedroomDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
 
-                        {/* Right column - Options */}
-                        <div className="flex-1 p-5 max-h-[450px] overflow-y-auto">
-                          {!advancedSelectedCategory ? (
-                            <div className="flex items-center justify-center h-full text-slate-400 text-sm">
-                              Select a category to view options
-                            </div>
-                          ) : advancedSelectedCategory === 'Bedroom' ? (
-                            <div>
-                              <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Bedroom</h4>
-                              <div className="flex flex-wrap gap-2">
-                                {BEDROOM_CHIP_OPTIONS.map((opt) => (
-                                  <button
-                                    key={opt}
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedFilters(prev => ({
-                                        ...prev,
-                                        Bedroom: prev.Bedroom.includes(opt) 
-                                          ? prev.Bedroom.filter(item => item !== opt)
-                                          : [...prev.Bedroom, opt]
-                                      }))
-                                    }}
-                                    className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all ${
-                                      selectedFilters.Bedroom.includes(opt)
-                                        ? 'border-[#1E88E5] bg-[rgba(30,136,229,0.08)] text-[#1E88E5]'
-                                        : 'border-slate-200 text-slate-700 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)]'
-                                    }`}
-                                  >
-                                    {opt}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          ) : advancedSelectedCategory === 'Construction Status' ? (
-                            <div>
-                              <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Construction Status</h4>
-                              <div className="space-y-3">
-                                {CHECKBOX_FILTER_OPTIONS['Construction Status'].map((opt) => (
-                                  <CheckboxRow
-                                    key={opt}
-                                    label={opt}
-                                    checked={selectedFilters['Construction Status'].includes(opt)}
-                                    onToggle={() => {
-                                      setSelectedFilters(prev => ({
-                                        ...prev,
-                                        'Construction Status': prev['Construction Status'].includes(opt)
-                                          ? prev['Construction Status'].filter(item => item !== opt)
-                                          : [...prev['Construction Status'], opt]
-                                      }))
-                                    }}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          ) : advancedSelectedCategory === 'Posted By' ? (
-                            <div>
-                              <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Posted By</h4>
-                              <div className="space-y-3">
-                                {CHECKBOX_FILTER_OPTIONS['Posted By'].map((opt) => (
-                                  <CheckboxRow
-                                    key={opt}
-                                    label={opt}
-                                    checked={selectedFilters['Posted By'].includes(opt)}
-                                    onToggle={() => {
-                                      setSelectedFilters(prev => ({
-                                        ...prev,
-                                        'Posted By': prev['Posted By'].includes(opt)
-                                          ? prev['Posted By'].filter(item => item !== opt)
-                                          : [...prev['Posted By'], opt]
-                                      }))
-                                    }}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          ) : advancedSelectedCategory === 'Neighbourhood' ? (
-                            <div>
-                              <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Neighbourhood</h4>
-                              <div className="space-y-1 max-h-[350px] overflow-y-auto pr-2">
-                                {NEIGHBOURHOODS.map((neighbourhood) => (
-                                  <button
-                                    key={neighbourhood}
-                                    onClick={() => {
-                                      setSelectedFilters(prev => ({
-                                        ...prev,
-                                        Neighbourhood: prev.Neighbourhood?.includes(neighbourhood)
-                                          ? prev.Neighbourhood.filter(item => item !== neighbourhood)
-                                          : [...(prev.Neighbourhood || []), neighbourhood]
-                                      }))
-                                    }}
-                                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors duration-200 rounded-lg ${
-                                      selectedFilters.Neighbourhood?.includes(neighbourhood) 
-                                        ? 'bg-slate-50 text-[#1E88E5]' 
-                                        : 'text-slate-700 hover:bg-slate-50'
-                                    }`}
-                                  >
-                                    {neighbourhood}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          ) : null}
+                            {isBedroomDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={bedroomDropdownRef}
+                                  className="fixed w-[500px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${bedroomDropdownPosition.top}px`, left: `${bedroomDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-5">
+                                    <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Bedroom Options</h4>
+                                    <div className="grid grid-cols-4 gap-4">
+                                      {/* BHK */}
+                                      <div className="relative" ref={bhkTriggerRef}>
+                                        <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">BHK</label>
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            setIsBHKDropdownOpen((open) => !open)
+                                          }}
+                                          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                                        >
+                                          <span>{selectedFilters.BHK?.length ? `${selectedFilters.BHK.length} selected` : 'Select'}</span>
+                                          <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isBHKDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                                        </button>
+
+                                        {isBHKDropdownOpen &&
+                                          createPortal(
+                                            <div
+                                              ref={bhkDropdownRef}
+                                              className="fixed w-[200px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                              style={{ top: `${bhkDropdownPosition.top}px`, left: `${bhkDropdownPosition.left}px` }}
+                                            >
+                                              <div className="p-3 space-y-1">
+                                                {[1, 2, 3, 4, 5, '5+'].map((opt) => (
+                                                  <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                                    <input
+                                                      type="checkbox"
+                                                      checked={selectedFilters.BHK?.includes(opt.toString())}
+                                                      onChange={(e) => {
+                                                        setSelectedFilters(prev => ({
+                                                          ...prev,
+                                                          BHK: e.target.checked
+                                                            ? [...(prev.BHK || []), opt.toString()]
+                                                            : (prev.BHK || []).filter(item => item !== opt.toString())
+                                                        }))
+                                                      }}
+                                                      onMouseDown={(e) => e.stopPropagation()}
+                                                      className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5]"
+                                                    />
+                                                    <span className="text-sm text-slate-700">{typeof opt === 'number' ? `${opt} BHK` : opt}</span>
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            </div>,
+                                            document.body
+                                          )}
+                                      </div>
+
+                                      {/* Toilet */}
+                                      <div className="relative" ref={toiletTriggerRef}>
+                                        <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Toilet</label>
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            setIsToiletDropdownOpen((open) => !open)
+                                          }}
+                                          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                                        >
+                                          <span>{selectedFilters.Toilet?.length ? `${selectedFilters.Toilet.length} selected` : 'Select'}</span>
+                                          <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isToiletDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                                        </button>
+
+                                        {isToiletDropdownOpen &&
+                                          createPortal(
+                                            <div
+                                              ref={toiletDropdownRef}
+                                              className="fixed w-[200px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                              style={{ top: `${toiletDropdownPosition.top}px`, left: `${toiletDropdownPosition.left}px` }}
+                                            >
+                                              <div className="p-3 space-y-1">
+                                                {[1, 2, 3, 4, 5, '5+'].map((opt) => (
+                                                  <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                                    <input
+                                                      type="checkbox"
+                                                      checked={selectedFilters.Toilet?.includes(opt.toString())}
+                                                      onChange={(e) => {
+                                                        setSelectedFilters(prev => ({
+                                                          ...prev,
+                                                          Toilet: e.target.checked
+                                                            ? [...(prev.Toilet || []), opt.toString()]
+                                                            : (prev.Toilet || []).filter(item => item !== opt.toString())
+                                                        }))
+                                                      }}
+                                                      onMouseDown={(e) => e.stopPropagation()}
+                                                      className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5]"
+                                                    />
+                                                    <span className="text-sm text-slate-700">{opt}</span>
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            </div>,
+                                            document.body
+                                          )}
+                                      </div>
+
+                                      {/* Servant Room */}
+                                      <div>
+                                        <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Servant Room</label>
+                                        <select
+                                          value={selectedFilters['Servant Room']?.[0] || ''}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Servant Room': e.target.value ? [e.target.value] : []
+                                            }))
+                                          }}
+                                          onClick={(e) => e.stopPropagation()}
+                                          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                                        >
+                                          <option value="">Select</option>
+                                          <option value="Yes">Yes</option>
+                                          <option value="No">No</option>
+                                        </select>
+                                      </div>
+
+                                      {/* Pooja Room */}
+                                      <div>
+                                        <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Pooja Room</label>
+                                        <select
+                                          value={selectedFilters['Pooja Room']?.[0] || ''}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Pooja Room': e.target.value ? [e.target.value] : []
+                                            }))
+                                          }}
+                                          onClick={(e) => e.stopPropagation()}
+                                          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                                        >
+                                          <option value="">Select</option>
+                                          <option value="Yes">Yes</option>
+                                          <option value="No">No</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
+                          </div>
+
+                          {/* Construction Status */}
+                          <div>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Construction Status</label>
+                            <select
+                              value={selectedFilters['Construction Status'][0] || ''}
+                              onChange={(e) => {
+                                setSelectedFilters(prev => ({
+                                  ...prev,
+                                  'Construction Status': e.target.value ? [e.target.value] : []
+                                }))
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                            >
+                              <option value="">Select</option>
+                              {CHECKBOX_FILTER_OPTIONS['Construction Status'].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                            </select>
+                          </div>
+
+                          {/* Posted By */}
+                          <div>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Posted By</label>
+                            <select
+                              value={selectedFilters['Posted By'][0] || ''}
+                              onChange={(e) => {
+                                setSelectedFilters(prev => ({
+                                  ...prev,
+                                  'Posted By': e.target.value ? [e.target.value] : []
+                                }))
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                            >
+                              <option value="">Select</option>
+                              {CHECKBOX_FILTER_OPTIONS['Posted By'].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                            </select>
+                          </div>
+
+                          {/* Neighbourhood */}
+                          <div className="relative" ref={advancedNeighbourhoodTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Neighbourhood</label>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setIsAdvancedNeighbourhoodDropdownOpen((open) => !open)
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                            >
+                              <span>{selectedFilters.Neighbourhood?.length ? `${selectedFilters.Neighbourhood.length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isAdvancedNeighbourhoodDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isAdvancedNeighbourhoodDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={advancedNeighbourhoodDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${advancedNeighbourhoodDropdownPosition.top}px`, left: `${advancedNeighbourhoodDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {NEIGHBOURHOODS.map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters.Neighbourhood?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              Neighbourhood: e.target.checked
+                                                ? [...(prev.Neighbourhood || []), opt]
+                                                : (prev.Neighbourhood || []).filter(item => item !== opt)
+                                            }))
+                                          }}
+                                          onMouseDown={(e) => e.stopPropagation()}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5]"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
+                          </div>
                         </div>
                       </div>
                     </div>,
@@ -1965,9 +2011,9 @@ const Header = () => {
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0 justify-end sm:pr-2">
-                <button 
+                <button
                   onClick={handleSearch}
-                  className="px-8 py-2.5 rounded-lg text-white text-sm sm:text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg" 
+                  className="px-8 py-2.5 rounded-lg text-white text-sm sm:text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
                   style={{ backgroundColor: BLUE }}
                 >
                   Search
@@ -2070,23 +2116,6 @@ const Header = () => {
                         ))}
                       </div>
                       {categoryConfig.crossLink && <CrossLinkRow text={categoryConfig.crossLink} className="mt-5" />}
-                    </>
-                  ) : activeTab === 'Projects' ? (
-                    <>
-                      <h4 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-4">
-                        {tabConfig.projectCheckboxHeading}
-                      </h4>
-                      <div className="flex flex-wrap items-center gap-x-10 gap-y-3 mb-5">
-                        {tabConfig.checkboxGroups[0].map((item) => (
-                          <CheckboxRow
-                            key={item}
-                            label={item}
-                            checked={!!checkedByTab[activeTab]?.[item]}
-                            onToggle={() => toggleCheckbox(activeTab, item)}
-                          />
-                        ))}
-                      </div>
-                      <CrossLinkRow text={tabConfig.crossLink} />
                     </>
                   ) : (
                     <>
