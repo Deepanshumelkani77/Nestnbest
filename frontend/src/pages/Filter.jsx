@@ -117,6 +117,39 @@ const PRICE_RANGES = {
 
 const BEDROOMS = ['1 RK', '1 BHK', '2 BHK', '3 BHK', '4 BHK', '5+ BHK']
 const BATHROOMS = ['1', '2', '3', '4', '5+']
+
+const BUILT_UP_AREA_OPTIONS = [
+  '500 sq.ft and below',
+  '501 – 750 sq.ft',
+  '751 – 1,000 sq.ft',
+  '1,001 – 1,250 sq.ft',
+  '1,251 – 1,500 sq.ft',
+  '1,501 – 2,000 sq.ft',
+  '2,001 – 2,500 sq.ft',
+  '2,501 – 3,000 sq.ft',
+  '3,001 – 4,000 sq.ft',
+  '4,001 – 5,000 sq.ft',
+  '5,001 – 7,500 sq.ft',
+  '7,501 – 10,000 sq.ft',
+  '10,000+ sq.ft'
+]
+
+const SUPER_AREA_OPTIONS = [
+  '500 sq.ft and below',
+  '501 – 750 sq.ft',
+  '751 – 1,000 sq.ft',
+  '1,001 – 1,250 sq.ft',
+  '1,251 – 1,500 sq.ft',
+  '1,501 – 2,000 sq.ft',
+  '2,001 – 2,500 sq.ft',
+  '2,501 – 3,000 sq.ft',
+  '3,001 – 4,000 sq.ft',
+  '4,001 – 5,000 sq.ft',
+  '5,001 – 7,500 sq.ft',
+  '7,501 – 10,000 sq.ft',
+  '10,000+ sq.ft'
+]
+
 const AREA_RANGES = [
   { label: 'Under 500 sqft', min: 0, max: 500 },
   { label: '500 - 1000 sqft', min: 500, max: 1000 },
@@ -158,8 +191,8 @@ const TAGS = [
 ]
 
 const SALE_TYPES = [
-  'Primary Sale / No Brokerage',
-  'Secondary Sale / Resale',
+  'Primary Sale / New Booking(No Brokerage)',
+  'Secondary Sale  (Resale)',
 ]
 
 const TAG_STYLES = {
@@ -340,7 +373,8 @@ const Filter = () => {
   const [selectedPriceRange, setSelectedPriceRange] = useState([])
   const [selectedBedrooms, setSelectedBedrooms] = useState([])
   const [selectedBathrooms, setSelectedBathrooms] = useState([])
-  const [selectedArea, setSelectedArea] = useState([])
+  const [selectedBuiltUpArea, setSelectedBuiltUpArea] = useState([])
+  const [selectedSuperArea, setSelectedSuperArea] = useState([])
   const [selectedListingStatus, setSelectedListingStatus] = useState([])
   const [selectedAmenities, setSelectedAmenities] = useState([])
   const [selectedTags, setSelectedTags] = useState([])
@@ -355,7 +389,8 @@ const Filter = () => {
     tags: true,
     bedrooms: false,
     bathrooms: false,
-    area: false,
+    builtUpArea: false,
+    superArea: false,
     listingStatus: false,
     saleType: false,
     amenities: false,
@@ -469,7 +504,8 @@ const Filter = () => {
     selectedPriceRange.length +
     selectedBedrooms.length +
     selectedBathrooms.length +
-    selectedArea.length +
+    selectedBuiltUpArea.length +
+    selectedSuperArea.length +
     selectedListingStatus.length +
     selectedAmenities.length +
     selectedTags.length +
@@ -483,7 +519,8 @@ const Filter = () => {
     setSelectedPriceRange([])
     setSelectedBedrooms([])
     setSelectedBathrooms([])
-    setSelectedArea([])
+    setSelectedBuiltUpArea([])
+    setSelectedSuperArea([])
     setSelectedListingStatus([])
     setSelectedAmenities([])
     setSelectedTags([])
@@ -492,21 +529,157 @@ const Filter = () => {
     setSearchQuery('')
   }
 
+  // Get all selected filters as an array of objects with label, category, and remove function
+  const getSelectedFilters = () => {
+    const filters = []
+
+    // City
+    if (selectedCity) {
+      filters.push({
+        label: selectedCity,
+        category: 'City',
+        onRemove: () => setSelectedCity('')
+      })
+    }
+
+    // Categories
+    selectedCategory.forEach(cat => {
+      filters.push({
+        label: cat,
+        category: 'Category',
+        onRemove: () => setSelectedCategory(prev => prev.filter(c => c !== cat))
+      })
+    })
+
+    // Price Ranges
+    selectedPriceRange.forEach(range => {
+      filters.push({
+        label: range.label,
+        category: 'Price',
+        onRemove: () => setSelectedPriceRange(prev => prev.filter(r => r.label !== range.label))
+      })
+    })
+
+    // Bedrooms
+    selectedBedrooms.forEach(bed => {
+      filters.push({
+        label: `${bed} BHK`,
+        category: 'Bedrooms',
+        onRemove: () => setSelectedBedrooms(prev => prev.filter(b => b !== bed))
+      })
+    })
+
+    // Bathrooms
+    selectedBathrooms.forEach(bath => {
+      filters.push({
+        label: `${bath} Bath`,
+        category: 'Bathrooms',
+        onRemove: () => setSelectedBathrooms(prev => prev.filter(b => b !== bath))
+      })
+    })
+
+    // Built Up Area
+    selectedBuiltUpArea.forEach(area => {
+      filters.push({
+        label: area,
+        category: 'Built Up Area',
+        onRemove: () => setSelectedBuiltUpArea(prev => prev.filter(a => a !== area))
+      })
+    })
+
+    // Super Area
+    selectedSuperArea.forEach(area => {
+      filters.push({
+        label: area,
+        category: 'Super Area',
+        onRemove: () => setSelectedSuperArea(prev => prev.filter(a => a !== area))
+      })
+    })
+
+    // Listing Status
+    selectedListingStatus.forEach(status => {
+      filters.push({
+        label: status,
+        category: 'Property Status',
+        onRemove: () => setSelectedListingStatus(prev => prev.filter(s => s !== status))
+      })
+    })
+
+    // Amenities
+    selectedAmenities.forEach(amenity => {
+      filters.push({
+        label: amenity,
+        category: 'Amenities',
+        onRemove: () => setSelectedAmenities(prev => prev.filter(a => a !== amenity))
+      })
+    })
+
+    // Tags
+    selectedTags.forEach(tag => {
+      const tagInfo = TAG_STYLES[tag]
+      filters.push({
+        label: tagInfo?.label || tag,
+        category: 'Tags',
+        onRemove: () => setSelectedTags(prev => prev.filter(t => t !== tag))
+      })
+    })
+
+    // Sale Type
+    selectedSaleType.forEach(sale => {
+      filters.push({
+        label: sale,
+        category: 'Sale Type',
+        onRemove: () => setSelectedSaleType(prev => prev.filter(s => s !== sale))
+      })
+    })
+
+    // NRI Only
+    if (nriOnly) {
+      filters.push({
+        label: 'NRI Only',
+        category: 'Special',
+        onRemove: () => setNriOnly(false)
+      })
+    }
+
+    return filters
+  }
+
   return (
     <div className="w-full bg-white pt-24 min-h-screen">
       {/* Header */}
       <div className="bg-slate-50 border-b border-slate-200">
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
+            <div className="flex-1">
               <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: NAVY }}>
                 Property Search
               </h1>
               <p className="text-slate-600 text-sm mt-1">
                 Find your perfect property from {SAMPLE_PROPERTIES.length} listings
               </p>
+              
+              {/* Selected Filters Display */}
+              {activeFilterCount > 0 && (
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-medium text-slate-500">Active filters:</span>
+                  {getSelectedFilters().map((filter, index) => (
+                    <button
+                      key={`${filter.category}-${filter.label}-${index}`}
+                      onClick={filter.onRemove}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition-all duration-200 group"
+                    >
+                      <span className="text-slate-400 group-hover:text-red-400 text-[10px] uppercase tracking-wider font-semibold">
+                        {filter.category}:
+                      </span>
+                      <span>{filter.label}</span>
+                      <X size={12} className="text-slate-400 group-hover:text-red-500" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-shrink-0">
               {activeFilterCount > 0 && (
                 <span className="hidden sm:inline text-xs font-medium text-slate-500">
                   {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied
@@ -658,21 +831,19 @@ const Filter = () => {
                 </FilterSection>
 
                 <FilterSection
-                  title="Area"
-                  isOpen={openSections.area}
-                  onToggle={() => toggleSection('area')}
-                  badge={selectedArea.length}
+                  title="Built Up Area"
+                  isOpen={openSections.builtUpArea}
+                  onToggle={() => toggleSection('builtUpArea')}
+                  badge={selectedBuiltUpArea.length}
                 >
                   <div className="space-y-3">
-                    {AREA_RANGES.map((area) => (
+                    {BUILT_UP_AREA_OPTIONS.map((area) => (
                       <CheckboxOption
-                        key={area.label}
-                        label={area.label}
-                        checked={selectedArea.some((a) => a.label === area.label)}
-                        onChange={() => setSelectedArea((prev) =>
-                          prev.some((a) => a.label === area.label)
-                            ? prev.filter((a) => a.label !== area.label)
-                            : [...prev, area]
+                        key={area}
+                        label={area}
+                        checked={selectedBuiltUpArea.includes(area)}
+                        onChange={() => setSelectedBuiltUpArea((prev) =>
+                          prev.includes(area) ? prev.filter((a) => a !== area) : [...prev, area]
                         )}
                       />
                     ))}
@@ -680,7 +851,27 @@ const Filter = () => {
                 </FilterSection>
 
                 <FilterSection
-                  title="Listing Status"
+                  title="Super Area"
+                  isOpen={openSections.superArea}
+                  onToggle={() => toggleSection('superArea')}
+                  badge={selectedSuperArea.length}
+                >
+                  <div className="space-y-3">
+                    {SUPER_AREA_OPTIONS.map((area) => (
+                      <CheckboxOption
+                        key={area}
+                        label={area}
+                        checked={selectedSuperArea.includes(area)}
+                        onChange={() => setSelectedSuperArea((prev) =>
+                          prev.includes(area) ? prev.filter((a) => a !== area) : [...prev, area]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Property Status"
                   isOpen={openSections.listingStatus}
                   onToggle={() => toggleSection('listingStatus')}
                   badge={selectedListingStatus.length}
@@ -873,7 +1064,7 @@ const Filter = () => {
 
                     {/* Content */}
                     <div className="flex-1 p-5">
-                      {/* Tag badges + listing status + sale type + NRI */}
+                      {/* Tag badges + property status + sale type + NRI */}
                       <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
                         {property.tags.map((tagId) => {
                           const t = TAG_STYLES[tagId]

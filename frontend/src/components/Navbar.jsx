@@ -493,13 +493,13 @@ const Navbar = ({ showNavbar = true }) => {
       >
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            className="flex items-center justify-between transition-all duration-300"
+            className="flex items-center justify-between transition-all duration-300 relative"
             style={{ height: scrolled ? '68px' : '80px' }}
           >
             {/* Logo + location, matching Header */}
             <div className="flex items-center gap-4 flex-shrink-0">
               <Link to="/" className="group flex items-center space-x-2.5">
-                <img src={assets.logo} alt="Nestnbest" className="h-10 w-auto transition-transform duration-300 group-hover:scale-105" />
+                <img src={assets.logo} alt="Nestnbest" className="h-16 w-auto transition-transform duration-300 group-hover:scale-105" />
               </Link>
               <div className="relative" ref={locationRef}>
                 <button
@@ -540,7 +540,7 @@ const Navbar = ({ showNavbar = true }) => {
                           />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-1">
+                        <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-1 pb-6">
                           {POPULAR_CITIES.filter(city =>
                             city.name.toLowerCase().includes(cityQuery.toLowerCase()) ||
                             city.state.toLowerCase().includes(cityQuery.toLowerCase())
@@ -569,8 +569,8 @@ const Navbar = ({ showNavbar = true }) => {
               </div>
             </div>
 
-            {/* Navigation Links */}
-            <div className="hidden lg:flex items-center gap-7">
+            {/* Navigation Links — centered in the navbar */}
+            <div className="hidden lg:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
               {NAV_LINKS.map((link) => {
                 const hasMenu = !!MEGA_MENUS[link.label]
                 const isInsight = link.label === 'Insights'
@@ -611,7 +611,10 @@ const Navbar = ({ showNavbar = true }) => {
                   </div>
                 )
               })}
+            </div>
 
+            {/* Right-side actions */}
+            <div className="hidden lg:flex items-center gap-7">
               <Link
                 to={user ? "/post-property" : "/auth"}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"

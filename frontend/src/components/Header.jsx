@@ -55,6 +55,21 @@ const HERO_IMAGES = [assets.header, assets.header2, assets.header3, assets.heade
 // ---- Filter options for professional dropdowns ----------------------------
 const BUDGET_RANGE_OPTIONS = ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+']
 const AREA_RANGE_OPTIONS = ['300 sq ft', '500 sq ft', '750 sq ft', '1000 sq ft', '1500 sq ft', '2000 sq ft', '3000 sq ft', '5000 sq ft', '7500 sq ft', '10000 sq ft+']
+const BUILT_UP_AREA_OPTIONS = [
+  '500 sq.ft and below',
+  '501 – 750 sq.ft',
+  '751 – 1,000 sq.ft',
+  '1,001 – 1,250 sq.ft',
+  '1,251 – 1,500 sq.ft',
+  '1,501 – 2,000 sq.ft',
+  '2,001 – 2,500 sq.ft',
+  '2,501 – 3,000 sq.ft',
+  '3,001 – 4,000 sq.ft',
+  '4,001 – 5,000 sq.ft',
+  '5,001 – 7,500 sq.ft',
+  '7,501 – 10,000 sq.ft',
+  '10,000+ sq.ft'
+]
 const BEDROOM_CHIP_OPTIONS = [
   '1 RK',
   '1 BHK',
@@ -704,7 +719,19 @@ const Header = () => {
   const advancedNeighbourhoodDropdownRef = useRef(null)
   const advancedNeighbourhoodTriggerRef = useRef(null)
 
-  const ADVANCED_CATEGORIES = ['Bedroom', 'Construction Status', 'Posted By', 'Neighbourhood']
+  const [isConstructionStatusDropdownOpen, setIsConstructionStatusDropdownOpen] = useState(false)
+  const constructionStatusDropdownRef = useRef(null)
+  const constructionStatusTriggerRef = useRef(null)
+
+  const [isBuiltUpAreaDropdownOpen, setIsBuiltUpAreaDropdownOpen] = useState(false)
+  const builtUpAreaDropdownRef = useRef(null)
+  const builtUpAreaTriggerRef = useRef(null)
+
+  const [isSuperAreaDropdownOpen, setIsSuperAreaDropdownOpen] = useState(false)
+  const superAreaDropdownRef = useRef(null)
+  const superAreaTriggerRef = useRef(null)
+
+  const ADVANCED_CATEGORIES = ['Bedroom', 'Construction Status', 'Posted By', 'Built Up Area', 'Super Area', 'Neighbourhood']
 
   // Bottom filter dropdowns state
   const [openFilterDropdown, setOpenFilterDropdown] = useState(null)
@@ -720,6 +747,8 @@ const Header = () => {
     'Possession Status': [],
     Furnishing: [],
     Area: { min: '', max: '' },
+    'Built Up Area': [],
+    'Super Area': [],
     Neighbourhood: [],
   })
   const [pendingFilterValue, setPendingFilterValue] = useState(null)
@@ -761,6 +790,9 @@ const Header = () => {
     setIsBHKDropdownOpen(false)
     setIsToiletDropdownOpen(false)
     setIsAdvancedNeighbourhoodDropdownOpen(false)
+    setIsConstructionStatusDropdownOpen(false)
+    setIsBuiltUpAreaDropdownOpen(false)
+    setIsSuperAreaDropdownOpen(false)
     setOpenFilterDropdown(null)
     setIsMenuDropdownOpen(false)
     setOpenMegaMenu(null)
@@ -829,6 +861,7 @@ const Header = () => {
       [bhkTriggerRef, bhkDropdownRef],
       [toiletTriggerRef, toiletDropdownRef],
       [advancedNeighbourhoodTriggerRef, advancedNeighbourhoodDropdownRef],
+      [constructionStatusTriggerRef, constructionStatusDropdownRef],
       [menuTriggerRef, menuDropdownRef],
     ]
 
@@ -911,7 +944,7 @@ const Header = () => {
   }, [isNeighbourhoodDropdownOpen])
 
   const advancedDropdownPosition = useDropdownPosition(isAdvancedDropdownOpen, advancedTriggerRef, (rect) => {
-    const dropdownWidth = 700
+    const dropdownWidth = 1000
     const viewportWidth = window.innerWidth
     let left = rect.left
     if (left + dropdownWidth > viewportWidth - 16) left = viewportWidth - dropdownWidth - 16
@@ -976,11 +1009,77 @@ const Header = () => {
     (rect) => ({ top: rect.bottom + 8, left: rect.left - 100 })
   )
 
+  const constructionStatusDropdownPosition = useDropdownPosition(
+    isConstructionStatusDropdownOpen,
+    constructionStatusTriggerRef,
+    (rect) => ({ top: rect.bottom + 8, left: rect.left })
+  )
+
+  const builtUpAreaDropdownPosition = useDropdownPosition(
+    isBuiltUpAreaDropdownOpen,
+    builtUpAreaTriggerRef,
+    (rect) => ({ top: rect.bottom + 8, left: rect.left })
+  )
+
+  const superAreaDropdownPosition = useDropdownPosition(
+    isSuperAreaDropdownOpen,
+    superAreaTriggerRef,
+    (rect) => ({ top: rect.bottom + 8, left: rect.left })
+  )
+
+  // Close Construction Status dropdown on page scroll
+  useEffect(() => {
+    if (!isConstructionStatusDropdownOpen) return
+
+    const handleScroll = () => {
+      setIsConstructionStatusDropdownOpen(false)
+    }
+
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isConstructionStatusDropdownOpen])
+
+  // Close Built Up Area dropdown on page scroll
+  useEffect(() => {
+    if (!isBuiltUpAreaDropdownOpen) return
+
+    const handleScroll = (e) => {
+      // Don't close if scrolling inside the dropdown itself
+      if (builtUpAreaDropdownRef.current && builtUpAreaDropdownRef.current.contains(e.target)) {
+        return
+      }
+      setIsBuiltUpAreaDropdownOpen(false)
+    }
+
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isBuiltUpAreaDropdownOpen])
+
+  // Close Super Area dropdown on page scroll
+  useEffect(() => {
+    if (!isSuperAreaDropdownOpen) return
+
+    const handleScroll = (e) => {
+      // Don't close if scrolling inside the dropdown itself
+      if (superAreaDropdownRef.current && superAreaDropdownRef.current.contains(e.target)) {
+        return
+      }
+      setIsSuperAreaDropdownOpen(false)
+    }
+
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isSuperAreaDropdownOpen])
+
   // Close Advanced Neighbourhood dropdown on page scroll
   useEffect(() => {
     if (!isAdvancedNeighbourhoodDropdownOpen) return
 
-    const handleScroll = () => {
+    const handleScroll = (e) => {
+      // Don't close if scrolling inside the dropdown itself
+      if (advancedNeighbourhoodDropdownRef.current && advancedNeighbourhoodDropdownRef.current.contains(e.target)) {
+        return
+      }
       setIsAdvancedNeighbourhoodDropdownOpen(false)
     }
 
@@ -1139,11 +1238,11 @@ const Header = () => {
         {/* Top nav overlay */}
         <div className="relative z-20">
           <div className="max-w-8xl bg-black/40 mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
+            <div className="flex items-center justify-between h-16 relative">
               {/* Logo + location */}
               <div className="flex items-center gap-4">
                 <Link to="/" className="flex items-center">
-                  <img src={assets.logo2} alt="Nestnbest" className="h-10 w-auto" />
+                  <img src={assets.logo2} alt="Nestnbest" className="h-16 w-auto" />
                 </Link>
 
                 <div className="relative" ref={locationRef}>
@@ -1163,7 +1262,7 @@ const Header = () => {
                     createPortal(
                       <div
                         ref={dropdownRef}
-                        className="fixed w-[400px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
+                        className="fixed w-[400px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 pb-5"
                         style={{ top: `${dropdownPosition.top}px`, left: `${dropdownPosition.left}px`, maxHeight: '400px' }}
                       >
                         <div className="p-4 pb-4">
@@ -1182,7 +1281,7 @@ const Header = () => {
                             />
                           </div>
 
-                          <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-1">
+                          <div className="grid pb-10 grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-1">
                             {POPULAR_CITIES.filter(city =>
                               city.name.toLowerCase().includes(cityQuery.toLowerCase()) ||
                               city.state.toLowerCase().includes(cityQuery.toLowerCase())
@@ -1211,8 +1310,8 @@ const Header = () => {
                 </div>
               </div>
 
-              {/* Right nav links */}
-              <div className="hidden lg:flex items-center gap-7">
+              {/* Centered nav links */}
+              <div className="hidden lg:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
                 {NAV_LINKS.map((link) => {
                   const hasMenu = !!MEGA_MENUS[link.label]
                   const isInsight = link.label === 'Insights'
@@ -1253,7 +1352,10 @@ const Header = () => {
                     </div>
                   )
                 })}
+              </div>
 
+              {/* Right-side actions */}
+              <div className="hidden lg:flex items-center gap-7">
                 <Link
                   to="/auth"
                   className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg"
@@ -1656,9 +1758,9 @@ const Header = () => {
                     <div
                       ref={searchCityDropdownRef}
                       className="fixed w-[400px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40"
-                      style={{ top: `${searchCityDropdownPosition.top}px`, left: `${searchCityDropdownPosition.left}px`, maxHeight: '350px' }}
+                      style={{ top: `${searchCityDropdownPosition.top}px`, left: `${searchCityDropdownPosition.left}px`, maxHeight: '400px' }}
                     >
-                      <div className="p-4 pb-3">
+                      <div className="p-4 pb-4">
                         <h3 className="text-lg font-bold mb-3" style={{ color: NAVY }}>
                           Select City
                         </h3>
@@ -1674,7 +1776,7 @@ const Header = () => {
                           />
                         </div>
 
-                        <div className="grid grid-cols-3 gap-2 max-h-[220px] overflow-y-auto pr-2">
+                        <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-1 pb-6">
                           {POPULAR_CITIES.filter(city =>
                             city.name.toLowerCase().includes(cityQuery.toLowerCase()) ||
                             city.state.toLowerCase().includes(cityQuery.toLowerCase())
@@ -1686,10 +1788,13 @@ const Header = () => {
                                 setCityQuery(city.name)
                                 setIsSearchCityDropdownOpen(false)
                               }}
-                              className="flex items-center justify-center p-3 rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-center group min-h-[60px]"
+                              className="p-2 rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all duration-200 text-left"
                             >
-                              <div className="font-semibold text-xs group-hover:text-[#1E88E5] transition-colors duration-200 leading-tight" style={{ color: NAVY }}>
+                              <div className="font-semibold text-sm" style={{ color: NAVY }}>
                                 {city.name}
+                              </div>
+                              <div className="text-xs text-slate-500 mt-0.5">
+                                {city.state}
                               </div>
                             </button>
                           ))}
@@ -1733,12 +1838,12 @@ const Header = () => {
                   createPortal(
                     <div
                       ref={advancedDropdownRef}
-                      className="fixed w-[700px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                      className="fixed w-[1000px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                       style={{ top: `${advancedDropdownPosition.top}px`, left: `${advancedDropdownPosition.left}px` }}
                     >
                       <div className="p-5">
                         <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Advanced Filters</h4>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-6 gap-4">
                           {/* Bedroom */}
                           <div className="relative" ref={bedroomTriggerRef}>
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Bedroom</label>
@@ -1904,21 +2009,50 @@ const Header = () => {
                           </div>
 
                           {/* Construction Status */}
-                          <div>
+                          <div className="relative" ref={constructionStatusTriggerRef}>
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Construction Status</label>
-                            <select
-                              value={selectedFilters['Construction Status'][0] || ''}
-                              onChange={(e) => {
-                                setSelectedFilters(prev => ({
-                                  ...prev,
-                                  'Construction Status': e.target.value ? [e.target.value] : []
-                                }))
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setIsConstructionStatusDropdownOpen((open) => !open)
                               }}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
-                              <option value="">Select</option>
-                              {CHECKBOX_FILTER_OPTIONS['Construction Status'].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                            </select>
+                              <span>{selectedFilters['Construction Status']?.length ? `${selectedFilters['Construction Status'].length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isConstructionStatusDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isConstructionStatusDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={constructionStatusDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${constructionStatusDropdownPosition.top}px`, left: `${constructionStatusDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {CHECKBOX_FILTER_OPTIONS['Construction Status'].map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters['Construction Status']?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Construction Status': e.target.checked
+                                                ? [...(prev['Construction Status'] || []), opt]
+                                                : prev['Construction Status'].filter(s => s !== opt)
+                                            }))
+                                          }}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
                           </div>
 
                           {/* Posted By */}
@@ -1937,6 +2071,100 @@ const Header = () => {
                               <option value="">Select</option>
                               {CHECKBOX_FILTER_OPTIONS['Posted By'].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                             </select>
+                          </div>
+
+                          {/* Built Up Area */}
+                          <div className="relative" ref={builtUpAreaTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Built Up Area</label>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setIsBuiltUpAreaDropdownOpen((open) => !open)
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                            >
+                              <span>{selectedFilters['Built Up Area']?.length ? `${selectedFilters['Built Up Area'].length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isBuiltUpAreaDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isBuiltUpAreaDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={builtUpAreaDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${builtUpAreaDropdownPosition.top}px`, left: `${builtUpAreaDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {BUILT_UP_AREA_OPTIONS.map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters['Built Up Area']?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Built Up Area': e.target.checked
+                                                ? [...(prev['Built Up Area'] || []), opt]
+                                                : prev['Built Up Area'].filter(s => s !== opt)
+                                            }))
+                                          }}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
+                          </div>
+
+                          {/* Super Area */}
+                          <div className="relative" ref={superAreaTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Super Area</label>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setIsSuperAreaDropdownOpen((open) => !open)
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                            >
+                              <span>{selectedFilters['Super Area']?.length ? `${selectedFilters['Super Area'].length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isSuperAreaDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isSuperAreaDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={superAreaDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${superAreaDropdownPosition.top}px`, left: `${superAreaDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {BUILT_UP_AREA_OPTIONS.map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters['Super Area']?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Super Area': e.target.checked
+                                                ? [...(prev['Super Area'] || []), opt]
+                                                : prev['Super Area'].filter(s => s !== opt)
+                                            }))
+                                          }}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
                           </div>
 
                           {/* Neighbourhood */}
