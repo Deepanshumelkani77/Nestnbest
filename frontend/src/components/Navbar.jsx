@@ -31,7 +31,6 @@ const NAV_LINKS = [
   { label: 'For Sellers' },
   { label: 'For Tenants' },
   { label: 'Services' },
-  { label: 'Insights', badge: 'NEW' },
 ]
 
 const AD_CARDS = {
@@ -573,41 +572,26 @@ const Navbar = ({ showNavbar = true }) => {
             <div className="hidden lg:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
               {NAV_LINKS.map((link) => {
                 const hasMenu = !!MEGA_MENUS[link.label]
-                const isInsight = link.label === 'Insights'
                 return (
                   <div key={link.label} className="relative" ref={hasMenu ? (el) => (megaTriggerRefs.current[link.label] = el) : null}>
-                    {isInsight ? (
-                      <Link
-                        to="/insight"
-                        className="relative flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#193C06] transition-colors duration-200"
-                      >
-                        {link.label}
-                        {link.badge && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
-                            {link.badge}
-                          </span>
-                        )}
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={() => (hasMenu ? toggleMegaMenu(link.label) : undefined)}
-                        className="relative flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#193C06] transition-colors duration-200"
-                      >
-                        {link.label}
-                        {link.badge && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
-                            {link.badge}
-                          </span>
-                        )}
-                        {hasMenu && (
-                          <ChevronDown
-                            size={14}
-                            className="transition-transform duration-200"
-                            style={{ transform: openMegaMenu === link.label ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                          />
-                        )}
-                      </button>
-                    )}
+                    <button
+                      onClick={() => (hasMenu ? toggleMegaMenu(link.label) : undefined)}
+                      className="relative flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-[#193C06] transition-colors duration-200"
+                    >
+                      {link.label}
+                      {link.badge && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                          {link.badge}
+                        </span>
+                      )}
+                      {hasMenu && (
+                        <ChevronDown
+                          size={14}
+                          className="transition-transform duration-200"
+                          style={{ transform: openMegaMenu === link.label ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                        />
+                      )}
+                    </button>
                   </div>
                 )
               })}
@@ -738,6 +722,12 @@ const Navbar = ({ showNavbar = true }) => {
                         </Link>
                         <Link to="/career" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                           Career
+                        </Link>
+                        <Link to="/insight" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
+                          Insights
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                            NEW
+                          </span>
                         </Link>
                         <Link to="/filter" onClick={() => setIsMenuDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors duration-200">
                           Property Search

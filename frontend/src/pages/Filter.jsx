@@ -191,13 +191,51 @@ const TAGS = [
 ]
 
 const SALE_TYPES = [
-  'Primary Sale / New Booking(No Brokerage)',
+  'Primary Sale / New Booking (No Brokerage)',
   'Secondary Sale  (Resale)',
+]
+
+const POSTED_BY = ['Owner', 'Agent', 'Builder']
+
+const POSSESSION_STATUS = ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year']
+
+const FURNISHING = ['Furnished', 'Semi-Furnished', 'Unfurnished']
+
+const FLOOR_NUMBER = ['Ground Floor', '1st Floor', '2nd Floor', '3rd Floor', '4th Floor', '5th Floor', '6th Floor +']
+
+const AGE_OF_PROPERTY = ['New Construction', '0-5 Years', '5-10 Years', '10+ Years']
+
+const FACING = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West']
+
+const PARKING_COUNT = ['1', '2', '3', '4', '5+']
+
+const PARKING_TYPE = [
+  'Covered Parking - Basement',
+  'Covered Parking - Podium',
+  'Covered Parking - Mechanical',
+  'Open Parking',
+  'No Parking'
+]
+
+const WATER_SOURCE = ['Municipal', 'Borewell', 'Tanker', 'Well']
+
+const MAINTENANCE_CHARGES = ['Below ₹2000', '₹2000 - ₹5000', '₹5000 - ₹10000', 'Above ₹10000']
+
+const POSTED_SINCE = [
+  'Last 12 Hours',
+  'Last 24 Hours',
+  'Last 3 Days',
+  'Last 7 Days',
+  'Last 15 Days',
+  'Last 30 Days',
+  'Last 3 Months',
+  'Last 6 Months',
+  'Last 1 Year'
 ]
 
 const TAG_STYLES = {
   rera: { text: '#047857', bg: '#ECFDF5', icon: ShieldCheck, label: 'RERA Compliant' },
-  preferred: { text: '#B45309', bg: '#FFFBEB', icon: Award, label: 'Preferred' },
+  preferred: { text: '#B45309', bg: '#FFFBEB', icon: Award, label: 'Preferred Property' },
   verified: { text: '#1D4ED8', bg: '#EFF6FF', icon: BadgeCheck, label: 'Verified' },
   preferredAgent: { text: '#7C3AED', bg: '#F5F3FF', icon: Users, label: 'Preferred Agent' },
 }
@@ -379,7 +417,20 @@ const Filter = () => {
   const [selectedAmenities, setSelectedAmenities] = useState([])
   const [selectedTags, setSelectedTags] = useState([])
   const [selectedSaleType, setSelectedSaleType] = useState([])
+  const [selectedPostedBy, setSelectedPostedBy] = useState([])
+  const [selectedPossessionStatus, setSelectedPossessionStatus] = useState([])
+  const [selectedFurnishing, setSelectedFurnishing] = useState([])
+  const [selectedFloorNumber, setSelectedFloorNumber] = useState([])
+  const [selectedAgeOfProperty, setSelectedAgeOfProperty] = useState([])
+  const [selectedFacing, setSelectedFacing] = useState([])
+  const [selectedParkingCount, setSelectedParkingCount] = useState([])
+  const [selectedParkingType, setSelectedParkingType] = useState([])
+  const [selectedWaterSource, setSelectedWaterSource] = useState([])
+  const [selectedMaintenanceCharges, setSelectedMaintenanceCharges] = useState([])
+  const [selectedPostedSince, setSelectedPostedSince] = useState([])
   const [nriOnly, setNriOnly] = useState(false)
+  const [photosOnly, setPhotosOnly] = useState(false)
+  const [videosOnly, setVideosOnly] = useState(false)
   const [showNriInfo, setShowNriInfo] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -394,6 +445,17 @@ const Filter = () => {
     listingStatus: false,
     saleType: false,
     amenities: false,
+    postedBy: false,
+    possessionStatus: false,
+    furnishing: false,
+    floorNumber: false,
+    ageOfProperty: false,
+    facing: false,
+    parkingCount: false,
+    parkingType: false,
+    waterSource: false,
+    maintenanceCharges: false,
+    postedSince: false,
   })
 
   // Initialize filters from URL params
@@ -510,7 +572,20 @@ const Filter = () => {
     selectedAmenities.length +
     selectedTags.length +
     selectedSaleType.length +
+    selectedPostedBy.length +
+    selectedPossessionStatus.length +
+    selectedFurnishing.length +
+    selectedFloorNumber.length +
+    selectedAgeOfProperty.length +
+    selectedFacing.length +
+    selectedParkingCount.length +
+    selectedParkingType.length +
+    selectedWaterSource.length +
+    selectedMaintenanceCharges.length +
+    selectedPostedSince.length +
     (nriOnly ? 1 : 0) +
+    (photosOnly ? 1 : 0) +
+    (videosOnly ? 1 : 0) +
     (selectedCity ? 1 : 0)
 
   const clearAllFilters = () => {
@@ -525,7 +600,20 @@ const Filter = () => {
     setSelectedAmenities([])
     setSelectedTags([])
     setSelectedSaleType([])
+    setSelectedPostedBy([])
+    setSelectedPossessionStatus([])
+    setSelectedFurnishing([])
+    setSelectedFloorNumber([])
+    setSelectedAgeOfProperty([])
+    setSelectedFacing([])
+    setSelectedParkingCount([])
+    setSelectedParkingType([])
+    setSelectedWaterSource([])
+    setSelectedMaintenanceCharges([])
+    setSelectedPostedSince([])
     setNriOnly(false)
+    setPhotosOnly(false)
+    setVideosOnly(false)
     setSearchQuery('')
   }
 
@@ -633,12 +721,129 @@ const Filter = () => {
       })
     })
 
+    // Posted By
+    selectedPostedBy.forEach(option => {
+      filters.push({
+        label: option,
+        category: 'Posted By',
+        onRemove: () => setSelectedPostedBy(prev => prev.filter(o => o !== option))
+      })
+    })
+
+    // Possession Status
+    selectedPossessionStatus.forEach(status => {
+      filters.push({
+        label: status,
+        category: 'Possession',
+        onRemove: () => setSelectedPossessionStatus(prev => prev.filter(s => s !== status))
+      })
+    })
+
+    // Furnishing
+    selectedFurnishing.forEach(option => {
+      filters.push({
+        label: option,
+        category: 'Furnishing',
+        onRemove: () => setSelectedFurnishing(prev => prev.filter(o => o !== option))
+      })
+    })
+
+    // Floor Number
+    selectedFloorNumber.forEach(floor => {
+      filters.push({
+        label: floor,
+        category: 'Floor',
+        onRemove: () => setSelectedFloorNumber(prev => prev.filter(f => f !== floor))
+      })
+    })
+
+    // Age of Property
+    selectedAgeOfProperty.forEach(age => {
+      filters.push({
+        label: age,
+        category: 'Property Age',
+        onRemove: () => setSelectedAgeOfProperty(prev => prev.filter(a => a !== age))
+      })
+    })
+
+    // Facing
+    selectedFacing.forEach(direction => {
+      filters.push({
+        label: direction,
+        category: 'Facing',
+        onRemove: () => setSelectedFacing(prev => prev.filter(d => d !== direction))
+      })
+    })
+
+    // Parking Count
+    selectedParkingCount.forEach(count => {
+      filters.push({
+        label: `${count} Parking`,
+        category: 'Parking',
+        onRemove: () => setSelectedParkingCount(prev => prev.filter(c => c !== count))
+      })
+    })
+
+    // Parking Type
+    selectedParkingType.forEach(type => {
+      filters.push({
+        label: type,
+        category: 'Parking',
+        onRemove: () => setSelectedParkingType(prev => prev.filter(t => t !== type))
+      })
+    })
+
+    // Water Source
+    selectedWaterSource.forEach(source => {
+      filters.push({
+        label: source,
+        category: 'Water',
+        onRemove: () => setSelectedWaterSource(prev => prev.filter(s => s !== source))
+      })
+    })
+
+    // Maintenance Charges
+    selectedMaintenanceCharges.forEach(charges => {
+      filters.push({
+        label: charges,
+        category: 'Maintenance',
+        onRemove: () => setSelectedMaintenanceCharges(prev => prev.filter(c => c !== charges))
+      })
+    })
+
+    // Posted Since
+    selectedPostedSince.forEach(time => {
+      filters.push({
+        label: time,
+        category: 'Posted',
+        onRemove: () => setSelectedPostedSince(prev => prev.filter(t => t !== time))
+      })
+    })
+
     // NRI Only
     if (nriOnly) {
       filters.push({
         label: 'NRI Only',
         category: 'Special',
         onRemove: () => setNriOnly(false)
+      })
+    }
+
+    // Photos Only
+    if (photosOnly) {
+      filters.push({
+        label: 'Photos Only',
+        category: 'Media',
+        onRemove: () => setPhotosOnly(false)
+      })
+    }
+
+    // Videos Only
+    if (videosOnly) {
+      filters.push({
+        label: 'Videos Only',
+        category: 'Media',
+        onRemove: () => setVideosOnly(false)
       })
     }
 
@@ -656,7 +861,7 @@ const Filter = () => {
                 Property Search
               </h1>
               <p className="text-slate-600 text-sm mt-1">
-                Find your perfect property from {SAMPLE_PROPERTIES.length} listings
+                Find your perfect property from <span className="font-semibold" style={{ color: NAVY }}>{SAMPLE_PROPERTIES.length}</span> listings
               </p>
               
               {/* Selected Filters Display */}
@@ -734,6 +939,21 @@ const Filter = () => {
 
               {/* Filter Sections */}
               <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
+                {/* Quick Filters */}
+                <div className="p-5 border-b border-slate-100">
+                  <h3 className="font-semibold text-sm mb-3" style={{ color: NAVY }}>Quick Filters</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {['Verified Only', 'New Listings', 'Price Drop', 'Photos Only'].map((filter) => (
+                      <button
+                        key={filter}
+                        className="px-3 py-1.5 rounded-full text-xs font-medium border border-slate-200 text-slate-600 hover:border-[#1E88E5] hover:text-[#1E88E5] transition-all duration-200"
+                      >
+                        {filter}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <FilterSection
                   title="Property Category"
                   isOpen={openSections.category}
@@ -928,6 +1148,226 @@ const Filter = () => {
                   </div>
                 </FilterSection>
 
+                <FilterSection
+                  title="Posted By"
+                  isOpen={openSections.postedBy}
+                  onToggle={() => toggleSection('postedBy')}
+                  badge={selectedPostedBy.length}
+                >
+                  <div className="space-y-3">
+                    {POSTED_BY.map((option) => (
+                      <CheckboxOption
+                        key={option}
+                        label={option}
+                        checked={selectedPostedBy.includes(option)}
+                        onChange={() => setSelectedPostedBy((prev) =>
+                          prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Possession Status"
+                  isOpen={openSections.possessionStatus}
+                  onToggle={() => toggleSection('possessionStatus')}
+                  badge={selectedPossessionStatus.length}
+                >
+                  <div className="space-y-3">
+                    {POSSESSION_STATUS.map((status) => (
+                      <CheckboxOption
+                        key={status}
+                        label={status}
+                        checked={selectedPossessionStatus.includes(status)}
+                        onChange={() => setSelectedPossessionStatus((prev) =>
+                          prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Furnishing"
+                  isOpen={openSections.furnishing}
+                  onToggle={() => toggleSection('furnishing')}
+                  badge={selectedFurnishing.length}
+                >
+                  <div className="space-y-3">
+                    {FURNISHING.map((option) => (
+                      <CheckboxOption
+                        key={option}
+                        label={option}
+                        checked={selectedFurnishing.includes(option)}
+                        onChange={() => setSelectedFurnishing((prev) =>
+                          prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Floor Number"
+                  isOpen={openSections.floorNumber}
+                  onToggle={() => toggleSection('floorNumber')}
+                  badge={selectedFloorNumber.length}
+                >
+                  <div className="space-y-3">
+                    {FLOOR_NUMBER.map((floor) => (
+                      <CheckboxOption
+                        key={floor}
+                        label={floor}
+                        checked={selectedFloorNumber.includes(floor)}
+                        onChange={() => setSelectedFloorNumber((prev) =>
+                          prev.includes(floor) ? prev.filter((f) => f !== floor) : [...prev, floor]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Age of Property"
+                  isOpen={openSections.ageOfProperty}
+                  onToggle={() => toggleSection('ageOfProperty')}
+                  badge={selectedAgeOfProperty.length}
+                >
+                  <div className="space-y-3">
+                    {AGE_OF_PROPERTY.map((age) => (
+                      <CheckboxOption
+                        key={age}
+                        label={age}
+                        checked={selectedAgeOfProperty.includes(age)}
+                        onChange={() => setSelectedAgeOfProperty((prev) =>
+                          prev.includes(age) ? prev.filter((a) => a !== age) : [...prev, age]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Facing"
+                  isOpen={openSections.facing}
+                  onToggle={() => toggleSection('facing')}
+                  badge={selectedFacing.length}
+                >
+                  <div className="space-y-3">
+                    {FACING.map((direction) => (
+                      <CheckboxOption
+                        key={direction}
+                        label={direction}
+                        checked={selectedFacing.includes(direction)}
+                        onChange={() => setSelectedFacing((prev) =>
+                          prev.includes(direction) ? prev.filter((d) => d !== direction) : [...prev, direction]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="No. of Parkings"
+                  isOpen={openSections.parkingCount}
+                  onToggle={() => toggleSection('parkingCount')}
+                  badge={selectedParkingCount.length}
+                >
+                  <div className="space-y-3">
+                    {PARKING_COUNT.map((count) => (
+                      <CheckboxOption
+                        key={count}
+                        label={count}
+                        checked={selectedParkingCount.includes(count)}
+                        onChange={() => setSelectedParkingCount((prev) =>
+                          prev.includes(count) ? prev.filter((c) => c !== count) : [...prev, count]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Type of Parking"
+                  isOpen={openSections.parkingType}
+                  onToggle={() => toggleSection('parkingType')}
+                  badge={selectedParkingType.length}
+                >
+                  <div className="space-y-3">
+                    {PARKING_TYPE.map((type) => (
+                      <CheckboxOption
+                        key={type}
+                        label={type}
+                        checked={selectedParkingType.includes(type)}
+                        onChange={() => setSelectedParkingType((prev) =>
+                          prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Water Source"
+                  isOpen={openSections.waterSource}
+                  onToggle={() => toggleSection('waterSource')}
+                  badge={selectedWaterSource.length}
+                >
+                  <div className="space-y-3">
+                    {WATER_SOURCE.map((source) => (
+                      <CheckboxOption
+                        key={source}
+                        label={source}
+                        checked={selectedWaterSource.includes(source)}
+                        onChange={() => setSelectedWaterSource((prev) =>
+                          prev.includes(source) ? prev.filter((s) => s !== source) : [...prev, source]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Maintenance Charges"
+                  isOpen={openSections.maintenanceCharges}
+                  onToggle={() => toggleSection('maintenanceCharges')}
+                  badge={selectedMaintenanceCharges.length}
+                >
+                  <div className="space-y-3">
+                    {MAINTENANCE_CHARGES.map((charges) => (
+                      <CheckboxOption
+                        key={charges}
+                        label={charges}
+                        checked={selectedMaintenanceCharges.includes(charges)}
+                        onChange={() => setSelectedMaintenanceCharges((prev) =>
+                          prev.includes(charges) ? prev.filter((c) => c !== charges) : [...prev, charges]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
+                <FilterSection
+                  title="Posted Since"
+                  isOpen={openSections.postedSince}
+                  onToggle={() => toggleSection('postedSince')}
+                  badge={selectedPostedSince.length}
+                >
+                  <div className="space-y-3">
+                    {POSTED_SINCE.map((time) => (
+                      <CheckboxOption
+                        key={time}
+                        label={time}
+                        checked={selectedPostedSince.includes(time)}
+                        onChange={() => setSelectedPostedSince((prev) =>
+                          prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time]
+                        )}
+                      />
+                    ))}
+                  </div>
+                </FilterSection>
+
                 {/* NRI Property — separate toggle since it is a single flag, not a multi-select list */}
                 <div className="border-b border-slate-100 last:border-b-0 px-5 py-4">
                   <div className="flex items-center justify-between gap-3">
@@ -960,6 +1400,54 @@ const Filter = () => {
                       <span
                         className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
                           nriOnly ? 'translate-x-5' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Properties with Photos */}
+                <div className="border-b border-slate-100 last:border-b-0 px-5 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <Camera size={16} style={{ color: NAVY }} />
+                      <span className="font-semibold text-sm" style={{ color: NAVY }}>Properties with Photos</span>
+                    </div>
+                    <button
+                      onClick={() => setPhotosOnly((v) => !v)}
+                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
+                        photosOnly ? 'bg-blue-500' : 'bg-slate-300'
+                      }`}
+                      role="switch"
+                      aria-checked={photosOnly}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
+                          photosOnly ? 'translate-x-5' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Properties with Videos */}
+                <div className="border-b border-slate-100 last:border-b-0 px-5 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <Video size={16} style={{ color: NAVY }} />
+                      <span className="font-semibold text-sm" style={{ color: NAVY }}>Properties with Videos</span>
+                    </div>
+                    <button
+                      onClick={() => setVideosOnly((v) => !v)}
+                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
+                        videosOnly ? 'bg-blue-500' : 'bg-slate-300'
+                      }`}
+                      role="switch"
+                      aria-checked={videosOnly}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
+                          videosOnly ? 'translate-x-5' : 'translate-x-0'
                         }`}
                       />
                     </button>
@@ -1002,18 +1490,40 @@ const Filter = () => {
             </div>
 
             {/* Results Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
               <p className="text-slate-600 text-sm">
                 Showing <span className="font-semibold" style={{ color: NAVY }}>{filteredProperties.length}</span> properties
               </p>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-slate-600">Sort by:</span>
-                <select className="text-sm font-medium border-0 bg-transparent focus:outline-none cursor-pointer" style={{ color: NAVY }}>
-                  <option>Relevance</option>
-                  <option>Price: Low to High</option>
-                  <option>Price: High to Low</option>
-                  <option>Newest First</option>
-                </select>
+              <div className="flex flex-wrap items-center gap-3">
+                {/* View Toggle */}
+                <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                  <button className="p-1.5 rounded-md bg-white shadow-sm text-slate-700">
+                    <Layers size={16} />
+                  </button>
+                  <button className="p-1.5 rounded-md text-slate-400 hover:text-slate-600">
+                    <MapPin size={16} />
+                  </button>
+                </div>
+                
+                {/* Sort */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-slate-600">Sort by:</span>
+                  <select className="text-sm font-medium border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-blue-500 cursor-pointer" style={{ color: NAVY }}>
+                    <option>Relevance</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Newest First</option>
+                    <option>Most Popular</option>
+                    <option>Area: Low to High</option>
+                    <option>Area: High to Low</option>
+                  </select>
+                </div>
+
+                {/* Save Search */}
+                <button className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                  <Star size={14} className="text-slate-400" />
+                  Save Search
+                </button>
               </div>
             </div>
 
@@ -1036,7 +1546,7 @@ const Filter = () => {
                         <div className="absolute top-3 left-3">
                           <span className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-yellow-900">
                             <Star size={12} fill="currentColor" />
-                            Featured
+                            Preferred Property
                           </span>
                         </div>
                       )}
