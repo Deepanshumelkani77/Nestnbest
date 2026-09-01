@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   Search,
@@ -433,9 +433,6 @@ const Filter = () => {
   const [videosOnly, setVideosOnly] = useState(false)
   const [showNriInfo, setShowNriInfo] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
-  const mobileFilterRef = useRef(null)
 
   const [openSections, setOpenSections] = useState({
     category: true,
@@ -888,18 +885,6 @@ const Filter = () => {
               )}
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">
-              <button
-                onClick={() => setIsMobileFilterOpen(true)}
-                className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors duration-200"
-              >
-                <Filter size={16} />
-                Filters
-                {activeFilterCount > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#1E88E5] text-white">
-                    {activeFilterCount}
-                  </span>
-                )}
-              </button>
               {activeFilterCount > 0 && (
                 <span className="hidden sm:inline text-xs font-medium text-slate-500">
                   {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied
@@ -907,7 +892,7 @@ const Filter = () => {
               )}
               <button
                 onClick={clearAllFilters}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors duration-200"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors duration-200"
               >
                 <X size={16} />
                 Clear All
@@ -920,240 +905,6 @@ const Filter = () => {
           </div>
         </div>
       </div>
-
-      {/* Mobile Filter Drawer */}
-      {isMobileFilterOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div 
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setIsMobileFilterOpen(false)}
-          />
-          <div 
-            ref={mobileFilterRef}
-            className="absolute right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl overflow-y-auto"
-          >
-            <div className="p-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white z-10">
-              <h3 className="text-lg font-bold" style={{ color: NAVY }}>Filters</h3>
-              <div className="flex items-center gap-2">
-                {activeFilterCount > 0 && (
-                  <button
-                    onClick={clearAllFilters}
-                    className="text-sm font-medium text-slate-600 hover:text-red-600"
-                  >
-                    Clear All
-                  </button>
-                )}
-                <button onClick={() => setIsMobileFilterOpen(false)} className="p-2">
-                  <X size={20} />
-                </button>
-              </div>
-            </div>
-            <div className="p-4">
-              {/* Property Type */}
-              <div className="mb-6">
-                <h3 className="font-semibold text-sm mb-4" style={{ color: NAVY }}>Property Type</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {PROPERTY_TYPES.map((type) => {
-                    const Icon = type.icon
-                    return (
-                      <button
-                        key={type.id}
-                        onClick={() => setSelectedType(type.id)}
-                        className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
-                          selectedType === type.id
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-slate-200 hover:border-slate-300'
-                        }`}
-                      >
-                        <Icon size={20} style={{ color: selectedType === type.id ? BLUE : '#64748B' }} />
-                        <span className="text-xs font-medium" style={{ color: selectedType === type.id ? NAVY : '#64748B' }}>
-                          {type.label}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Filter Sections */}
-              <div className="space-y-4">
-                {/* Price Range */}
-                <FilterSection
-                  title="Price Range"
-                  isOpen={openSections.price}
-                  onToggle={() => toggleSection('price')}
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <IndianRupee size={16} className="text-slate-400" />
-                      <input
-                        type="number"
-                        placeholder="Min"
-                        value={selectedPriceMin}
-                        onChange={(e) => setSelectedPriceMin(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1E88E5]"
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <IndianRupee size={16} className="text-slate-400" />
-                      <input
-                        type="number"
-                        placeholder="Max"
-                        value={selectedPriceMax}
-                        onChange={(e) => setSelectedPriceMax(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1E88E5]"
-                      />
-                    </div>
-                  </div>
-                </FilterSection>
-
-                {/* Bedrooms */}
-                <FilterSection
-                  title="Bedrooms"
-                  isOpen={openSections.bedrooms}
-                  onToggle={() => toggleSection('bedrooms')}
-                  badge={selectedBedrooms.length}
-                >
-                  <div className="space-y-2">
-                    {BEDROOMS.map((count) => (
-                      <CheckboxOption
-                        key={count}
-                        label={count}
-                        checked={selectedBedrooms.includes(count)}
-                        onChange={() => setSelectedBedrooms((prev) =>
-                          prev.includes(count) ? prev.filter((c) => c !== count) : [...prev, count]
-                        )}
-                      />
-                    ))}
-                  </div>
-                </FilterSection>
-
-                {/* Bathrooms */}
-                <FilterSection
-                  title="Bathrooms"
-                  isOpen={openSections.bathrooms}
-                  onToggle={() => toggleSection('bathrooms')}
-                  badge={selectedBathrooms.length}
-                >
-                  <div className="space-y-2">
-                    {BATHROOMS.map((count) => (
-                      <CheckboxOption
-                        key={count}
-                        label={count}
-                        checked={selectedBathrooms.includes(count)}
-                        onChange={() => setSelectedBathrooms((prev) =>
-                          prev.includes(count) ? prev.filter((c) => c !== count) : [...prev, count]
-                        )}
-                      />
-                    ))}
-                  </div>
-                </FilterSection>
-
-                {/* Tags */}
-                <FilterSection
-                  title="Tags"
-                  isOpen={openSections.tags}
-                  onToggle={() => toggleSection('tags')}
-                  badge={selectedTags.length}
-                >
-                  <div className="space-y-2">
-                    {TAGS.map((tag) => (
-                      <CheckboxOption
-                        key={tag}
-                        label={TAG_STYLES[tag]?.label || tag}
-                        checked={selectedTags.includes(tag)}
-                        onChange={() => setSelectedTags((prev) =>
-                          prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-                        )}
-                      />
-                    ))}
-                  </div>
-                </FilterSection>
-
-                {/* NRI Property Toggle */}
-                <div className="border-b border-slate-100 last:border-b-0 px-5 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <Globe size={16} style={{ color: NAVY }} />
-                      <span className="font-semibold text-sm" style={{ color: NAVY }}>NRI Property</span>
-                    </div>
-                    <button
-                      onClick={() => setNriOnly((v) => !v)}
-                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
-                        nriOnly ? 'bg-blue-500' : 'bg-slate-300'
-                      }`}
-                      role="switch"
-                      aria-checked={nriOnly}
-                    >
-                      <span
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
-                          nriOnly ? 'translate-x-5' : 'translate-x-0'
-                        }`}
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Properties with Photos */}
-                <div className="border-b border-slate-100 last:border-b-0 px-5 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <Camera size={16} style={{ color: NAVY }} />
-                      <span className="font-semibold text-sm" style={{ color: NAVY }}>Properties with Photos</span>
-                    </div>
-                    <button
-                      onClick={() => setPhotosOnly((v) => !v)}
-                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
-                        photosOnly ? 'bg-blue-500' : 'bg-slate-300'
-                      }`}
-                      role="switch"
-                      aria-checked={photosOnly}
-                    >
-                      <span
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
-                          photosOnly ? 'translate-x-5' : 'translate-x-0'
-                        }`}
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Properties with Videos */}
-                <div className="border-b border-slate-100 last:border-b-0 px-5 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <Video size={16} style={{ color: NAVY }} />
-                      <span className="font-semibold text-sm" style={{ color: NAVY }}>Properties with Videos</span>
-                    </div>
-                    <button
-                      onClick={() => setVideosOnly((v) => !v)}
-                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
-                        videosOnly ? 'bg-blue-500' : 'bg-slate-300'
-                      }`}
-                      role="switch"
-                      aria-checked={videosOnly}
-                    >
-                      <span
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
-                          videosOnly ? 'translate-x-5' : 'translate-x-0'
-                        }`}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setIsMobileFilterOpen(false)}
-                className="w-full mt-6 px-4 py-3 rounded-lg text-white font-medium transition-all duration-200"
-                style={{ backgroundColor: NAVY }}
-              >
-                Apply Filters
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
@@ -1789,7 +1540,7 @@ const Filter = () => {
                       <img
                         src={property.image}
                         alt={property.title}
-                        className="w-full h-56 sm:h-64 md:h-full object-cover"
+                        className="w-full h-48 md:h-full object-cover"
                       />
                       {property.featured && (
                         <div className="absolute top-3 left-3">
@@ -1822,7 +1573,7 @@ const Filter = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 p-4 sm:p-5">
+                    <div className="flex-1 p-5">
                       {/* Tag badges + property status + sale type + NRI */}
                       <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
                         {property.tags.map((tagId) => {
@@ -1841,21 +1592,21 @@ const Filter = () => {
                         )}
                       </div>
 
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-3">
-                        <div className="flex-1">
-                          <h3 className="font-bold text-base sm:text-lg mb-1" style={{ color: NAVY }}>{property.title}</h3>
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div>
+                          <h3 className="font-bold text-lg mb-1" style={{ color: NAVY }}>{property.title}</h3>
                           <div className="flex items-center gap-1 text-sm text-slate-600">
                             <MapPin size={14} />
                             {property.location}
                           </div>
                         </div>
-                        <div className="text-right sm:text-left">
-                          <div className="font-bold text-lg sm:text-xl" style={{ color: NAVY }}>{property.price}</div>
+                        <div className="text-right">
+                          <div className="font-bold text-xl" style={{ color: NAVY }}>{property.price}</div>
                           <div className="text-xs text-slate-500">{property.category}</div>
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-600 mb-4">
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 mb-4">
                         {property.bedrooms > 0 && (
                           <div className="flex items-center gap-1.5">
                             <Bed size={16} />
@@ -1874,12 +1625,12 @@ const Filter = () => {
                         </div>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100">
-                        <button className="flex items-center gap-2 text-sm font-medium hover:text-blue-600 transition-colors duration-200 w-full sm:w-auto justify-center" style={{ color: BLUE }}>
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <button className="flex items-center gap-2 text-sm font-medium hover:text-blue-600 transition-colors duration-200" style={{ color: BLUE }}>
                           View Details
                           <ChevronRight size={16} />
                         </button>
-                        <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-200 hover:shadow-md w-full sm:w-auto" style={{ backgroundColor: NAVY }}>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-200 hover:shadow-md" style={{ backgroundColor: NAVY }}>
                           <IndianRupee size={16} />
                           Contact
                         </button>

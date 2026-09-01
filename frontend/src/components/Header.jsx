@@ -90,15 +90,15 @@ const BEDROOM_CHIP_OPTIONS = [
 const RANGE_FILTER_OPTIONS = { Budget: BUDGET_RANGE_OPTIONS, Area: AREA_RANGE_OPTIONS }
 const CHIP_FILTER_OPTIONS = { Bedroom: BEDROOM_CHIP_OPTIONS }
 const CHECKBOX_FILTER_OPTIONS = {
-  Parking: ['Covered Parking - Basement', 'Covered Parking - Podium', 'Covered Parking - Mechanical', 'Open Parking', 'No Parking'],
-  Furnishing: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
-  Facing: ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'],
   'Construction Status': ['Under Expression of Interest (EOI)', 'New Launch', 'Under Construction', 'Ready to Move/Registry', 'Ready to Move (Registry Pending)', 'Resale/Secondary Sale'],
-  'Age of Property': ['New Construction', '0-5 Years', '5-10 Years', '10+ Years'],
-  'Maintenance Charges': ['Below ₹2000', '₹2000 - ₹5000', '₹5000 - ₹10000', 'Above ₹10000'],
   'Posted By': ['Owner', 'Agent', 'Builder'],
-  'Posted Since': ['Last 12 Hours', 'Last 24 Hours', 'Last 3 Days', 'Last 7 Days', 'Last 15 Days', 'Last 30 Days', 'Last 3 Months', 'Last 6 Months', 'Last 1 Year'],
   'Possession Status': ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year'],
+  Furnishing: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
+  Parking: ['Covered Parking - Basement', 'Covered Parking - Podium', 'Covered Parking - Mechanical', 'Open Parking', 'No Parking'],
+  Facing: ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'],
+  'Age of Property': ['New Construction', '0-5 Years', '5-10 Years', '10+ Years'],
+  'Posted Since': ['Last 12 Hours', 'Last 24 Hours', 'Last 3 Days', 'Last 7 Days', 'Last 15 Days', 'Last 30 Days', 'Last 3 Months', 'Last 6 Months', 'Last 1 Year'],
+  'Maintenance Charges': ['Below ₹2000', '₹2000 - ₹5000', '₹5000 - ₹10000', 'Above ₹10000'],
 }
 const FILTER_KIND = {
   Budget: 'range',
@@ -720,17 +720,9 @@ const Header = () => {
   const bhkDropdownRef = useRef(null)
   const bhkTriggerRef = useRef(null)
 
-  const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
-  const menuDropdownRef = useRef(null)
-  const menuTriggerRef = useRef(null)
-
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const mobileMenuRef = useRef(null)
-
+  const [isToiletDropdownOpen, setIsToiletDropdownOpen] = useState(false)
   const toiletDropdownRef = useRef(null)
   const toiletTriggerRef = useRef(null)
-
-  const [isToiletDropdownOpen, setIsToiletDropdownOpen] = useState(false)
 
   const [isAdvancedNeighbourhoodDropdownOpen, setIsAdvancedNeighbourhoodDropdownOpen] = useState(false)
   const advancedNeighbourhoodDropdownRef = useRef(null)
@@ -772,13 +764,13 @@ const Header = () => {
   const maintenanceChargesDropdownRef = useRef(null)
   const maintenanceChargesTriggerRef = useRef(null)
 
-  const ADVANCED_CATEGORIES = ['Bedroom', 'Parking', 'Furnishing', 'Facing', 'Super Area', 'Built Up Area', 'Construction Status', 'Age of Property', 'Maintenance Charges', 'Posted By', 'Posted Since', 'Neighbourhood']
+  const ADVANCED_CATEGORIES = ['Flat Configuration', 'Parking', 'Furnishing', 'Facing', 'Super Area', 'Built Up Area', 'Construction Status', 'Age of Property', 'Maintenance Charges', 'Posted By', 'Posted Since', 'Neighbourhood']
 
   // Bottom filter dropdowns state
   const [openFilterDropdown, setOpenFilterDropdown] = useState(null)
   const [selectedFilters, setSelectedFilters] = useState({
     Budget: { min: '', max: '' },
-   Bedroom: [],
+    Bedroom: [],
     BHK: [],
     Toilet: [],
     'Servant Room': [],
@@ -800,6 +792,11 @@ const Header = () => {
   const [pendingFilterValue, setPendingFilterValue] = useState(null)
   const filterDropdownRef = useRef(null)
   const filterTriggerRefs = useRef({})
+
+  // Menu dropdown state
+  const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
+  const menuDropdownRef = useRef(null)
+  const menuTriggerRef = useRef(null)
 
   const PROJECT_STATUS_OPTIONS = ['New Launch', 'Pre-Launch', 'Under Construction', 'Ready to Move']
 
@@ -841,7 +838,6 @@ const Header = () => {
     setIsPostedSinceDropdownOpen(false)
     setIsMaintenanceChargesDropdownOpen(false)
     setIsMenuDropdownOpen(false)
-    setIsMobileMenuOpen(false)
     setOpenMegaMenu(null)
     setIsFilterOpen(false)
   }
@@ -1618,79 +1614,13 @@ const Header = () => {
               </div>
 
               {/* Mobile menu button */}
-              <button 
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden text-white p-2"
-              >
+              <button className="lg:hidden text-white p-2">
                 <Menu size={22} />
               </button>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu Drawer */}
-      {isMobileMenuOpen && (
-        createPortal(
-          <div className="fixed inset-0 z-50">
-            <div 
-              className="absolute inset-0 bg-black/50"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-            <div 
-              ref={mobileMenuRef}
-              className="absolute right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl overflow-y-auto"
-            >
-              <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-                <h3 className="text-lg font-bold" style={{ color: NAVY }}>Menu</h3>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2">
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="p-4">
-                <div className="space-y-1">
-                  {NAV_LINKS.map((link) => (
-                    <button
-                      key={link.label}
-                      onClick={() => {
-                        const hasMenu = !!MEGA_MENUS[link.label]
-                        if (hasMenu) {
-                          setOpenMegaMenu(link.label)
-                        }
-                        setIsMobileMenuOpen(false)
-                      }}
-                      className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-                    >
-                      {link.label}
-                      {MEGA_MENUS[link.label] && <ChevronRight size={16} />}
-                    </button>
-                  ))}
-                </div>
-                <div className="mt-6 pt-6 border-t border-slate-200">
-                  <Link
-                    to="/insight"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-                  >
-                    Insights
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
-                      NEW
-                    </span>
-                  </Link>
-                  <Link
-                    to="/post-property"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-                  >
-                    Post Property
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>,
-          document.body
-        )
-      )}
 
       {/* Mega menu panel (portal) */}
       {openMegaMenu &&
@@ -2082,7 +2012,7 @@ const Header = () => {
                       <div className="p-5">
                         <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Advanced Filters</h4>
                         <div className="grid grid-cols-6 gap-4">
-                          {/* Bedroom */}
+                          {/* Flat Configuration */}
                           <div className="relative" ref={bedroomTriggerRef}>
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Flat Configuration</label>
                             <button
@@ -2102,7 +2032,7 @@ const Header = () => {
                                   style={{ top: `${bedroomDropdownPosition.top}px`, left: `${bedroomDropdownPosition.left}px` }}
                                 >
                                   <div className="p-5">
-                                    <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Bedroom Options</h4>
+                                    <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Flat Configuration Options</h4>
                                     <div className="grid grid-cols-4 gap-4">
                                       {/* BHK */}
                                       <div className="relative" ref={bhkTriggerRef}>
@@ -2191,7 +2121,7 @@ const Header = () => {
                                                       onMouseDown={(e) => e.stopPropagation()}
                                                       className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5]"
                                                     />
-                                                    <span className="text-sm text-slate-700">{opt}</span>
+                                                    <span className="text-sm text-slate-700">{typeof opt === 'number' ? `${opt} Toilet` : opt}</span>
                                                   </div>
                                                 ))}
                                               </div>
@@ -2201,43 +2131,41 @@ const Header = () => {
                                       </div>
 
                                       {/* Servant Room */}
-                                      <div>
+                                      <div className="relative">
                                         <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Servant Room</label>
-                                        <select
-                                          value={selectedFilters['Servant Room']?.[0] || ''}
-                                          onChange={(e) => {
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
                                             setSelectedFilters(prev => ({
                                               ...prev,
-                                              'Servant Room': e.target.value ? [e.target.value] : []
+                                              'Servant Room': prev['Servant Room']?.includes('Yes') ? [] : ['Yes']
                                             }))
                                           }}
-                                          onClick={(e) => e.stopPropagation()}
-                                          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                                          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                                         >
-                                          <option value="">Select</option>
-                                          <option value="Yes">Yes</option>
-                                          <option value="No">No</option>
-                                        </select>
+                                          <span>{selectedFilters['Servant Room']?.includes('Yes') ? 'Yes' : 'Select'}</span>
+                                          <ChevronDown size={14} className="text-slate-400" />
+                                        </button>
                                       </div>
 
                                       {/* Pooja Room */}
-                                      <div>
+                                      <div className="relative">
                                         <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Pooja Room</label>
-                                        <select
-                                          value={selectedFilters['Pooja Room']?.[0] || ''}
-                                          onChange={(e) => {
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
                                             setSelectedFilters(prev => ({
                                               ...prev,
-                                              'Pooja Room': e.target.value ? [e.target.value] : []
+                                              'Pooja Room': prev['Pooja Room']?.includes('Yes') ? [] : ['Yes']
                                             }))
                                           }}
-                                          onClick={(e) => e.stopPropagation()}
-                                          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                                          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                                         >
-                                          <option value="">Select</option>
-                                          <option value="Yes">Yes</option>
-                                          <option value="No">No</option>
-                                        </select>
+                                          <span>{selectedFilters['Pooja Room']?.includes('Yes') ? 'Yes' : 'Select'}</span>
+                                          <ChevronDown size={14} className="text-slate-400" />
+                                        </button>
                                       </div>
                                     </div>
                                   </div>

@@ -779,16 +779,12 @@ const Navbar = ({ showNavbar = true }) => {
                 />
               </button>
               {NAV_LINKS.map((link, i) => {
-                const hasMenu = !!MEGA_MENUS[link.label]
-                return (
-                  <button
+                const isInsight = link.label === 'Insights'
+                return isInsight ? (
+                  <Link
                     key={link.label}
-                    onClick={() => {
-                      if (hasMenu) {
-                        toggleMegaMenu(link.label)
-                      }
-                      setIsMenuOpen(false)
-                    }}
+                    to="/insight"
+                    onClick={() => setIsMenuOpen(false)}
                     className="group flex items-center justify-between text-gray-700 hover:text-[#193C06] font-medium py-3 px-2 rounded-lg hover:bg-white transition-all duration-200 nb-slide-in w-full text-left"
                     style={{ animationDelay: `${i * 0.05}s` }}
                   >
@@ -800,7 +796,24 @@ const Navbar = ({ showNavbar = true }) => {
                         </span>
                       )}
                     </span>
-                    {hasMenu && <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ color: GREEN }} />}
+                    <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ color: GREEN }} />
+                  </Link>
+                ) : (
+                  <button
+                    key={link.label}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="group flex items-center justify-between text-gray-700 hover:text-[#193C06] font-medium py-3 px-2 rounded-lg hover:bg-white transition-all duration-200 nb-slide-in w-full text-left"
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {link.label}
+                      {link.badge && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                          {link.badge}
+                        </span>
+                      )}
+                    </span>
+                    <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ color: GREEN }} />
                   </button>
                 )
               })}
