@@ -90,15 +90,15 @@ const BEDROOM_CHIP_OPTIONS = [
 const RANGE_FILTER_OPTIONS = { Budget: BUDGET_RANGE_OPTIONS, Area: AREA_RANGE_OPTIONS }
 const CHIP_FILTER_OPTIONS = { Bedroom: BEDROOM_CHIP_OPTIONS }
 const CHECKBOX_FILTER_OPTIONS = {
-  'Construction Status': ['Under Expression of Interest (EOI)', 'New Launch', 'Under Construction', 'Ready to Move/Registry', 'Ready to Move (Registry Pending)', 'Resale/Secondary Sale'],
-  'Posted By': ['Owner', 'Agent', 'Builder'],
-  'Possession Status': ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year'],
-  Furnishing: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
   Parking: ['Covered Parking - Basement', 'Covered Parking - Podium', 'Covered Parking - Mechanical', 'Open Parking', 'No Parking'],
+  Furnishing: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
   Facing: ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'],
+  'Construction Status': ['Under Expression of Interest (EOI)', 'New Launch', 'Under Construction', 'Ready to Move/Registry', 'Ready to Move (Registry Pending)', 'Resale/Secondary Sale'],
   'Age of Property': ['New Construction', '0-5 Years', '5-10 Years', '10+ Years'],
-  'Posted Since': ['Last 12 Hours', 'Last 24 Hours', 'Last 3 Days', 'Last 7 Days', 'Last 15 Days', 'Last 30 Days', 'Last 3 Months', 'Last 6 Months', 'Last 1 Year'],
   'Maintenance Charges': ['Below ₹2000', '₹2000 - ₹5000', '₹5000 - ₹10000', 'Above ₹10000'],
+  'Posted By': ['Owner', 'Agent', 'Builder'],
+  'Posted Since': ['Last 12 Hours', 'Last 24 Hours', 'Last 3 Days', 'Last 7 Days', 'Last 15 Days', 'Last 30 Days', 'Last 3 Months', 'Last 6 Months', 'Last 1 Year'],
+  'Possession Status': ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year'],
 }
 const FILTER_KIND = {
   Budget: 'range',
@@ -772,13 +772,13 @@ const Header = () => {
   const maintenanceChargesDropdownRef = useRef(null)
   const maintenanceChargesTriggerRef = useRef(null)
 
-  const ADVANCED_CATEGORIES = ['Bedroom', 'Construction Status', 'Posted By', 'Built Up Area', 'Super Area', 'Neighbourhood', 'Parking', 'Furnishing', 'Facing', 'Age of Property', 'Posted Since', 'Maintenance Charges']
+  const ADVANCED_CATEGORIES = ['Bedroom', 'Parking', 'Furnishing', 'Facing', 'Super Area', 'Built Up Area', 'Construction Status', 'Age of Property', 'Maintenance Charges', 'Posted By', 'Posted Since', 'Neighbourhood']
 
   // Bottom filter dropdowns state
   const [openFilterDropdown, setOpenFilterDropdown] = useState(null)
   const [selectedFilters, setSelectedFilters] = useState({
     Budget: { min: '', max: '' },
-    Bedroom: [],
+   Bedroom: [],
     BHK: [],
     Toilet: [],
     'Servant Room': [],
@@ -2084,7 +2084,7 @@ const Header = () => {
                         <div className="grid grid-cols-6 gap-4">
                           {/* Bedroom */}
                           <div className="relative" ref={bedroomTriggerRef}>
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Bedroom</label>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Flat Configuration</label>
                             <button
                               type="button"
                               onClick={() => setIsBedroomDropdownOpen((open) => !open)}
@@ -2246,213 +2246,6 @@ const Header = () => {
                               )}
                           </div>
 
-                          {/* Construction Status */}
-                          <div className="relative" ref={constructionStatusTriggerRef}>
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Construction Status</label>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsConstructionStatusDropdownOpen((open) => !open)
-                              }}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
-                            >
-                              <span>{selectedFilters['Construction Status']?.length ? `${selectedFilters['Construction Status'].length} selected` : 'Select'}</span>
-                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isConstructionStatusDropdownOpen ? 'rotate(180deg)' : ''}`} />
-                            </button>
-
-                            {isConstructionStatusDropdownOpen &&
-                              createPortal(
-                                <div
-                                  ref={constructionStatusDropdownRef}
-                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
-                                  style={{ top: `${constructionStatusDropdownPosition.top}px`, left: `${constructionStatusDropdownPosition.left}px` }}
-                                >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
-                                    {CHECKBOX_FILTER_OPTIONS['Construction Status'].map((opt) => (
-                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
-                                        <input
-                                          type="checkbox"
-                                          checked={selectedFilters['Construction Status']?.includes(opt)}
-                                          onChange={(e) => {
-                                            setSelectedFilters(prev => ({
-                                              ...prev,
-                                              'Construction Status': e.target.checked
-                                                ? [...(prev['Construction Status'] || []), opt]
-                                                : prev['Construction Status'].filter(s => s !== opt)
-                                            }))
-                                          }}
-                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
-                                        />
-                                        <span className="text-sm text-slate-700">{opt}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>,
-                                document.body
-                              )}
-                          </div>
-
-                          {/* Posted By */}
-                          <div>
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Posted By</label>
-                            <select
-                              value={selectedFilters['Posted By'][0] || ''}
-                              onChange={(e) => {
-                                setSelectedFilters(prev => ({
-                                  ...prev,
-                                  'Posted By': e.target.value ? [e.target.value] : []
-                                }))
-                              }}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
-                            >
-                              <option value="">Select</option>
-                              {CHECKBOX_FILTER_OPTIONS['Posted By'].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                            </select>
-                          </div>
-
-                          {/* Built Up Area */}
-                          <div className="relative" ref={builtUpAreaTriggerRef}>
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Built Up Area</label>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsBuiltUpAreaDropdownOpen((open) => !open)
-                              }}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
-                            >
-                              <span>{selectedFilters['Built Up Area']?.length ? `${selectedFilters['Built Up Area'].length} selected` : 'Select'}</span>
-                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isBuiltUpAreaDropdownOpen ? 'rotate(180deg)' : ''}`} />
-                            </button>
-
-                            {isBuiltUpAreaDropdownOpen &&
-                              createPortal(
-                                <div
-                                  ref={builtUpAreaDropdownRef}
-                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
-                                  style={{ top: `${builtUpAreaDropdownPosition.top}px`, left: `${builtUpAreaDropdownPosition.left}px` }}
-                                >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
-                                    {BUILT_UP_AREA_OPTIONS.map((opt) => (
-                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
-                                        <input
-                                          type="checkbox"
-                                          checked={selectedFilters['Built Up Area']?.includes(opt)}
-                                          onChange={(e) => {
-                                            setSelectedFilters(prev => ({
-                                              ...prev,
-                                              'Built Up Area': e.target.checked
-                                                ? [...(prev['Built Up Area'] || []), opt]
-                                                : prev['Built Up Area'].filter(s => s !== opt)
-                                            }))
-                                          }}
-                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
-                                        />
-                                        <span className="text-sm text-slate-700">{opt}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>,
-                                document.body
-                              )}
-                          </div>
-
-                          {/* Super Area */}
-                          <div className="relative" ref={superAreaTriggerRef}>
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Super Area</label>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsSuperAreaDropdownOpen((open) => !open)
-                              }}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
-                            >
-                              <span>{selectedFilters['Super Area']?.length ? `${selectedFilters['Super Area'].length} selected` : 'Select'}</span>
-                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isSuperAreaDropdownOpen ? 'rotate(180deg)' : ''}`} />
-                            </button>
-
-                            {isSuperAreaDropdownOpen &&
-                              createPortal(
-                                <div
-                                  ref={superAreaDropdownRef}
-                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
-                                  style={{ top: `${superAreaDropdownPosition.top}px`, left: `${superAreaDropdownPosition.left}px` }}
-                                >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
-                                    {BUILT_UP_AREA_OPTIONS.map((opt) => (
-                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
-                                        <input
-                                          type="checkbox"
-                                          checked={selectedFilters['Super Area']?.includes(opt)}
-                                          onChange={(e) => {
-                                            setSelectedFilters(prev => ({
-                                              ...prev,
-                                              'Super Area': e.target.checked
-                                                ? [...(prev['Super Area'] || []), opt]
-                                                : prev['Super Area'].filter(s => s !== opt)
-                                            }))
-                                          }}
-                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
-                                        />
-                                        <span className="text-sm text-slate-700">{opt}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>,
-                                document.body
-                              )}
-                          </div>
-
-                          {/* Neighbourhood */}
-                          <div className="relative" ref={advancedNeighbourhoodTriggerRef}>
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Neighbourhood</label>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsAdvancedNeighbourhoodDropdownOpen((open) => !open)
-                              }}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
-                            >
-                              <span>{selectedFilters.Neighbourhood?.length ? `${selectedFilters.Neighbourhood.length} selected` : 'Select'}</span>
-                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isAdvancedNeighbourhoodDropdownOpen ? 'rotate(180deg)' : ''}`} />
-                            </button>
-
-                            {isAdvancedNeighbourhoodDropdownOpen &&
-                              createPortal(
-                                <div
-                                  ref={advancedNeighbourhoodDropdownRef}
-                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
-                                  style={{ top: `${advancedNeighbourhoodDropdownPosition.top}px`, left: `${advancedNeighbourhoodDropdownPosition.left}px` }}
-                                >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
-                                    {NEIGHBOURHOODS.map((opt) => (
-                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
-                                        <input
-                                          type="checkbox"
-                                          checked={selectedFilters.Neighbourhood?.includes(opt)}
-                                          onChange={(e) => {
-                                            setSelectedFilters(prev => ({
-                                              ...prev,
-                                              Neighbourhood: e.target.checked
-                                                ? [...(prev.Neighbourhood || []), opt]
-                                                : (prev.Neighbourhood || []).filter(item => item !== opt)
-                                            }))
-                                          }}
-                                          onMouseDown={(e) => e.stopPropagation()}
-                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5]"
-                                        />
-                                        <span className="text-sm text-slate-700">{opt}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>,
-                                document.body
-                              )}
-                          </div>
-
                           {/* Parking */}
                           <div className="relative" ref={parkingTriggerRef}>
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Parking</label>
@@ -2597,6 +2390,147 @@ const Header = () => {
                               )}
                           </div>
 
+                          {/* Super Area */}
+                          <div className="relative" ref={superAreaTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Super Area</label>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setIsSuperAreaDropdownOpen((open) => !open)
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                            >
+                              <span>{selectedFilters['Super Area']?.length ? `${selectedFilters['Super Area'].length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isSuperAreaDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isSuperAreaDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={superAreaDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${superAreaDropdownPosition.top}px`, left: `${superAreaDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {BUILT_UP_AREA_OPTIONS.map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters['Super Area']?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Super Area': e.target.checked
+                                                ? [...(prev['Super Area'] || []), opt]
+                                                : prev['Super Area'].filter(s => s !== opt)
+                                            }))
+                                          }}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
+                          </div>
+
+                          {/* Built Up Area */}
+                          <div className="relative" ref={builtUpAreaTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Built Up Area</label>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setIsBuiltUpAreaDropdownOpen((open) => !open)
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                            >
+                              <span>{selectedFilters['Built Up Area']?.length ? `${selectedFilters['Built Up Area'].length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isBuiltUpAreaDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isBuiltUpAreaDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={builtUpAreaDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${builtUpAreaDropdownPosition.top}px`, left: `${builtUpAreaDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {BUILT_UP_AREA_OPTIONS.map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters['Built Up Area']?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Built Up Area': e.target.checked
+                                                ? [...(prev['Built Up Area'] || []), opt]
+                                                : prev['Built Up Area'].filter(s => s !== opt)
+                                            }))
+                                          }}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
+                          </div>
+
+                          {/* Construction Status */}
+                          <div className="relative" ref={constructionStatusTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Construction Status</label>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setIsConstructionStatusDropdownOpen((open) => !open)
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                            >
+                              <span>{selectedFilters['Construction Status']?.length ? `${selectedFilters['Construction Status'].length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isConstructionStatusDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isConstructionStatusDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={constructionStatusDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${constructionStatusDropdownPosition.top}px`, left: `${constructionStatusDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {CHECKBOX_FILTER_OPTIONS['Construction Status'].map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters['Construction Status']?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Construction Status': e.target.checked
+                                                ? [...(prev['Construction Status'] || []), opt]
+                                                : prev['Construction Status'].filter(s => s !== opt)
+                                            }))
+                                          }}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
+                          </div>
+
                           {/* Age of Property */}
                           <div className="relative" ref={ageOfPropertyTriggerRef}>
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Age of Property</label>
@@ -2643,6 +2577,72 @@ const Header = () => {
                                 </div>,
                                 document.body
                               )}
+                          </div>
+
+                          {/* Maintenance Charges */}
+                          <div className="relative" ref={maintenanceChargesTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Maintenance Charges</label>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setIsMaintenanceChargesDropdownOpen((open) => !open)
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
+                            >
+                              <span>{selectedFilters['Maintenance Charges']?.length ? `${selectedFilters['Maintenance Charges'].length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isMaintenanceChargesDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isMaintenanceChargesDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={maintenanceChargesDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${maintenanceChargesDropdownPosition.top}px`, left: `${maintenanceChargesDropdownPosition.left}px` }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {CHECKBOX_FILTER_OPTIONS['Maintenance Charges'].map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters['Maintenance Charges']?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Maintenance Charges': e.target.checked
+                                                ? [...(prev['Maintenance Charges'] || []), opt]
+                                                : (prev['Maintenance Charges'] || []).filter(item => item !== opt)
+                                            }))
+                                          }}
+                                          onMouseDown={(e) => e.stopPropagation()}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5]"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
+                          </div>
+
+                          {/* Posted By */}
+                          <div>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Posted By</label>
+                            <select
+                              value={selectedFilters['Posted By'][0] || ''}
+                              onChange={(e) => {
+                                setSelectedFilters(prev => ({
+                                  ...prev,
+                                  'Posted By': e.target.value ? [e.target.value] : []
+                                }))
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                            >
+                              <option value="">Select</option>
+                              {CHECKBOX_FILTER_OPTIONS['Posted By'].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                            </select>
                           </div>
 
                           {/* Posted Since */}
@@ -2693,40 +2693,40 @@ const Header = () => {
                               )}
                           </div>
 
-                          {/* Maintenance Charges */}
-                          <div className="relative" ref={maintenanceChargesTriggerRef}>
-                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Maintenance Charges</label>
+                          {/* Neighbourhood */}
+                          <div className="relative" ref={advancedNeighbourhoodTriggerRef}>
+                            <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Neighbourhood</label>
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation()
-                                setIsMaintenanceChargesDropdownOpen((open) => !open)
+                                setIsAdvancedNeighbourhoodDropdownOpen((open) => !open)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
-                              <span>{selectedFilters['Maintenance Charges']?.length ? `${selectedFilters['Maintenance Charges'].length} selected` : 'Select'}</span>
-                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isMaintenanceChargesDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                              <span>{selectedFilters.Neighbourhood?.length ? `${selectedFilters.Neighbourhood.length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isAdvancedNeighbourhoodDropdownOpen ? 'rotate(180deg)' : ''}`} />
                             </button>
 
-                            {isMaintenanceChargesDropdownOpen &&
+                            {isAdvancedNeighbourhoodDropdownOpen &&
                               createPortal(
                                 <div
-                                  ref={maintenanceChargesDropdownRef}
+                                  ref={advancedNeighbourhoodDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
-                                  style={{ top: `${maintenanceChargesDropdownPosition.top}px`, left: `${maintenanceChargesDropdownPosition.left}px` }}
+                                  style={{ top: `${advancedNeighbourhoodDropdownPosition.top}px`, left: `${advancedNeighbourhoodDropdownPosition.left}px` }}
                                 >
                                   <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
-                                    {CHECKBOX_FILTER_OPTIONS['Maintenance Charges'].map((opt) => (
+                                    {NEIGHBOURHOODS.map((opt) => (
                                       <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
                                         <input
                                           type="checkbox"
-                                          checked={selectedFilters['Maintenance Charges']?.includes(opt)}
+                                          checked={selectedFilters.Neighbourhood?.includes(opt)}
                                           onChange={(e) => {
                                             setSelectedFilters(prev => ({
                                               ...prev,
-                                              'Maintenance Charges': e.target.checked
-                                                ? [...(prev['Maintenance Charges'] || []), opt]
-                                                : (prev['Maintenance Charges'] || []).filter(item => item !== opt)
+                                              Neighbourhood: e.target.checked
+                                                ? [...(prev.Neighbourhood || []), opt]
+                                                : (prev.Neighbourhood || []).filter(item => item !== opt)
                                             }))
                                           }}
                                           onMouseDown={(e) => e.stopPropagation()}
