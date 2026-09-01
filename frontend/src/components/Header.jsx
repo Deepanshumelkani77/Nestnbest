@@ -720,9 +720,17 @@ const Header = () => {
   const bhkDropdownRef = useRef(null)
   const bhkTriggerRef = useRef(null)
 
-  const [isToiletDropdownOpen, setIsToiletDropdownOpen] = useState(false)
+  const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
+  const menuDropdownRef = useRef(null)
+  const menuTriggerRef = useRef(null)
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const mobileMenuRef = useRef(null)
+
   const toiletDropdownRef = useRef(null)
   const toiletTriggerRef = useRef(null)
+
+  const [isToiletDropdownOpen, setIsToiletDropdownOpen] = useState(false)
 
   const [isAdvancedNeighbourhoodDropdownOpen, setIsAdvancedNeighbourhoodDropdownOpen] = useState(false)
   const advancedNeighbourhoodDropdownRef = useRef(null)
@@ -793,11 +801,6 @@ const Header = () => {
   const filterDropdownRef = useRef(null)
   const filterTriggerRefs = useRef({})
 
-  // Menu dropdown state
-  const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
-  const menuDropdownRef = useRef(null)
-  const menuTriggerRef = useRef(null)
-
   const PROJECT_STATUS_OPTIONS = ['New Launch', 'Pre-Launch', 'Under Construction', 'Ready to Move']
 
   // Dynamic text animation for New Launch tab
@@ -838,6 +841,7 @@ const Header = () => {
     setIsPostedSinceDropdownOpen(false)
     setIsMaintenanceChargesDropdownOpen(false)
     setIsMenuDropdownOpen(false)
+    setIsMobileMenuOpen(false)
     setOpenMegaMenu(null)
     setIsFilterOpen(false)
   }
@@ -1614,13 +1618,79 @@ const Header = () => {
               </div>
 
               {/* Mobile menu button */}
-              <button className="lg:hidden text-white p-2">
+              <button 
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="lg:hidden text-white p-2"
+              >
                 <Menu size={22} />
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu Drawer */}
+      {isMobileMenuOpen && (
+        createPortal(
+          <div className="fixed inset-0 z-50">
+            <div 
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <div 
+              ref={mobileMenuRef}
+              className="absolute right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl overflow-y-auto"
+            >
+              <div className="p-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 className="text-lg font-bold" style={{ color: NAVY }}>Menu</h3>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-4">
+                <div className="space-y-1">
+                  {NAV_LINKS.map((link) => (
+                    <button
+                      key={link.label}
+                      onClick={() => {
+                        const hasMenu = !!MEGA_MENUS[link.label]
+                        if (hasMenu) {
+                          setOpenMegaMenu(link.label)
+                        }
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      {link.label}
+                      {MEGA_MENUS[link.label] && <ChevronRight size={16} />}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-6 pt-6 border-t border-slate-200">
+                  <Link
+                    to="/insight"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                  >
+                    Insights
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white leading-none">
+                      NEW
+                    </span>
+                  </Link>
+                  <Link
+                    to="/post-property"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                  >
+                    Post Property
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )
+      )}
 
       {/* Mega menu panel (portal) */}
       {openMegaMenu &&
