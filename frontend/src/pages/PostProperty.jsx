@@ -520,7 +520,11 @@ const PostProperty = () => {
       <div>
         <SectionLabel required>Property Type</SectionLabel>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {PROPERTY_TYPES.map((type) => {
+          {PROPERTY_TYPES.filter(type => {
+            // Hide PG/Co-Living when listing is for sale
+            if (type.id === 'pg' && listingFor === 'sale') return false
+            return true
+          }).map((type) => {
             const Icon = type.icon
             const isActive = selectedType === type.id
             return (
