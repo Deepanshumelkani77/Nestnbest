@@ -154,8 +154,8 @@ const Residents = () => {
   return (
     <>
       <ProjectSection
-        title="Projects under Under Expression of Interest (EOI)"
-        description="Explore the latest residential projects"
+        title="Projects Under Expression of Interest (EOI)"
+        description="Explore the Projects Under Expression of Interest (EOI)"
         projects={NEW_LAUNCH_PROJECTS}
         viewAllText="View All Projects under EOI"
       />
