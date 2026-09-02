@@ -50,7 +50,7 @@ const LandCard = ({ land }) => {
         />
         {land.featured && (
           <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-semibold">
-            Featured
+            Preferred Property 
           </div>
         )}
         <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500 text-white text-xs font-semibold">

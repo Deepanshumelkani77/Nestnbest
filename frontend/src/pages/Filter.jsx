@@ -197,7 +197,7 @@ const SALE_TYPES = [
 
 const POSTED_BY = ['Owner', 'Agent', 'Builder']
 
-const POSSESSION_STATUS = ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year']
+const POSSESSION_STATUS = ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'Within 2 Years', 'Within 3 Years', 'More Than 3 Years']
 
 const FURNISHING = ['Furnished', 'Semi-Furnished', 'Unfurnished']
 

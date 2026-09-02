@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, MapPin, Building2, Star, ArrowRight } from 'lucide-react'
 import { PROPERTY_DATA } from '../data/properties'
 
-const NEW_LAUNCH_PROJECTS = Object.values(PROPERTY_DATA).filter(p => p.status === 'New Launch')
+const NEW_LAUNCH_PROJECTS = Object.values(PROPERTY_DATA).filter(p => p.status === 'EOI' || p.status === 'New Launch')
 const HOT_PROJECTS = Object.values(PROPERTY_DATA).filter(p => p.status === 'Hot Project')
 const RESALE_PROPERTIES = Object.values(PROPERTY_DATA).filter(p => p.status === 'Resale')
 
 const ProjectCard = ({ project }) => {
   const getStatusColor = (status) => {
     switch (status) {
+      case 'EOI':
       case 'New Launch':
         return 'bg-emerald-500'
       case 'Hot Project':
@@ -18,6 +19,15 @@ const ProjectCard = ({ project }) => {
         return 'bg-blue-500'
       default:
         return 'bg-slate-500'
+    }
+  }
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'New Launch':
+        return 'EOI'
+      default:
+        return status
     }
   }
 
@@ -30,7 +40,7 @@ const ProjectCard = ({ project }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold text-white ${getStatusColor(project.status)}`}>
-          {project.status}
+          {getStatusLabel(project.status)}
         </span>
         <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500 text-white text-xs font-semibold">
           <Star size={12} fill="currentColor" />
@@ -144,10 +154,10 @@ const Residents = () => {
   return (
     <>
       <ProjectSection
-        title="New Launch Projects"
+        title="Projects under Under Expression of Interest (EOI)"
         description="Explore the latest residential projects"
         projects={NEW_LAUNCH_PROJECTS}
-        viewAllText="View All New Launch"
+        viewAllText="View All Projects under EOI"
       />
 
       <ProjectSection

@@ -21,6 +21,7 @@ import {
   Phone,
   Mail,
   X,
+  Info,
 } from 'lucide-react'
 
 
@@ -53,7 +54,27 @@ const POPULAR_CITIES = [
 const HERO_IMAGES = [assets.header, assets.header2, assets.header3, assets.header4].filter(Boolean)
 
 // ---- Filter options for professional dropdowns ----------------------------
-const BUDGET_RANGE_OPTIONS = ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+']
+const BUDGET_OPTIONS = {
+  'Residential': {
+    'Buy': ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+'],
+    'Rent': ['10k', '20k', '40k', '60k', '80k', '1 Lakh', '1.5 Lakh', '2 Lakh', '3 Lakh', '5 Lakh+'],
+    'Rent / Lease': ['10k', '20k', '40k', '60k', '80k', '1 Lakh', '1.5 Lakh', '2 Lakh', '3 Lakh', '5 Lakh+'],
+    'Plots/Land': ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+'],
+    'PG / Co-living': ['5k', '10k', '15k', '20k', '25k', '30k', '40k', '50k+'],
+  },
+  'Commercial': {
+    'Buy': ['50 Lakh', '1 Cr', '2 Cr', '3 Cr', '4 Cr', '5 Cr', '7.5 Cr', '10 Cr', '15 Cr', '20 Cr+'],
+    'Rent': ['25k', '50k', '1 Lakh', '2 Lakh', '3 Lakh', '5 Lakh', '10 Lakh', '20 Lakh+'],
+    'Rent / Lease': ['25k', '50k', '1 Lakh', '2 Lakh', '3 Lakh', '5 Lakh', '10 Lakh', '20 Lakh+'],
+    'Plots/Land': ['50 Lakh', '1 Cr', '2 Cr', '3 Cr', '4 Cr', '5 Cr', '7.5 Cr', '10 Cr', '15 Cr', '20 Cr+'],
+  }
+}
+
+// Helper function to get budget options based on category and tab
+const getBudgetOptions = (category, tab) => {
+  return BUDGET_OPTIONS[category]?.[tab] || BUDGET_OPTIONS['Residential']['Buy']
+}
+
 const AREA_RANGE_OPTIONS = ['300 sq ft', '500 sq ft', '750 sq ft', '1000 sq ft', '1500 sq ft', '2000 sq ft', '3000 sq ft', '5000 sq ft', '7500 sq ft', '10000 sq ft+']
 const BUILT_UP_AREA_OPTIONS = [
   '500 sq.ft and below',
@@ -87,10 +108,30 @@ const BEDROOM_CHIP_OPTIONS = [
   '4+ BHK'
 ]
 
-const RANGE_FILTER_OPTIONS = { Budget: BUDGET_RANGE_OPTIONS, Area: AREA_RANGE_OPTIONS }
+const RANGE_FILTER_OPTIONS = { Budget: BUDGET_OPTIONS['Residential']['Buy'], Area: AREA_RANGE_OPTIONS }
 const CHIP_FILTER_OPTIONS = { Bedroom: BEDROOM_CHIP_OPTIONS }
 const CHECKBOX_FILTER_OPTIONS = {
-  'Construction Status': ['Under Expression of Interest (EOI)', 'New Launch', 'Under Construction', 'Ready to Move/Registry', 'Ready to Move (Registry Pending)', 'Resale/Secondary Sale'],
+  'Construction Status': {
+    default: [
+      'Under Expression of Interest (EOI)',
+      'New Launch',
+      'Under Construction',
+      'NOC Obtained',
+      'Under Physical Handover',
+      'Ready to Move/Registry',
+      'Ready to Move (Registry Pending)',
+      'Resale/Secondary Sale',
+    ],
+    'New Launch': [
+      'Immediately',
+      'Within 15 Days',
+      'Within 30 Days',
+      'Within 60 Days',
+      'Within 90 Days',
+      'Within 6 Months',
+      'Within 1 Year',
+    ]
+  },
   'Posted By': ['Owner', 'Agent', 'Builder'],
   'Possession Status': ['Ready to Move', 'Within 6 Months', 'Within 1 Year', 'After 1 Year'],
   Furnishing: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
@@ -100,6 +141,21 @@ const CHECKBOX_FILTER_OPTIONS = {
   'Posted Since': ['Last 12 Hours', 'Last 24 Hours', 'Last 3 Days', 'Last 7 Days', 'Last 15 Days', 'Last 30 Days', 'Last 3 Months', 'Last 6 Months', 'Last 1 Year'],
   'Maintenance Charges': ['Below ₹2000', '₹2000 - ₹5000', '₹5000 - ₹10000', 'Above ₹10000'],
 }
+
+// Helper function to get construction status options based on tab
+const getConstructionStatusOptions = (tab) => {
+  return CHECKBOX_FILTER_OPTIONS['Construction Status'][tab] || CHECKBOX_FILTER_OPTIONS['Construction Status'].default
+}
+
+// Hover explainer text shown next to Construction Status options that need
+// extra context. Keyed by the exact option label above — add more entries
+// here to surface a hover hint for any other option without touching the
+// rendering logic.
+const CONSTRUCTION_STATUS_INFO = {
+  'NOC Obtained': 'The No Objection Certificate (NOC) has been obtained. Physical handover is expected within 60–90 days, subject to the builder schedule.',
+  'Under Physical Handover': 'The NOC has been issued, and the property is currently undergoing the physical handover process. Possession is expected within 60–90 days, subject to the builder schedule.',
+}
+
 const FILTER_KIND = {
   Budget: 'range',
   Area: 'range',
@@ -114,7 +170,7 @@ const FILTER_KIND = {
   'Posted Since': 'checkbox',
   'Maintenance Charges': 'checkbox',
 }
-const emptyFilterValue = (f) => (FILTER_KIND[f] === 'range' ? { min: '', max: '' } : [])
+const emptyFilterValue = (f) => (FILTER_KIND[f] === 'range' ? { min: '', max: '', rangeMin: 0, rangeMax: 100 } : [])
 
 // ---- Mega menu content -----------------------------------------------
 const AD_CARDS = {
@@ -769,7 +825,7 @@ const Header = () => {
   // Bottom filter dropdowns state
   const [openFilterDropdown, setOpenFilterDropdown] = useState(null)
   const [selectedFilters, setSelectedFilters] = useState({
-    Budget: { min: '', max: '' },
+    Budget: { min: '', max: '', rangeMin: 0, rangeMax: 100 },
     Bedroom: [],
     BHK: [],
     Toilet: [],
@@ -1828,7 +1884,7 @@ const Header = () => {
                 {openFilterDropdown === 'Budget' && createPortal(
                   <div
                     ref={filterDropdownRef}
-                    className="fixed w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                    className="fixed w-[360px] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                     style={{ top: `${filterDropdownPosition.top}px`, left: `${filterDropdownPosition.left}px` }}
                   >
                     {/* Header */}
@@ -1840,46 +1896,151 @@ const Header = () => {
                     </div>
 
                     {/* Body */}
-                    <div className="p-5 max-h-80 overflow-y-auto">
-                      <div>
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="flex-1">
+                    <div className="p-5 max-h-[440px] overflow-y-auto">
+                      {/* Get dynamic budget options based on category and tab */}
+                      {(() => {
+                        const currentBudgetOptions = getBudgetOptions(selectedCategory, activeTab)
+                        return (
+                          <>
+                            {/* Selected range readout */}
+                            <div className="flex items-center justify-between gap-2 mb-6">
+                              <div className="flex-1 px-3 py-2 rounded-xl text-center" style={{ backgroundColor: 'rgba(30,136,229,0.06)', border: '1px solid rgba(30,136,229,0.15)' }}>
+                                <div className="text-[10px] font-bold tracking-wider uppercase text-slate-400 mb-0.5">Min</div>
+                                <div className="text-sm font-bold" style={{ color: BLUE }}>
+                                  {currentBudgetOptions[Math.round(((pendingFilterValue?.rangeMin ?? 0) / 100) * (currentBudgetOptions.length - 1))]}
+                                </div>
+                              </div>
+                              <span className="text-slate-300 font-semibold text-sm">—</span>
+                              <div className="flex-1 px-3 py-2 rounded-xl text-center" style={{ backgroundColor: 'rgba(30,136,229,0.06)', border: '1px solid rgba(30,136,229,0.15)' }}>
+                                <div className="text-[10px] font-bold tracking-wider uppercase text-slate-400 mb-0.5">Max</div>
+                                <div className="text-sm font-bold" style={{ color: BLUE }}>
+                                  {currentBudgetOptions[Math.round(((pendingFilterValue?.rangeMax ?? 100) / 100) * (currentBudgetOptions.length - 1))]}
+                                </div>
+                              </div>
+                            </div>
 
-                            <select
-                              value={pendingFilterValue?.min || ''}
-                              onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, min: e.target.value }))}
-                              className="w-full border border-slate-200 rounded-lg px-8 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
-                            >
-                              <option value=""> Min</option>
-                              {BUDGET_RANGE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                            </select>
-                          </div>
-                          <div className="flex-1">
+                            {/* Dual-thumb range slider */}
+                            <div className="relative h-1.5 mt-2 mb-9 mx-1">
+                              <div className="absolute inset-0 rounded-full" style={{ backgroundColor: '#E2E8F0' }} />
+                              <div
+                                className="absolute h-full rounded-full"
+                                style={{
+                                  backgroundColor: BLUE,
+                                  left: `${pendingFilterValue?.rangeMin ?? 0}%`,
+                                  right: `${100 - (pendingFilterValue?.rangeMax ?? 100)}%`,
+                                }}
+                              />
+                              <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={pendingFilterValue?.rangeMin ?? 0}
+                                onChange={(e) => {
+                                  const newVal = Math.min(parseInt(e.target.value, 10), (pendingFilterValue?.rangeMax ?? 100) - 2)
+                                  setPendingFilterValue((prev) => ({
+                                    ...(prev || {}),
+                                    rangeMin: newVal,
+                                    rangeMax: prev?.rangeMax ?? 100,
+                                    min: currentBudgetOptions[Math.round((newVal / 100) * (currentBudgetOptions.length - 1))] || '',
+                                    max: prev?.max ?? '',
+                                  }))
+                                }}
+                                className="budget-range-thumb absolute top-1/2 left-0 w-full h-5 -translate-y-1/2 appearance-none bg-transparent"
+                                style={{ zIndex: (pendingFilterValue?.rangeMin ?? 0) > 92 ? 5 : 3 }}
+                              />
+                              <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={pendingFilterValue?.rangeMax ?? 100}
+                                onChange={(e) => {
+                                  const newVal = Math.max(parseInt(e.target.value, 10), (pendingFilterValue?.rangeMin ?? 0) + 2)
+                                  setPendingFilterValue((prev) => ({
+                                    ...(prev || {}),
+                                    rangeMax: newVal,
+                                    rangeMin: prev?.rangeMin ?? 0,
+                                    max: currentBudgetOptions[Math.round((newVal / 100) * (currentBudgetOptions.length - 1))] || '',
+                                    min: prev?.min ?? '',
+                                  }))
+                                }}
+                                className="budget-range-thumb absolute top-1/2 left-0 w-full h-5 -translate-y-1/2 appearance-none bg-transparent"
+                                style={{ zIndex: 4 }}
+                              />
+                              {/* Tick labels under the track */}
+                              <div className="absolute left-0 right-0 top-4 flex justify-between text-[9px] text-slate-300 font-medium">
+                                <span>{currentBudgetOptions[0]}</span>
+                                <span>{currentBudgetOptions[currentBudgetOptions.length - 1]}</span>
+                              </div>
+                            </div>
 
-                            <select
-                              value={pendingFilterValue?.max || ''}
-                              onChange={(e) => setPendingFilterValue((prev) => ({ ...prev, max: e.target.value }))}
-                              className="w-full border border-slate-200 rounded-lg px-8 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
-                            >
-                              <option value=""> Max</option>
-                              {BUDGET_RANGE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                            </select>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          {BUDGET_RANGE_OPTIONS.slice(0, 6).map((opt) => (
-                            <button
-                              key={opt}
-                              type="button"
-                              onClick={() => setPendingFilterValue({ min: '', max: opt })}
-                              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all"
-                              style={{ color: NAVY }}
-                            >
-                              Under {opt}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                            {/* Manual min/max dropdowns, kept in sync with the slider */}
+                            <div className="flex items-center gap-3 mb-5">
+                              <div className="flex-1">
+                                <label className="text-[10px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Min</label>
+                                <select
+                                  value={pendingFilterValue?.min || ''}
+                                  onChange={(e) => {
+                                    const val = e.target.value
+                                    const idx = currentBudgetOptions.indexOf(val)
+                                    setPendingFilterValue((prev) => ({
+                                      ...(prev || {}),
+                                      min: val,
+                                      rangeMin: idx >= 0 ? Math.round((idx / (currentBudgetOptions.length - 1)) * 100) : 0,
+                                    }))
+                                  }}
+                                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                                >
+                                  <option value="">No Min</option>
+                                  {currentBudgetOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                              </div>
+                              <div className="flex-1">
+                                <label className="text-[10px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Max</label>
+                                <select
+                                  value={pendingFilterValue?.max || ''}
+                                  onChange={(e) => {
+                                    const val = e.target.value
+                                    const idx = currentBudgetOptions.indexOf(val)
+                                    setPendingFilterValue((prev) => ({
+                                      ...(prev || {}),
+                                      max: val,
+                                      rangeMax: idx >= 0 ? Math.round((idx / (currentBudgetOptions.length - 1)) * 100) : 100,
+                                    }))
+                                  }}
+                                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                                >
+                                  <option value="">No Max</option>
+                                  {currentBudgetOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                              </div>
+                            </div>
+
+                            {/* Quick presets */}
+                            <label className="text-[10px] font-bold tracking-wider uppercase text-slate-400 mb-2 block">Quick Select</label>
+                            <div className="grid grid-cols-2 gap-2">
+                              {currentBudgetOptions.slice(0, 6).map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => {
+                                    const idx = currentBudgetOptions.indexOf(opt)
+                                    setPendingFilterValue({
+                                      min: '',
+                                      max: opt,
+                                      rangeMin: 0,
+                                      rangeMax: Math.round((idx / (currentBudgetOptions.length - 1)) * 100),
+                                    })
+                                  }}
+                                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all"
+                                  style={{ color: NAVY }}
+                                >
+                                  Under {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )
+                      })()}
                     </div>
 
                     {/* Footer */}
@@ -2431,28 +2592,53 @@ const Header = () => {
                               createPortal(
                                 <div
                                   ref={constructionStatusDropdownRef}
-                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  className="fixed w-[280px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${constructionStatusDropdownPosition.top}px`, left: `${constructionStatusDropdownPosition.left}px` }}
                                 >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
-                                    {CHECKBOX_FILTER_OPTIONS['Construction Status'].map((opt) => (
-                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
-                                        <input
-                                          type="checkbox"
-                                          checked={selectedFilters['Construction Status']?.includes(opt)}
-                                          onChange={(e) => {
-                                            setSelectedFilters(prev => ({
-                                              ...prev,
-                                              'Construction Status': e.target.checked
-                                                ? [...(prev['Construction Status'] || []), opt]
-                                                : prev['Construction Status'].filter(s => s !== opt)
-                                            }))
-                                          }}
-                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
-                                        />
-                                        <span className="text-sm text-slate-700">{opt}</span>
-                                      </div>
-                                    ))}
+                                  <div className="p-3 space-y-1 max-h-[340px] overflow-y-auto">
+                                    {getConstructionStatusOptions(activeTab).map((opt) => {
+                                      const info = CONSTRUCTION_STATUS_INFO[opt]
+                                      return (
+                                        <div
+                                          key={opt}
+                                          className="group rounded-lg"
+                                          onMouseDown={(e) => e.stopPropagation()}
+                                        >
+                                          <div className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg">
+                                            <input
+                                              type="checkbox"
+                                              checked={selectedFilters['Construction Status']?.includes(opt)}
+                                              onChange={(e) => {
+                                                setSelectedFilters(prev => ({
+                                                  ...prev,
+                                                  'Construction Status': e.target.checked
+                                                    ? [...(prev['Construction Status'] || []), opt]
+                                                    : prev['Construction Status'].filter(s => s !== opt)
+                                                }))
+                                              }}
+                                              className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5] focus:ring-offset-0"
+                                            />
+                                            <span className="text-sm text-slate-700 flex-1">{opt}</span>
+                                            {info && (
+                                              <Info
+                                                size={13}
+                                                className="text-slate-300 group-hover:text-[#1E88E5] transition-colors duration-150 flex-shrink-0"
+                                              />
+                                            )}
+                                          </div>
+
+                                          {info && (
+                                            <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-200 ease-out">
+                                              <div className="overflow-hidden">
+                                                <p className="text-[11px] leading-relaxed text-slate-500 px-2 pb-2.5 pt-0.5">
+                                                  {info}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )
+                                    })}
                                   </div>
                                 </div>,
                                 document.body
@@ -2847,6 +3033,62 @@ const Header = () => {
         @media (prefers-reduced-motion: reduce) {
           .animate-loc-in { animation: none; }
           .animate-filter-in { animation: none; }
+        }
+
+        /* Professional dual-thumb range slider for the Budget filter.
+           The track is drawn separately via the filled div; these inputs
+           are transparent and only their native thumb is interactive. */
+        .budget-range-thumb {
+          pointer-events: none;
+        }
+        .budget-range-thumb::-webkit-slider-thumb {
+          pointer-events: auto;
+          -webkit-appearance: none;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 9999px;
+          background: #ffffff;
+          border: 3px solid #1E88E5;
+          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+          cursor: pointer;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .budget-range-thumb::-webkit-slider-thumb:hover {
+          transform: scale(1.12);
+          box-shadow: 0 3px 10px rgba(30, 136, 229, 0.35);
+        }
+        .budget-range-thumb::-webkit-slider-thumb:active {
+          transform: scale(1.18);
+        }
+        .budget-range-thumb::-moz-range-thumb {
+          pointer-events: auto;
+          width: 18px;
+          height: 18px;
+          border-radius: 9999px;
+          background: #ffffff;
+          border: 3px solid #1E88E5;
+          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+          cursor: pointer;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .budget-range-thumb::-moz-range-thumb:hover {
+          transform: scale(1.12);
+        }
+        .budget-range-thumb::-webkit-slider-runnable-track {
+          -webkit-appearance: none;
+          background: transparent;
+          height: 100%;
+        }
+        .budget-range-thumb::-moz-range-track {
+          background: transparent;
+          height: 100%;
+        }
+        .budget-range-thumb:focus {
+          outline: none;
+        }
+        .budget-range-thumb:focus::-webkit-slider-thumb {
+          box-shadow: 0 0 0 4px rgba(30, 136, 229, 0.18), 0 2px 6px rgba(15, 23, 42, 0.18);
         }
       `}</style>
     </div>
