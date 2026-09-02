@@ -32,6 +32,7 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronDown,
+  ChevronUp,
   Compass,
   Sofa,
   Clock,
@@ -53,6 +54,7 @@ import {
   Truck,
   Tag,
   KeyRound,
+  Trash,
 } from 'lucide-react'
 
 const NAVY = '#193C06'
@@ -68,30 +70,89 @@ const PROPERTY_TYPES = [
   { id: 'commercial', label: 'Commercial', icon: Building2, description: 'Office spaces, retail, warehouses' },
   { id: 'land', label: 'Land', icon: MapPin, description: 'Residential, commercial, agricultural land' },
   { id: 'industrial', label: 'Industrial', icon: Factory, description: 'Sheds, factories, industrial plots' },
+  { id: 'pg', label: 'PG / Co-Living', icon: Users, description: 'PG, co-living spaces' },
 ]
 
 const RESIDENTIAL_SUBTYPES = [
-  'Apartment', 'Villa', 'Independent House', 'Builder Floor', 'Plot', 'Penthouse', 'Studio Apartment'
+  'Flats / Apartments', 'Independent Houses', 'Villas', 'Builder Floors', 'Studio Apartments',
+  'Duplex Homes', 'Penthouse', 'Residential Plots', 'Gated Community', 'Farm Houses'
 ]
 const COMMERCIAL_SUBTYPES = [
-  'Office Space', 'Retail Space', 'Warehouse', 'Showroom', 'Co-working Space', 'Industrial Shed'
+  'Office Space', 'Commercial Shops', 'Showrooms', 'Retail Spaces', 'Commercial Buildings', 'Hospital',
+  'Commercial Plots', 'Co-working Spaces', 'Food Court / Restaurant Space', 'Hotels & Resorts', 'Commercial Complexes'
 ]
 const LAND_SUBTYPES = [
-  'Residential Plot', 'Commercial Plot', 'Agricultural Land', 'Industrial Plot', 'Farm House'
+  'Residential Plots', 'Commercial Plots', 'Agricultural Land', 'Farm Land', 'Orchard',
+  'Plantation', 'Dairy Farm', 'Poultry Farm', 'Fish Farm', 'Horticulture Land', 'Vineyard', 'Industrial Land'
 ]
 const INDUSTRIAL_SUBTYPES = [
-  'Industrial Shed', 'Factory', 'Warehouse', 'Industrial Plot', 'Manufacturing Unit'
+  'Industrial Plots', 'Factory / Manufacturing Units', 'Industrial Sheds', 'Warehouses', 'Logistics & Distribution Centers',
+  'Cold Storage', 'Industrial Buildings', 'Godowns', 'Workshop Units', 'Industrial Land'
+]
+const PG_SUBTYPES = [
+  'Boys PG', 'Girls PG', 'Co-Living Spaces', 'Single Room', 'Shared Room', 'Student Accommodation', 'Working Professionals'
 ]
 
 const AREA_UNITS_STANDARD = ['sq.ft', 'sq.yard', 'sq.m', 'acre', 'bigha']
 const AREA_UNITS_LAND = ['acre', 'bigha', 'sq.yard', 'sq.ft', 'sq.m']
 
-const BHK_OPTIONS = ['1', '2', '3', '4', '4+']
+const BHK_OPTIONS = ['1 RK', '1 BHK', '2 BHK', '3 BHK', '4 BHK', '4+ BHK']
 const FURNISHING_OPTIONS = ['Unfurnished', 'Semi-Furnished', 'Fully Furnished']
 const FACING_OPTIONS = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West']
 const OWNERSHIP_OPTIONS = ['Freehold', 'Leasehold', 'Co-operative Society', 'Power of Attorney']
 const CONTACT_TIME_OPTIONS = ['Anytime', 'Morning (9am–12pm)', 'Afternoon (12pm–4pm)', 'Evening (4pm–8pm)']
 const WAREHOUSE_SUBTYPES = ['Warehouse', 'Industrial Shed']
+
+// Additional filter options from website
+const CONSTRUCTION_STATUS_OPTIONS = [
+  'Under Expression of Interest (EOI)',
+  'New Launch',
+  'Under Construction',
+  'NOC Obtained',
+  'Under Physical Handover',
+  'Ready to Move/Registry',
+  'Ready to Move (Registry Pending)',
+  'Resale/Secondary Sale',
+]
+
+const POSSESSION_STATUS_OPTIONS = [
+  'Ready to Move',
+  'Within 6 Months',
+  'Within 1 Year',
+  'Within 2 Years',
+  'Within 3 Years',
+  'More Than 3 Years',
+  'Under Construction',
+]
+
+const AGE_OF_PROPERTY_OPTIONS = ['New Construction', '0-5 Years', '5-10 Years', '10+ Years']
+const PARKING_TYPE_OPTIONS = [
+  'Covered Parking - Basement',
+  'Covered Parking - Podium',
+  'Covered Parking - Mechanical',
+  'Open Parking',
+  'No Parking'
+]
+const WATER_SOURCE_OPTIONS = ['Municipal', 'Borewell', 'Tanker', 'Well']
+const MAINTENANCE_CHARGES_OPTIONS = ['Below ₹2000', '₹2000 - ₹5000', '₹5000 - ₹10000', 'Above ₹10000']
+const POSTED_BY_OPTIONS = ['Owner', 'Agent', 'Builder']
+const SALE_TYPE_OPTIONS = ['Primary Sale / New Booking (No Brokerage)', 'Secondary Sale (Resale)']
+const FLOOR_NUMBER_OPTIONS = ['Ground Floor', '1st Floor', '2nd Floor', '3rd Floor', '4th Floor', '5th Floor', '6th Floor +']
+
+const ADDITIONAL_AMENITIES_OPTIONS = [
+  { id: 'lift', label: 'Lift/Elevator', icon: ChevronUp },
+  { id: 'gym', label: 'Gym/Fitness Center', icon: Dumbbell },
+  { id: 'swimming_pool', label: 'Swimming Pool', icon: Waves },
+  { id: 'club_house', label: 'Club House', icon: Users },
+  { id: 'park', label: 'Park/Garden', icon: Trees },
+  { id: 'fire_safety', label: 'Fire Safety', icon: ShieldCheck },
+  { id: 'intercom', label: 'Intercom', icon: Phone },
+  { id: 'gas_pipeline', label: 'Gas Pipeline', icon: Droplets },
+  { id: 'ac', label: 'Central AC', icon: Zap },
+  { id: 'servant_room', label: 'Servant Room', icon: User },
+  { id: 'rainwater_harvesting', label: 'Rainwater Harvesting', icon: Droplets },
+  { id: 'waste_disposal', label: 'Waste Disposal', icon: Trash },
+]
 
 const AMENITIES_OPTIONS = [
   { id: 'power_backup', label: 'Power Backup', icon: Zap },
@@ -225,6 +286,8 @@ const PostProperty = () => {
     priceNegotiable: false,
     maintenance: '',
     ownershipType: '',
+    postedBy: user?.role === 'agent' ? 'Agent' : user?.role === 'builder' ? 'Builder' : 'Owner',
+    saleType: '',
 
     // Property Details — residential / commercial (office)
     bedrooms: '',
@@ -236,6 +299,13 @@ const PostProperty = () => {
     totalFloors: '',
     parkingCovered: '',
     parkingOpen: '',
+    parkingType: '',
+    constructionStatus: '',
+    waterSource: '',
+    maintenanceCharges: '',
+    postedBy: '',
+    saleType: '',
+    meals: '',
 
     // Property Details — land
     plotLength: '',
@@ -254,6 +324,8 @@ const PostProperty = () => {
     areaUnit: 'sq.ft',
     possession: '',
     age: '',
+    builtUpArea: '',
+    superArea: '',
 
     // Contact Info
     contactName: user?.name || '',
@@ -269,6 +341,8 @@ const PostProperty = () => {
   const isRent = listingFor === 'rent'
   const isResidential = selectedType === 'residential'
   const isLand = selectedType === 'land'
+  const isIndustrial = selectedType === 'industrial'
+  const isPG = selectedType === 'pg'
   const isWarehouseLike = selectedType === 'industrial' || (selectedType === 'commercial' && WAREHOUSE_SUBTYPES.includes(formData.subType))
   const isCommercialOffice = selectedType === 'commercial' && !isWarehouseLike
   const areaUnitOptions = isLand ? AREA_UNITS_LAND : AREA_UNITS_STANDARD
@@ -369,6 +443,7 @@ const PostProperty = () => {
       case 'commercial': return COMMERCIAL_SUBTYPES
       case 'land': return LAND_SUBTYPES
       case 'industrial': return INDUSTRIAL_SUBTYPES
+      case 'pg': return PG_SUBTYPES
       default: return []
     }
   }
@@ -592,6 +667,29 @@ const PostProperty = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <SelectField
+            label="Posted By"
+            icon={User}
+            name="postedBy"
+            value={formData.postedBy}
+            onChange={handleChange}
+            options={POSTED_BY_OPTIONS}
+            placeholder="Select who is posting"
+          />
+          {!isRent && (
+            <SelectField
+              label="Sale Type"
+              icon={Tag}
+              name="saleType"
+              value={formData.saleType}
+              onChange={handleChange}
+              options={SALE_TYPE_OPTIONS}
+              placeholder="Select sale type"
+            />
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
             label="Maintenance (₹ / month)"
             type="text"
@@ -739,15 +837,16 @@ const PostProperty = () => {
           )}
 
           {/* Residential & commercial offices: floor details */}
-          {(isResidential || isCommercialOffice) && (
+          {(isResidential || isCommercialOffice || isPG) && (
             <div className="grid grid-cols-2 gap-2">
-              <TextField
+              <SelectField
                 label="Floor No."
-                type="text"
+                icon={Layers}
                 name="floorNumber"
                 value={formData.floorNumber}
                 onChange={handleChange}
-                placeholder="E.g., 4"
+                options={FLOOR_NUMBER_OPTIONS}
+                placeholder="Select floor"
               />
               <TextField
                 label="Total Floors"
@@ -775,7 +874,7 @@ const PostProperty = () => {
         </div>
 
         {/* Residential: bathrooms & balconies */}
-        {isResidential && (
+        {(isResidential || isPG) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <TextField
               label="Bathrooms"
@@ -786,15 +885,28 @@ const PostProperty = () => {
               onChange={handleChange}
               placeholder="No. of bathrooms"
             />
-            <TextField
-              label="Balconies"
-              icon={Bed}
-              type="number"
-              name="balconies"
-              value={formData.balconies}
-              onChange={handleChange}
-              placeholder="No. of balconies"
-            />
+            {isResidential && (
+              <TextField
+                label="Balconies"
+                icon={Bed}
+                type="number"
+                name="balconies"
+                value={formData.balconies}
+                onChange={handleChange}
+                placeholder="No. of balconies"
+              />
+            )}
+            {isPG && (
+              <TextField
+                label="Meals"
+                icon={Sofa}
+                type="text"
+                name="meals"
+                value={formData.meals}
+                onChange={handleChange}
+                placeholder="E.g., 3 times/day"
+              />
+            )}
           </div>
         )}
 
@@ -811,8 +923,8 @@ const PostProperty = () => {
           />
         )}
 
-        {/* Furnishing + Facing — residential and commercial office */}
-        {(isResidential || isCommercialOffice) && (
+        {/* Furnishing + Facing — residential, commercial office, and PG */}
+        {(isResidential || isCommercialOffice || isPG) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <SelectField
               label="Furnishing Status"
@@ -934,36 +1046,106 @@ const PostProperty = () => {
           </div>
         )}
 
+        {!isLand && (
+          <SelectField
+            label="Parking Type"
+            icon={Car}
+            name="parkingType"
+            value={formData.parkingType}
+            onChange={handleChange}
+            options={PARKING_TYPE_OPTIONS}
+            placeholder="Select parking type"
+          />
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <SelectField
+            label="Construction Status"
+            icon={Building2}
+            name="constructionStatus"
+            value={formData.constructionStatus}
+            onChange={handleChange}
+            options={CONSTRUCTION_STATUS_OPTIONS}
+            placeholder="Select construction status"
+          />
+          {!isLand && (
+            <SelectField
+              label="Water Source"
+              icon={Droplets}
+              name="waterSource"
+              value={formData.waterSource}
+              onChange={handleChange}
+              options={WATER_SOURCE_OPTIONS}
+              placeholder="Select water source"
+            />
+          )}
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <SelectField
             label="Possession Status"
             name="possession"
             value={formData.possession}
             onChange={handleChange}
-            options={['Immediate', 'Within 3 months', 'Within 6 months', 'Within 1 year', 'Under Construction']}
+            options={POSSESSION_STATUS_OPTIONS}
             placeholder="Select possession status"
           />
+          {!isLand && (
+            <SelectField
+              label="Maintenance Charges"
+              icon={IndianRupee}
+              name="maintenanceCharges"
+              value={formData.maintenanceCharges}
+              onChange={handleChange}
+              options={MAINTENANCE_CHARGES_OPTIONS}
+              placeholder="Select maintenance charges"
+            />
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {!isLand && (
             <SelectField
               label="Property Age"
               name="age"
               value={formData.age}
               onChange={handleChange}
-              options={['New', '0-5 years', '5-10 years', '10-20 years', '20+ years']}
+              options={AGE_OF_PROPERTY_OPTIONS}
               placeholder="Select property age"
             />
           )}
+          <TextField
+            label="RERA ID (if applicable)"
+            icon={ShieldCheck}
+            type="text"
+            name="reraId"
+            value={formData.reraId}
+            onChange={handleChange}
+            placeholder="Enter RERA registration number"
+          />
         </div>
 
-        <TextField
-          label="RERA ID (if applicable)"
-          icon={ShieldCheck}
-          type="text"
-          name="reraId"
-          value={formData.reraId}
-          onChange={handleChange}
-          placeholder="Enter RERA registration number"
-        />
+        {/* Additional Area Fields */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            label="Built-up Area"
+            icon={Maximize}
+            type="text"
+            name="builtUpArea"
+            value={formData.builtUpArea}
+            onChange={handleChange}
+            placeholder="E.g., 1200 sq.ft"
+          />
+          <TextField
+            label="Super Area"
+            icon={Maximize}
+            type="text"
+            name="superArea"
+            value={formData.superArea}
+            onChange={handleChange}
+            placeholder="E.g., 1400 sq.ft"
+          />
+        </div>
       </div>
     </div>
   )
@@ -1022,28 +1204,60 @@ const PostProperty = () => {
     <div>
       <StepHeader icon={ListChecks} title="Amenities" description="Select the amenities available at your property" />
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {AMENITIES_OPTIONS.map((amenity) => {
-          const Icon = amenity.icon
-          const isSelected = selectedAmenities.includes(amenity.id)
-          return (
-            <button
-              key={amenity.id}
-              type="button"
-              onClick={() => toggleAmenity(amenity.id)}
-              className={`p-4 rounded-xl border-2 transition-all duration-200 text-center ${
-                isSelected
-                  ? 'border-[#193C06] bg-[#193C06]/5'
-                  : 'border-slate-200 hover:border-slate-300'
-              }`}
-            >
-              <Icon size={24} className={`mx-auto mb-2 ${isSelected ? 'text-[#193C06]' : 'text-slate-400'}`} />
-              <span className={`text-sm font-medium ${isSelected ? 'text-[#193C06]' : 'text-slate-600'}`}>
-                {amenity.label}
-              </span>
-            </button>
-          )
-        })}
+      <div className="space-y-6">
+        <div>
+          <Label>Basic Amenities</Label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-3">
+            {AMENITIES_OPTIONS.map((amenity) => {
+              const Icon = amenity.icon
+              const isSelected = selectedAmenities.includes(amenity.id)
+              return (
+                <button
+                  key={amenity.id}
+                  type="button"
+                  onClick={() => toggleAmenity(amenity.id)}
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 text-center ${
+                    isSelected
+                      ? 'border-[#193C06] bg-[#193C06]/5'
+                      : 'border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <Icon size={24} className={`mx-auto mb-2 ${isSelected ? 'text-[#193C06]' : 'text-slate-400'}`} />
+                  <span className={`text-sm font-medium ${isSelected ? 'text-[#193C06]' : 'text-slate-600'}`}>
+                    {amenity.label}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div>
+          <Label>Additional Amenities</Label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-3">
+            {ADDITIONAL_AMENITIES_OPTIONS.map((amenity) => {
+              const Icon = amenity.icon
+              const isSelected = selectedAmenities.includes(amenity.id)
+              return (
+                <button
+                  key={amenity.id}
+                  type="button"
+                  onClick={() => toggleAmenity(amenity.id)}
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 text-center ${
+                    isSelected
+                      ? 'border-[#193C06] bg-[#193C06]/5'
+                      : 'border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <Icon size={24} className={`mx-auto mb-2 ${isSelected ? 'text-[#193C06]' : 'text-slate-400'}`} />
+                  <span className={`text-sm font-medium ${isSelected ? 'text-[#193C06]' : 'text-slate-600'}`}>
+                    {amenity.label}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -56,23 +56,83 @@ const HERO_IMAGES = [assets.header, assets.header2, assets.header3, assets.heade
 // ---- Filter options for professional dropdowns ----------------------------
 const BUDGET_OPTIONS = {
   'Residential': {
-    'Buy': ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+'],
-    'Rent': ['10k', '20k', '40k', '60k', '80k', '1 Lakh', '1.5 Lakh', '2 Lakh', '3 Lakh', '5 Lakh+'],
-    'Rent / Lease': ['10k', '20k', '40k', '60k', '80k', '1 Lakh', '1.5 Lakh', '2 Lakh', '3 Lakh', '5 Lakh+'],
-    'Plots/Land': ['10 Lac', '20 Lac', '30 Lac', '40 Lac', '50 Lac', '75 Lac', '1 Cr', '1.5 Cr', '2 Cr', '3 Cr', '5 Cr', '7.5 Cr', '10 Cr+'],
-    'PG / Co-living': ['5k', '10k', '15k', '20k', '25k', '30k', '40k', '50k+'],
+    'Buy': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
+    'Rent': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'Rent / Lease': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'Plots/Land': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
+    'PG / Co-living': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'New Launch': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
   },
   'Commercial': {
-    'Buy': ['50 Lakh', '1 Cr', '2 Cr', '3 Cr', '4 Cr', '5 Cr', '7.5 Cr', '10 Cr', '15 Cr', '20 Cr+'],
-    'Rent': ['25k', '50k', '1 Lakh', '2 Lakh', '3 Lakh', '5 Lakh', '10 Lakh', '20 Lakh+'],
-    'Rent / Lease': ['25k', '50k', '1 Lakh', '2 Lakh', '3 Lakh', '5 Lakh', '10 Lakh', '20 Lakh+'],
-    'Plots/Land': ['50 Lakh', '1 Cr', '2 Cr', '3 Cr', '4 Cr', '5 Cr', '7.5 Cr', '10 Cr', '15 Cr', '20 Cr+'],
+    'Buy': ['50 Lakh', '1 Cr', '2 Cr', '4 Cr', '6 Cr', '8 Cr', '10 Cr'],
+    'Rent': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'Rent / Lease': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'Plots/Land': ['50 Lakh', '1 Cr', '2 Cr', '4 Cr', '6 Cr', '8 Cr', '10 Cr'],
+    'New Launch': ['50 Lakh', '1 Cr', '2 Cr', '4 Cr', '6 Cr', '8 Cr', '10 Cr'],
+  },
+  'Industrial': {
+    'Buy': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
+    'Rent': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'Rent / Lease': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'Plots/Land': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
+    'New Launch': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
+  },
+  'Farming land': {
+    'Buy': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
+    'Rent': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'Rent / Lease': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
+    'Plots/Land': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
+    'New Launch': ['10 Lakh', '20 Lakh', '40 Lakh', '60 Lakh', '80 Lakh', '1 Cr', '2 Cr'],
+  },
+  'PG / Co-Living': {
+    'Rent': ['25k', '50k', '75k', '1 Lakh', '1.25 Lakh', '1.5 Lakh', '2 Lakh'],
   }
 }
 
-// Helper function to get budget options based on category and tab
+// Quick Select options - can include ranges for better UX
+const QUICK_SELECT_OPTIONS = {
+  'Residential': {
+    'Buy': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+    'Rent': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'Rent / Lease': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'Plots/Land': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+    'PG / Co-living': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'New Launch': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+  },
+  'Commercial': {
+    'Buy': ['Under ₹50 Lakh', '₹50 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', '₹2 Crore – ₹4 Crore', '₹4 Crore – ₹6 Crore', '₹6 Crore – ₹8 Crore', '₹8 Crore – ₹10 Crore', 'Above ₹10 Crore'],
+    'Rent': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'Rent / Lease': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'Plots/Land': ['Under ₹50 Lakh', '₹50 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', '₹2 Crore – ₹4 Crore', '₹4 Crore – ₹6 Crore', '₹6 Crore – ₹8 Crore', '₹8 Crore – ₹10 Crore', 'Above ₹10 Crore'],
+    'New Launch': ['Under ₹50 Lakh', '₹50 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', '₹2 Crore – ₹4 Crore', '₹4 Crore – ₹6 Crore', '₹6 Crore – ₹8 Crore', '₹8 Crore – ₹10 Crore', 'Above ₹10 Crore'],
+  },
+  'Industrial': {
+    'Buy': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+    'Rent': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'Rent / Lease': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'Plots/Land': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+    'New Launch': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+  },
+  'Farming land': {
+    'Buy': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+    'Rent': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'Rent / Lease': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+    'Plots/Land': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+    'New Launch': ['Under ₹10 Lakh', '₹10 Lakh – ₹20 Lakh', '₹20 Lakh – ₹40 Lakh', '₹40 Lakh – ₹60 Lakh', '₹60 Lakh – ₹80 Lakh', '₹80 Lakh – ₹1 Crore', '₹1 Crore – ₹2 Crore', 'Above ₹2 Crore'],
+  },
+  'PG / Co-Living': {
+    'Rent': ['Under ₹25K', '₹25K – ₹50K', '₹50K – ₹75K', '₹75K – ₹1 Lakh', '₹1 Lakh – ₹1.25 Lakh', '₹1.25 Lakh – ₹1.5 Lakh', '₹1.5 Lakh – ₹2 Lakh', 'Above ₹2 Lakh'],
+  }
+}
+
+// Helper function to get budget options for range slider/min-max
 const getBudgetOptions = (category, tab) => {
   return BUDGET_OPTIONS[category]?.[tab] || BUDGET_OPTIONS['Residential']['Buy']
+}
+
+// Helper function to get quick select options
+const getQuickSelectOptions = (category, tab) => {
+  return QUICK_SELECT_OPTIONS[category]?.[tab] || QUICK_SELECT_OPTIONS['Residential']['Buy']
 }
 
 const AREA_RANGE_OPTIONS = ['300 sq ft', '500 sq ft', '750 sq ft', '1000 sq ft', '1500 sq ft', '2000 sq ft', '3000 sq ft', '5000 sq ft', '7500 sq ft', '10000 sq ft+']
@@ -1900,6 +1960,7 @@ const Header = () => {
                       {/* Get dynamic budget options based on category and tab */}
                       {(() => {
                         const currentBudgetOptions = getBudgetOptions(selectedCategory, activeTab)
+                        const quickSelectOptions = getQuickSelectOptions(selectedCategory, activeTab)
                         return (
                           <>
                             {/* Selected range readout */}
@@ -2015,28 +2076,50 @@ const Header = () => {
                               </div>
                             </div>
 
-                            {/* Quick presets */}
+                            {/* Quick presets - using separate options for better UX */}
                             <label className="text-[10px] font-bold tracking-wider uppercase text-slate-400 mb-2 block">Quick Select</label>
                             <div className="grid grid-cols-2 gap-2">
-                              {currentBudgetOptions.slice(0, 6).map((opt) => (
-                                <button
-                                  key={opt}
-                                  type="button"
-                                  onClick={() => {
-                                    const idx = currentBudgetOptions.indexOf(opt)
-                                    setPendingFilterValue({
-                                      min: '',
-                                      max: opt,
-                                      rangeMin: 0,
-                                      rangeMax: Math.round((idx / (currentBudgetOptions.length - 1)) * 100),
-                                    })
-                                  }}
-                                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all"
-                                  style={{ color: NAVY }}
-                                >
-                                  Under {opt}
-                                </button>
-                              ))}
+                              {quickSelectOptions.map((opt) => {
+                                // Check if option is a range (contains "–" or "-")
+                                const isRange = opt.includes('–') || opt.includes('-')
+                                const alreadyHasUnder = opt.toLowerCase().startsWith('under')
+                                const displayLabel = isRange ? opt : (alreadyHasUnder ? opt : `Under ${opt}`)
+                                
+                                return (
+                                  <button
+                                    key={opt}
+                                    type="button"
+                                    onClick={() => {
+                                      const idx = quickSelectOptions.indexOf(opt)
+                                      
+                                      if (isRange) {
+                                        // Parse range format like "₹50 Lakh – ₹1 Crore"
+                                        const parts = opt.split(/[–-]/)
+                                        const minVal = parts[0]?.trim() || ''
+                                        const maxVal = parts[1]?.trim() || ''
+                                        setPendingFilterValue({
+                                          min: minVal,
+                                          max: maxVal,
+                                          rangeMin: 0,
+                                          rangeMax: 100,
+                                        })
+                                      } else {
+                                        // Single value - treat as "Under X"
+                                        setPendingFilterValue({
+                                          min: '',
+                                          max: opt,
+                                          rangeMin: 0,
+                                          rangeMax: 100,
+                                        })
+                                      }
+                                    }}
+                                    className="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 hover:border-[#1E88E5] hover:bg-[rgba(30,136,229,0.04)] transition-all"
+                                    style={{ color: NAVY }}
+                                  >
+                                    {displayLabel}
+                                  </button>
+                                )
+                              })}
                             </div>
                           </>
                         )
