@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
 import {
   Search,
   MapPin,
@@ -404,6 +405,7 @@ const Pill = ({ text, bg, color, icon: Icon }) => (
 )
 
 const Filter = () => {
+  const { searchFilters, updateSearchFilters } = useContext(AppContext)
   const [searchParams, setSearchParams] = useSearchParams()
   const [selectedType, setSelectedType] = useState('buy')
   const [selectedCategory, setSelectedCategory] = useState([])
@@ -433,6 +435,101 @@ const Filter = () => {
   const [videosOnly, setVideosOnly] = useState(false)
   const [showNriInfo, setShowNriInfo] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Initialize state from URL params
+  useEffect(() => {
+    // Set property type from URL param
+    const typeParam = searchParams.get('type')
+    if (typeParam) {
+      setSelectedType(typeParam)
+    }
+
+    // Set city from URL param
+    const cityParam = searchParams.get('city')
+    if (cityParam) {
+      setSelectedCity(cityParam)
+    }
+
+    // Set search query from URL
+    const queryParam = searchParams.get('q')
+    if (queryParam) {
+      setSearchQuery(queryParam)
+    }
+  }, [searchParams])
+
+  // Initialize state from context on mount
+  useEffect(() => {
+    console.log('Filter page - searchFilters.category:', searchFilters.category)
+    
+    // Set property type from context if not set by URL
+    if (!searchParams.get('type') && searchFilters.propertyType) {
+      setSelectedType(searchFilters.propertyType)
+    }
+
+    // Set city from context if not set by URL
+    if (!searchParams.get('city') && searchFilters.city) {
+      setSelectedCity(searchFilters.city)
+    }
+
+    // Set category from context ONLY if it exists, is not null/undefined, and is not empty string
+    // Don't set any default category - let user choose
+    if (searchFilters.category && searchFilters.category !== null && searchFilters.category !== '') {
+      console.log('Setting category from context:', searchFilters.category)
+      setSelectedCategory([searchFilters.category])
+    } else {
+      console.log('Not setting category - searchFilters.category is:', searchFilters.category)
+    }
+
+    // Set bedrooms from context (combine BHK and Bedroom)
+    if (searchFilters.bedrooms && searchFilters.bedrooms.length > 0) {
+      setSelectedBedrooms(searchFilters.bedrooms)
+    }
+
+    // Set bathrooms from context
+    if (searchFilters.bathrooms && searchFilters.bathrooms.length > 0) {
+      setSelectedBathrooms(searchFilters.bathrooms)
+    }
+
+    // Set built up area from context
+    if (searchFilters.builtUpArea && searchFilters.builtUpArea.length > 0) {
+      setSelectedBuiltUpArea(searchFilters.builtUpArea)
+    }
+
+    // Set super area from context
+    if (searchFilters.superArea && searchFilters.superArea.length > 0) {
+      setSelectedSuperArea(searchFilters.superArea)
+    }
+
+    // Set construction status from context
+    if (searchFilters.constructionStatus && searchFilters.constructionStatus.length > 0) {
+      setSelectedListingStatus(searchFilters.constructionStatus)
+    }
+
+    // Set parking from context
+    if (searchFilters.parking && searchFilters.parking.length > 0) {
+      setSelectedParkingCount(searchFilters.parking)
+    }
+
+    // Set furnishing from context
+    if (searchFilters.furnishing && searchFilters.furnishing.length > 0) {
+      setSelectedFurnishing(searchFilters.furnishing)
+    }
+
+    // Set facing from context
+    if (searchFilters.facing && searchFilters.facing.length > 0) {
+      setSelectedFacing(searchFilters.facing)
+    }
+
+    // Set posted by from context
+    if (searchFilters.postedBy && searchFilters.postedBy.length > 0) {
+      setSelectedPostedBy(searchFilters.postedBy)
+    }
+
+    // Set posted since from context
+    if (searchFilters.postedSince) {
+      setSelectedPostedSince([searchFilters.postedSince])
+    }
+  }, []) // Empty dependency array - run only on mount
 
   const [openSections, setOpenSections] = useState({
     category: true,
@@ -482,7 +579,8 @@ const Filter = () => {
     if (query) {
       setSearchQuery(query)
     }
-    if (category) {
+    // Only set category from URL if it's explicitly provided
+    if (category && category.trim()) {
       setSelectedCategory(category.split(','))
     }
     if (price) {

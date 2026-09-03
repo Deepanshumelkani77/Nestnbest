@@ -212,9 +212,30 @@ const getConstructionStatusOptions = (tab) => {
 // here to surface a hover hint for any other option without touching the
 // rendering logic.
 const CONSTRUCTION_STATUS_INFO = {
-  'NOC Obtained': 'The No Objection Certificate (NOC) has been obtained. Physical handover is expected within 60–90 days, subject to the builder schedule.',
-  'Under Physical Handover': 'The NOC has been issued, and the property is currently undergoing the physical handover process. Possession is expected within 60–90 days, subject to the builder schedule.',
-}
+  'Under Expression of Interest (EOI)':
+    'The project is currently accepting Expressions of Interest (EOI) from interested buyers. This indicates early-stage buyer interest before formal booking or launch.',
+
+  'New Launch':
+    'The project has recently been launched by the developer. Buyers can explore available units, pricing, and launch-period offers, subject to availability.',
+
+  'Under Construction':
+    'Construction work is currently in progress at the project site. The expected possession timeline depends on the construction schedule and applicable approvals.',
+
+  'NOC Obtained':
+    'The No Objection Certificate (NOC) has been obtained. Physical handover is expected within 60–90 days, subject to the builder’s schedule.',
+
+  'Under Physical Handover':
+    'The NOC has been issued, and the property is currently undergoing the physical handover process. Possession is expected within 60–90 days, subject to the builder’s schedule.',
+
+  'Ready to Move/Registry':
+    'The property is ready for possession and the registry process is available for completion, subject to the required documentation and applicable formalities.',
+
+  'Ready to Move (Registry Pending)':
+    'The property is ready for physical possession, but the registry process is still pending. Registration will be completed once the required formalities are fulfilled.',
+
+  'Resale/Secondary Sale':
+    'The property is being offered for resale by an existing owner. The transaction is a secondary-market sale rather than a direct purchase from the developer.',
+};
 
 const FILTER_KIND = {
   Budget: 'range',
@@ -831,54 +852,72 @@ const Header = () => {
   const [isBedroomDropdownOpen, setIsBedroomDropdownOpen] = useState(false)
   const bedroomDropdownRef = useRef(null)
   const bedroomTriggerRef = useRef(null)
+  const bedroomTimeoutRef = useRef(null)
 
   const [isBHKDropdownOpen, setIsBHKDropdownOpen] = useState(false)
   const bhkDropdownRef = useRef(null)
   const bhkTriggerRef = useRef(null)
+  const bhkTimeoutRef = useRef(null)
 
   const [isToiletDropdownOpen, setIsToiletDropdownOpen] = useState(false)
   const toiletDropdownRef = useRef(null)
   const toiletTriggerRef = useRef(null)
+  const toiletTimeoutRef = useRef(null)
 
   const [isAdvancedNeighbourhoodDropdownOpen, setIsAdvancedNeighbourhoodDropdownOpen] = useState(false)
   const advancedNeighbourhoodDropdownRef = useRef(null)
   const advancedNeighbourhoodTriggerRef = useRef(null)
+  const advancedNeighbourhoodTimeoutRef = useRef(null)
 
   const [isConstructionStatusDropdownOpen, setIsConstructionStatusDropdownOpen] = useState(false)
   const constructionStatusDropdownRef = useRef(null)
   const constructionStatusTriggerRef = useRef(null)
+  const constructionStatusTimeoutRef = useRef(null)
 
   const [isBuiltUpAreaDropdownOpen, setIsBuiltUpAreaDropdownOpen] = useState(false)
   const builtUpAreaDropdownRef = useRef(null)
   const builtUpAreaTriggerRef = useRef(null)
+  const builtUpAreaTimeoutRef = useRef(null)
 
   const [isSuperAreaDropdownOpen, setIsSuperAreaDropdownOpen] = useState(false)
   const superAreaDropdownRef = useRef(null)
   const superAreaTriggerRef = useRef(null)
+  const superAreaTimeoutRef = useRef(null)
 
   const [isParkingDropdownOpen, setIsParkingDropdownOpen] = useState(false)
   const parkingDropdownRef = useRef(null)
   const parkingTriggerRef = useRef(null)
+  const parkingTimeoutRef = useRef(null)
 
   const [isFurnishingDropdownOpen, setIsFurnishingDropdownOpen] = useState(false)
   const furnishingDropdownRef = useRef(null)
   const furnishingTriggerRef = useRef(null)
+  const furnishingTimeoutRef = useRef(null)
 
   const [isFacingDropdownOpen, setIsFacingDropdownOpen] = useState(false)
   const facingDropdownRef = useRef(null)
   const facingTriggerRef = useRef(null)
+  const facingTimeoutRef = useRef(null)
 
   const [isAgeOfPropertyDropdownOpen, setIsAgeOfPropertyDropdownOpen] = useState(false)
   const ageOfPropertyDropdownRef = useRef(null)
   const ageOfPropertyTriggerRef = useRef(null)
+  const ageOfPropertyTimeoutRef = useRef(null)
 
   const [isPostedSinceDropdownOpen, setIsPostedSinceDropdownOpen] = useState(false)
   const postedSinceDropdownRef = useRef(null)
   const postedSinceTriggerRef = useRef(null)
+  const postedSinceTimeoutRef = useRef(null)
 
   const [isMaintenanceChargesDropdownOpen, setIsMaintenanceChargesDropdownOpen] = useState(false)
   const maintenanceChargesDropdownRef = useRef(null)
   const maintenanceChargesTriggerRef = useRef(null)
+  const maintenanceChargesTimeoutRef = useRef(null)
+
+  const [isPostedByDropdownOpen, setIsPostedByDropdownOpen] = useState(false)
+  const postedByDropdownRef = useRef(null)
+  const postedByTriggerRef = useRef(null)
+  const postedByTimeoutRef = useRef(null)
 
   const ADVANCED_CATEGORIES = ['Flat Configuration', 'Parking', 'Furnishing', 'Facing', 'Super Area', 'Built Up Area', 'Construction Status', 'Age of Property', 'Maintenance Charges', 'Posted By', 'Posted Since', 'Neighbourhood']
 
@@ -933,13 +972,8 @@ const Header = () => {
   // Toilet, Neighbourhood) are left independent — closing them doesn't
   // need to tear down their parent panel.
   // ---------------------------------------------------------------------
-  const closeAllDropdowns = () => {
-    setIsLocationOpen(false)
-    setIsSubCategoryDropdownOpen(false)
-    setIsSearchCityDropdownOpen(false)
-    setIsUserDropdownOpen(false)
-    setIsNeighbourhoodDropdownOpen(false)
-    setIsAdvancedDropdownOpen(false)
+  // Close all dropdowns except the Advanced panel when option dropdowns close
+  const closeOptionDropdowns = () => {
     setIsBedroomDropdownOpen(false)
     setIsBHKDropdownOpen(false)
     setIsToiletDropdownOpen(false)
@@ -953,6 +987,17 @@ const Header = () => {
     setIsAgeOfPropertyDropdownOpen(false)
     setIsPostedSinceDropdownOpen(false)
     setIsMaintenanceChargesDropdownOpen(false)
+    setIsPostedByDropdownOpen(false)
+  }
+
+  const closeAllDropdowns = () => {
+    setIsLocationOpen(false)
+    setIsSubCategoryDropdownOpen(false)
+    setIsSearchCityDropdownOpen(false)
+    setIsUserDropdownOpen(false)
+    setIsNeighbourhoodDropdownOpen(false)
+    setIsAdvancedDropdownOpen(false)
+    closeOptionDropdowns()
     setIsMenuDropdownOpen(false)
     setOpenMegaMenu(null)
     setIsFilterOpen(false)
@@ -1029,6 +1074,7 @@ const Header = () => {
       [ageOfPropertyTriggerRef, ageOfPropertyDropdownRef],
       [postedSinceTriggerRef, postedSinceDropdownRef],
       [maintenanceChargesTriggerRef, maintenanceChargesDropdownRef],
+      [postedByTriggerRef, postedByDropdownRef],
       [menuTriggerRef, menuDropdownRef],
     ]
 
@@ -1054,6 +1100,30 @@ const Header = () => {
       // (e.g. a checkbox in the filter panel) should never be treated as
       // "outside".
       const insideSearchCard = searchCardRef.current && searchCardRef.current.contains(target)
+
+      // Special handling for Advanced dropdown: only close if clicking outside
+      // the Advanced trigger AND the Advanced panel AND all nested option dropdowns
+      const insideAdvancedDropdown =
+        (advancedTriggerRef.current && advancedTriggerRef.current.contains(target)) ||
+        (advancedDropdownRef.current && advancedDropdownRef.current.contains(target))
+
+      // Check if inside any option dropdown (nested within Advanced)
+      // These are the dropdowns after the Advanced dropdown in the pairs array
+      const optionDropdownPairs = dropdownRefPairs.slice(6) // Skip first 6 pairs (up to and including Advanced)
+      const insideOptionDropdown = optionDropdownPairs.some(
+        ([triggerRef, panelRef]) =>
+          (panelRef.current && panelRef.current.contains(target)) ||
+          (triggerRef.current && triggerRef.current.contains(target))
+      )
+
+      // If clicking inside Advanced dropdown or any of its option dropdowns, don't close Advanced
+      if (insideAdvancedDropdown || insideOptionDropdown) {
+        // Only close option dropdowns if clicking outside them but inside Advanced
+        if (insideAdvancedDropdown && !insideOptionDropdown) {
+          closeOptionDropdowns()
+        }
+        return
+      }
 
       if (!insideKnownPair && !insideFilterDropdown && !insideMegaMenu && !insideSearchCard) {
         closeAllDropdowns()
@@ -1380,6 +1450,27 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll, true)
   }, [isMaintenanceChargesDropdownOpen])
 
+  const postedByDropdownPosition = useDropdownPosition(isPostedByDropdownOpen, postedByTriggerRef, (rect) => ({
+    top: rect.bottom + 8,
+    left: rect.left,
+  }))
+
+  // Close Posted By dropdown on page scroll
+  useEffect(() => {
+    if (!isPostedByDropdownOpen) return
+
+    const handleScroll = (e) => {
+      // Don't close if scrolling inside the dropdown itself
+      if (postedByDropdownRef.current && postedByDropdownRef.current.contains(e.target)) {
+        return
+      }
+      setIsPostedByDropdownOpen(false)
+    }
+
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isPostedByDropdownOpen])
+
   const filterDropdownPosition = useKeyedDropdownPosition(openFilterDropdown, filterTriggerRefs, (rect) => ({
     top: rect.bottom + 8,
     left: rect.left,
@@ -1453,8 +1544,42 @@ const Header = () => {
   const goToPreviousImage = () => setCurrentImageIndex((prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)
   const goToNextImage = () => setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length)
 
+  const { updateSearchFilters } = useContext(AppContext)
+
   const handleSearch = () => {
     closeAllDropdowns()
+
+    // Map activeTab to propertyType
+    let propertyType = 'buy'
+    if (activeTab === 'Buy') propertyType = 'buy'
+    else if (activeTab === 'Rent') propertyType = 'rent'
+    else if (activeTab === 'Commercial') propertyType = 'commercial'
+    else if (activeTab === 'New Launch') propertyType = 'buy'
+
+    // Combine BHK and Bedroom selections
+    const combinedBedrooms = [...new Set([...selectedFilters.BHK, ...selectedFilters.Bedroom])]
+
+    // Update search filters in context with all advanced filters
+    // Only pass category if it's not the default 'Residential'
+    updateSearchFilters({
+      propertyType,
+      category: selectedCategory !== 'Residential' ? selectedCategory : null,
+      subCategory: selectedSubCategory,
+      city: selectedCity,
+      neighbourhood: selectedNeighbourhood,
+      budget: pendingFilterValue,
+      bedrooms: combinedBedrooms,
+      bathrooms: selectedFilters.Toilet,
+      builtUpArea: selectedFilters['Built Up Area'],
+      superArea: selectedFilters['Super Area'],
+      constructionStatus: selectedFilters['Construction Status'],
+      parking: selectedFilters.Parking,
+      furnishing: selectedFilters.Furnishing,
+      facing: selectedFilters.Facing,
+      postedBy: selectedFilters['Posted By'],
+      postedSince: selectedFilters['Posted Since']?.[0] || null,
+    })
+
     const params = new URLSearchParams()
 
     if (activeTab === 'Buy') {
@@ -2261,7 +2386,15 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Flat Configuration</label>
                             <button
                               type="button"
-                              onClick={() => setIsBedroomDropdownOpen((open) => !open)}
+                              onMouseEnter={() => {
+                                if (bedroomTimeoutRef.current) {
+                                  clearTimeout(bedroomTimeoutRef.current)
+                                }
+                                setIsBedroomDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                bedroomTimeoutRef.current = setTimeout(() => setIsBedroomDropdownOpen(false), 300)
+                              }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
                               <span>{selectedFilters.BHK?.[0] || selectedFilters.Toilet?.[0] || selectedFilters['Servant Room']?.[0] || selectedFilters['Pooja Room']?.[0] ? 'Selected' : 'Select'}</span>
@@ -2274,6 +2407,15 @@ const Header = () => {
                                   ref={bedroomDropdownRef}
                                   className="fixed w-[500px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${bedroomDropdownPosition.top}px`, left: `${bedroomDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (bedroomTimeoutRef.current) {
+                                      clearTimeout(bedroomTimeoutRef.current)
+                                    }
+                                    setIsBedroomDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    bedroomTimeoutRef.current = setTimeout(() => setIsBedroomDropdownOpen(false), 100)
+                                  }}
                                 >
                                   <div className="p-5">
                                     <h4 className="text-sm font-bold mb-4" style={{ color: NAVY }}>Flat Configuration Options</h4>
@@ -2283,9 +2425,14 @@ const Header = () => {
                                         <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">BHK</label>
                                         <button
                                           type="button"
-                                          onClick={(e) => {
-                                            e.stopPropagation()
-                                            setIsBHKDropdownOpen((open) => !open)
+                                          onMouseEnter={() => {
+                                            if (bhkTimeoutRef.current) {
+                                              clearTimeout(bhkTimeoutRef.current)
+                                            }
+                                            setIsBHKDropdownOpen(true)
+                                          }}
+                                          onMouseLeave={() => {
+                                            bhkTimeoutRef.current = setTimeout(() => setIsBHKDropdownOpen(false), 300)
                                           }}
                                           className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                                         >
@@ -2299,6 +2446,15 @@ const Header = () => {
                                               ref={bhkDropdownRef}
                                               className="fixed w-[200px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                               style={{ top: `${bhkDropdownPosition.top}px`, left: `${bhkDropdownPosition.left}px` }}
+                                              onMouseEnter={() => {
+                                                if (bhkTimeoutRef.current) {
+                                                  clearTimeout(bhkTimeoutRef.current)
+                                                }
+                                                setIsBHKDropdownOpen(true)
+                                              }}
+                                              onMouseLeave={() => {
+                                                bhkTimeoutRef.current = setTimeout(() => setIsBHKDropdownOpen(false), 100)
+                                              }}
                                             >
                                               <div className="p-3 space-y-1">
                                                 {[1, 2, 3, 4, 5, '5+'].map((opt) => (
@@ -2331,9 +2487,14 @@ const Header = () => {
                                         <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Toilet</label>
                                         <button
                                           type="button"
-                                          onClick={(e) => {
-                                            e.stopPropagation()
-                                            setIsToiletDropdownOpen((open) => !open)
+                                          onMouseEnter={() => {
+                                            if (toiletTimeoutRef.current) {
+                                              clearTimeout(toiletTimeoutRef.current)
+                                            }
+                                            setIsToiletDropdownOpen(true)
+                                          }}
+                                          onMouseLeave={() => {
+                                            toiletTimeoutRef.current = setTimeout(() => setIsToiletDropdownOpen(false), 300)
                                           }}
                                           className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                                         >
@@ -2347,6 +2508,15 @@ const Header = () => {
                                               ref={toiletDropdownRef}
                                               className="fixed w-[200px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                               style={{ top: `${toiletDropdownPosition.top}px`, left: `${toiletDropdownPosition.left}px` }}
+                                              onMouseEnter={() => {
+                                                if (toiletTimeoutRef.current) {
+                                                  clearTimeout(toiletTimeoutRef.current)
+                                                }
+                                                setIsToiletDropdownOpen(true)
+                                              }}
+                                              onMouseLeave={() => {
+                                                toiletTimeoutRef.current = setTimeout(() => setIsToiletDropdownOpen(false), 100)
+                                              }}
                                             >
                                               <div className="p-3 space-y-1">
                                                 {[1, 2, 3, 4, 5, '5+'].map((opt) => (
@@ -2423,9 +2593,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Parking</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsParkingDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (parkingTimeoutRef.current) {
+                                  clearTimeout(parkingTimeoutRef.current)
+                                }
+                                setIsParkingDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                parkingTimeoutRef.current = setTimeout(() => setIsParkingDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2439,6 +2614,15 @@ const Header = () => {
                                   ref={parkingDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${parkingDropdownPosition.top}px`, left: `${parkingDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (parkingTimeoutRef.current) {
+                                      clearTimeout(parkingTimeoutRef.current)
+                                    }
+                                    setIsParkingDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    parkingTimeoutRef.current = setTimeout(() => setIsParkingDropdownOpen(false), 100)
+                                  }}
                                 >
                                   <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
                                     {CHECKBOX_FILTER_OPTIONS.Parking.map((opt) => (
@@ -2471,9 +2655,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Furnishing</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsFurnishingDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (furnishingTimeoutRef.current) {
+                                  clearTimeout(furnishingTimeoutRef.current)
+                                }
+                                setIsFurnishingDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                furnishingTimeoutRef.current = setTimeout(() => setIsFurnishingDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2487,6 +2676,15 @@ const Header = () => {
                                   ref={furnishingDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${furnishingDropdownPosition.top}px`, left: `${furnishingDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (furnishingTimeoutRef.current) {
+                                      clearTimeout(furnishingTimeoutRef.current)
+                                    }
+                                    setIsFurnishingDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    furnishingTimeoutRef.current = setTimeout(() => setIsFurnishingDropdownOpen(false), 100)
+                                  }}
                                 >
                                   <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
                                     {CHECKBOX_FILTER_OPTIONS.Furnishing.map((opt) => (
@@ -2519,9 +2717,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Facing</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsFacingDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (facingTimeoutRef.current) {
+                                  clearTimeout(facingTimeoutRef.current)
+                                }
+                                setIsFacingDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                facingTimeoutRef.current = setTimeout(() => setIsFacingDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2535,6 +2738,15 @@ const Header = () => {
                                   ref={facingDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${facingDropdownPosition.top}px`, left: `${facingDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (facingTimeoutRef.current) {
+                                      clearTimeout(facingTimeoutRef.current)
+                                    }
+                                    setIsFacingDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    facingTimeoutRef.current = setTimeout(() => setIsFacingDropdownOpen(false), 100)
+                                  }}
                                 >
                                   <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
                                     {CHECKBOX_FILTER_OPTIONS.Facing.map((opt) => (
@@ -2567,9 +2779,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Super Area</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsSuperAreaDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (superAreaTimeoutRef.current) {
+                                  clearTimeout(superAreaTimeoutRef.current)
+                                }
+                                setIsSuperAreaDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                superAreaTimeoutRef.current = setTimeout(() => setIsSuperAreaDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2583,8 +2800,17 @@ const Header = () => {
                                   ref={superAreaDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${superAreaDropdownPosition.top}px`, left: `${superAreaDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (superAreaTimeoutRef.current) {
+                                      clearTimeout(superAreaTimeoutRef.current)
+                                    }
+                                    setIsSuperAreaDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    superAreaTimeoutRef.current = setTimeout(() => setIsSuperAreaDropdownOpen(false), 100)
+                                  }}
                                 >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
                                     {BUILT_UP_AREA_OPTIONS.map((opt) => (
                                       <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
                                         <input
@@ -2614,9 +2840,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Built Up Area</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsBuiltUpAreaDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (builtUpAreaTimeoutRef.current) {
+                                  clearTimeout(builtUpAreaTimeoutRef.current)
+                                }
+                                setIsBuiltUpAreaDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                builtUpAreaTimeoutRef.current = setTimeout(() => setIsBuiltUpAreaDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2630,8 +2861,17 @@ const Header = () => {
                                   ref={builtUpAreaDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${builtUpAreaDropdownPosition.top}px`, left: `${builtUpAreaDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (builtUpAreaTimeoutRef.current) {
+                                      clearTimeout(builtUpAreaTimeoutRef.current)
+                                    }
+                                    setIsBuiltUpAreaDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    builtUpAreaTimeoutRef.current = setTimeout(() => setIsBuiltUpAreaDropdownOpen(false), 100)
+                                  }}
                                 >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
                                     {BUILT_UP_AREA_OPTIONS.map((opt) => (
                                       <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
                                         <input
@@ -2661,9 +2901,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Construction Status</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsConstructionStatusDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (constructionStatusTimeoutRef.current) {
+                                  clearTimeout(constructionStatusTimeoutRef.current)
+                                }
+                                setIsConstructionStatusDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                constructionStatusTimeoutRef.current = setTimeout(() => setIsConstructionStatusDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2677,6 +2922,15 @@ const Header = () => {
                                   ref={constructionStatusDropdownRef}
                                   className="fixed w-[280px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${constructionStatusDropdownPosition.top}px`, left: `${constructionStatusDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (constructionStatusTimeoutRef.current) {
+                                      clearTimeout(constructionStatusTimeoutRef.current)
+                                    }
+                                    setIsConstructionStatusDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    constructionStatusTimeoutRef.current = setTimeout(() => setIsConstructionStatusDropdownOpen(false), 100)
+                                  }}
                                 >
                                   <div className="p-3 space-y-1 max-h-[340px] overflow-y-auto">
                                     {getConstructionStatusOptions(activeTab).map((opt) => {
@@ -2733,9 +2987,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Age of Property</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsAgeOfPropertyDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (ageOfPropertyTimeoutRef.current) {
+                                  clearTimeout(ageOfPropertyTimeoutRef.current)
+                                }
+                                setIsAgeOfPropertyDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                ageOfPropertyTimeoutRef.current = setTimeout(() => setIsAgeOfPropertyDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2749,6 +3008,15 @@ const Header = () => {
                                   ref={ageOfPropertyDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${ageOfPropertyDropdownPosition.top}px`, left: `${ageOfPropertyDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (ageOfPropertyTimeoutRef.current) {
+                                      clearTimeout(ageOfPropertyTimeoutRef.current)
+                                    }
+                                    setIsAgeOfPropertyDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    ageOfPropertyTimeoutRef.current = setTimeout(() => setIsAgeOfPropertyDropdownOpen(false), 100)
+                                  }}
                                 >
                                   <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
                                     {CHECKBOX_FILTER_OPTIONS['Age of Property'].map((opt) => (
@@ -2781,9 +3049,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Maintenance Charges</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsMaintenanceChargesDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (maintenanceChargesTimeoutRef.current) {
+                                  clearTimeout(maintenanceChargesTimeoutRef.current)
+                                }
+                                setIsMaintenanceChargesDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                maintenanceChargesTimeoutRef.current = setTimeout(() => setIsMaintenanceChargesDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2797,6 +3070,15 @@ const Header = () => {
                                   ref={maintenanceChargesDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${maintenanceChargesDropdownPosition.top}px`, left: `${maintenanceChargesDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (maintenanceChargesTimeoutRef.current) {
+                                      clearTimeout(maintenanceChargesTimeoutRef.current)
+                                    }
+                                    setIsMaintenanceChargesDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    maintenanceChargesTimeoutRef.current = setTimeout(() => setIsMaintenanceChargesDropdownOpen(false), 100)
+                                  }}
                                 >
                                   <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
                                     {CHECKBOX_FILTER_OPTIONS['Maintenance Charges'].map((opt) => (
@@ -2825,21 +3107,64 @@ const Header = () => {
                           </div>
 
                           {/* Posted By */}
-                          <div>
+                          <div className="relative" ref={postedByTriggerRef}>
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Posted By</label>
-                            <select
-                              value={selectedFilters['Posted By'][0] || ''}
-                              onChange={(e) => {
-                                setSelectedFilters(prev => ({
-                                  ...prev,
-                                  'Posted By': e.target.value ? [e.target.value] : []
-                                }))
+                            <button
+                              type="button"
+                              onMouseEnter={() => {
+                                if (postedByTimeoutRef.current) {
+                                  clearTimeout(postedByTimeoutRef.current)
+                                }
+                                setIsPostedByDropdownOpen(true)
                               }}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5]"
+                              onMouseLeave={() => {
+                                postedByTimeoutRef.current = setTimeout(() => setIsPostedByDropdownOpen(false), 300)
+                              }}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
-                              <option value="">Select</option>
-                              {CHECKBOX_FILTER_OPTIONS['Posted By'].map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                            </select>
+                              <span>{selectedFilters['Posted By']?.length ? `${selectedFilters['Posted By'].length} selected` : 'Select'}</span>
+                              <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isPostedByDropdownOpen ? 'rotate(180deg)' : ''}`} />
+                            </button>
+
+                            {isPostedByDropdownOpen &&
+                              createPortal(
+                                <div
+                                  ref={postedByDropdownRef}
+                                  className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
+                                  style={{ top: `${postedByDropdownPosition.top}px`, left: `${postedByDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (postedByTimeoutRef.current) {
+                                      clearTimeout(postedByTimeoutRef.current)
+                                    }
+                                    setIsPostedByDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    postedByTimeoutRef.current = setTimeout(() => setIsPostedByDropdownOpen(false), 100)
+                                  }}
+                                >
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                    {CHECKBOX_FILTER_OPTIONS['Posted By'].map((opt) => (
+                                      <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedFilters['Posted By']?.includes(opt)}
+                                          onChange={(e) => {
+                                            setSelectedFilters(prev => ({
+                                              ...prev,
+                                              'Posted By': e.target.checked
+                                                ? [...(prev['Posted By'] || []), opt]
+                                                : prev['Posted By'].filter(item => item !== opt)
+                                            }))
+                                          }}
+                                          className="w-4 h-4 rounded border-slate-300 text-[#1E88E5] focus:ring-[#1E88E5]"
+                                        />
+                                        <span className="text-sm text-slate-700">{opt}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>,
+                                document.body
+                              )}
                           </div>
 
                           {/* Posted Since */}
@@ -2847,9 +3172,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Posted Since</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsPostedSinceDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (postedSinceTimeoutRef.current) {
+                                  clearTimeout(postedSinceTimeoutRef.current)
+                                }
+                                setIsPostedSinceDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                postedSinceTimeoutRef.current = setTimeout(() => setIsPostedSinceDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2863,8 +3193,17 @@ const Header = () => {
                                   ref={postedSinceDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${postedSinceDropdownPosition.top}px`, left: `${postedSinceDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (postedSinceTimeoutRef.current) {
+                                      clearTimeout(postedSinceTimeoutRef.current)
+                                    }
+                                    setIsPostedSinceDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    postedSinceTimeoutRef.current = setTimeout(() => setIsPostedSinceDropdownOpen(false), 100)
+                                  }}
                                 >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
                                     {CHECKBOX_FILTER_OPTIONS['Posted Since'].map((opt) => (
                                       <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
                                         <input
@@ -2895,9 +3234,14 @@ const Header = () => {
                             <label className="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-1.5 block">Neighbourhood</label>
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setIsAdvancedNeighbourhoodDropdownOpen((open) => !open)
+                              onMouseEnter={() => {
+                                if (advancedNeighbourhoodTimeoutRef.current) {
+                                  clearTimeout(advancedNeighbourhoodTimeoutRef.current)
+                                }
+                                setIsAdvancedNeighbourhoodDropdownOpen(true)
+                              }}
+                              onMouseLeave={() => {
+                                advancedNeighbourhoodTimeoutRef.current = setTimeout(() => setIsAdvancedNeighbourhoodDropdownOpen(false), 300)
                               }}
                               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:border-[#1E88E5] text-left flex items-center justify-between hover:border-[#1E88E5] transition-colors"
                             >
@@ -2911,8 +3255,17 @@ const Header = () => {
                                   ref={advancedNeighbourhoodDropdownRef}
                                   className="fixed w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden text-left animate-loc-in z-40 border border-slate-100"
                                   style={{ top: `${advancedNeighbourhoodDropdownPosition.top}px`, left: `${advancedNeighbourhoodDropdownPosition.left}px` }}
+                                  onMouseEnter={() => {
+                                    if (advancedNeighbourhoodTimeoutRef.current) {
+                                      clearTimeout(advancedNeighbourhoodTimeoutRef.current)
+                                    }
+                                    setIsAdvancedNeighbourhoodDropdownOpen(true)
+                                  }}
+                                  onMouseLeave={() => {
+                                    advancedNeighbourhoodTimeoutRef.current = setTimeout(() => setIsAdvancedNeighbourhoodDropdownOpen(false), 100)
+                                  }}
                                 >
-                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto">
+                                  <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
                                     {NEIGHBOURHOODS.map((opt) => (
                                       <div key={opt} className="flex items-center gap-2 cursor-pointer px-2 py-2 hover:bg-slate-50 rounded-lg" onMouseDown={(e) => e.stopPropagation()}>
                                         <input

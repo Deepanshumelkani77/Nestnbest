@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, MapPin, Maximize, Heart, ArrowRight, Share2, TreePine, Building, Star } from 'lucide-react'
+import { ChevronLeft, ChevronRight, MapPin, Maximize, Heart, ArrowRight, Share2, TreePine, Building, Star, ShieldCheck, Sparkles } from 'lucide-react'
 import { LAND_DATA } from '../data/lands'
 
 const LANDS = Object.values(LAND_DATA)
@@ -49,18 +49,34 @@ const LandCard = ({ land }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         {land.featured && (
-          <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-semibold">
-            Preferred Property 
+          <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-white text-xs font-semibold backdrop-blur-sm" style={{ backgroundColor: 'rgba(245, 158, 11, 0.5)' }}>
+            Preferred Property
           </div>
         )}
-        <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500 text-white text-xs font-semibold">
+        <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-semibold backdrop-blur-sm" style={{ backgroundColor: 'rgba(245, 158, 11, 0.5)' }}>
           <Star size={12} fill="currentColor" />
           {land.rating || '4.5'}
         </div>
       </div>
 
       <div className="p-6">
-        <h3 className="text-xl font-bold text-slate-800 mb-2">{land.title}</h3>
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-xl font-bold text-slate-800">{land.title}</h3>
+          <div className="flex gap-2">
+            {land.verified && (
+              <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
+                <ShieldCheck size={12} />
+                Verified
+              </span>
+            )}
+            {land.featured && (
+              <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">
+                <Sparkles size={12} />
+                Preferred
+              </span>
+            )}
+          </div>
+        </div>
         <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
           <MapPin size={16} />
           {land.location}

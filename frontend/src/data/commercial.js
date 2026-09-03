@@ -16,6 +16,8 @@ export const COMMERCIAL_DATA = {
     propertyType: 'Office Space',
     area: '6,750 sq.ft',
     floors: 'Ground + 2',
+    verified: true,
+    preferred: true,
     image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1000&h=700&fit=crop',
@@ -74,6 +76,8 @@ export const COMMERCIAL_DATA = {
     propertyType: 'Retail Space',
     area: '3,725 sq.ft',
     floors: 'Ground Floor',
+    verified: true,
+    preferred: false,
     image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1000&h=700&fit=crop',

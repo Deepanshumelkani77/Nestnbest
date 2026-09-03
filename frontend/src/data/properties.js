@@ -2,7 +2,7 @@
 export const PROPERTY_DATA = {
   1: {
     id: 1,
-    name: 'DLF The Camellias',
+    name: 'The Camellias',
     tagline: 'Ultra-luxury residences in the heart of Golf Course Road',
     location: 'Sector 42, Gurgaon, Haryana',
     price: '₹8.5 Cr onwards',
@@ -17,6 +17,8 @@ export const PROPERTY_DATA = {
     bedrooms: '4-5',
     bathrooms: '5-6',
     area: '4,200 - 6,800 sq.ft',
+    verified: true,
+    preferred: true,
     image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&h=700&fit=crop',
@@ -71,6 +73,8 @@ export const PROPERTY_DATA = {
     bedrooms: '3-4',
     bathrooms: '3-4',
     area: '2,500 - 4,200 sq.ft',
+    verified: true,
+    preferred: false,
     image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000&h=700&fit=crop',
@@ -123,6 +127,8 @@ export const PROPERTY_DATA = {
     bedrooms: '3-5',
     bathrooms: '3-5',
     area: '3,100 - 5,500 sq.ft',
+    verified: true,
+    preferred: false,
     image: 'https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=1000&h=700&fit=crop',
@@ -177,6 +183,8 @@ export const PROPERTY_DATA = {
     bedrooms: '4-5',
     bathrooms: '4-5',
     area: '3,600 - 5,200 sq.ft',
+    verified: false,
+    preferred: true,
     image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000&h=700&fit=crop',
@@ -229,6 +237,8 @@ export const PROPERTY_DATA = {
     bedrooms: '3-4',
     bathrooms: '3-4',
     area: '2,700 - 3,800 sq.ft',
+    verified: true,
+    preferred: true,
     image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&h=700&fit=crop',

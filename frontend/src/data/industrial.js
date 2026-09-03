@@ -16,6 +16,8 @@ export const INDUSTRIAL_DATA = {
     propertyType: 'Industrial Shed',
     area: '7,080 sq.ft',
     floors: 'Ground Floor',
+    verified: true,
+    preferred: true,
     image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1000&h=700&fit=crop',
@@ -72,6 +74,8 @@ export const INDUSTRIAL_DATA = {
     propertyType: 'Warehouse',
     area: '6,525 sq.ft',
     floors: 'Ground Floor',
+    verified: true,
+    preferred: false,
     image: 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=400&h=300&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=1000&h=700&fit=crop',
